@@ -4,7 +4,9 @@ Servidor Paper **1.21.11** con minijuegos (BRX, SkyWars, PartyGames, HungerGames
 
 ## Instalación en una PC nueva
 
-Requisitos: [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Git](https://git-scm.com/), [GitHub CLI](https://cli.github.com/) (para descargar datos), [7-Zip](https://www.7-zip.org/) (solo si importas archivos locales).
+Requisitos: [Docker](https://docs.docker.com/get-docker/) (Desktop en Windows, Engine en Linux), [Git](https://git-scm.com/), [GitHub CLI](https://cli.github.com/) (para descargar datos), 7-Zip / p7zip (solo si importas archivos locales).
+
+**Windows (PowerShell):**
 
 ```powershell
 git clone https://github.com/Ferxas/conlospibes-server.git
@@ -12,16 +14,33 @@ cd conlospibes-server
 .\install.ps1
 ```
 
+**Linux (bash):**
+
+```bash
+git clone https://github.com/Ferxas/conlospibes-server.git
+cd conlospibes-server
+chmod +x install.sh
+./install.sh
+```
+
 Eso descarga el **release de datos** (~5 GB en partes 7z), extrae `server-data/` + `mysql-data/` y ejecuta `docker compose up -d`.
 
 ### Alternativas
 
 ```powershell
-# Ya copiaste server-data/ y mysql-data/ manualmente
+# Windows — ya copiaste server-data/ y mysql-data/ manualmente
 .\install.ps1 -SkipDataDownload
 
-# Desde un backup 7z local
+# Windows — desde un backup 7z local
 .\install.ps1 -ImportArchive "D:\backup\server-data-v1.7z.001"
+```
+
+```bash
+# Linux — datos ya presentes
+./install.sh --skip-data-download
+
+# Linux — desde un backup 7z local
+./install.sh --import-archive /path/to/server-data-v1.7z.001
 ```
 
 ## Puertos
@@ -59,4 +78,4 @@ docker logs mc -f             # logs
 gh release create server-data-v2 bootstrap/release/server-data-v1.7z.* --title "Server data v2"
 ```
 
-Actualiza `$ReleaseTag` en `install.ps1` al publicar una versión nueva.
+Actualiza `$ReleaseTag` en `install.ps1` / `--release-tag` en `install.sh` al publicar una versión nueva.

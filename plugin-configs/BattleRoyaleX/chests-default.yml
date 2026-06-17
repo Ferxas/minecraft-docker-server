@@ -1,0 +1,58 @@
+Chests:
+  Normal:
+    min-items: 2
+    max-items: 5
+    items:
+    - 'WOOD : 16 :: 20%'
+    - 'STONE : 16 :: 20%'
+    - 'STONE_AXE : 1 :: 20%'
+    - 'STONE_PICKAXE : 1 :: 20%'
+    - 'WEB : 4 :: 20%'
+    - 'TNT : 8 :: 20%'
+    - 'MILK_BUCKET : 1 :: 20%'
+    - 'MONSTER_EGG:54 : 1 : name:&cZombie :: 20%'
+    - 'GOLDEN_APPLE : 1 :: 50%'
+    - 'CAKE : 1 :: 20%'
+    - 'COMPASS : 1 :: 20%'
+    - 'FISHING_ROD : 1 :: 20%'
+    - 'BOW : 1 :: 20%'
+    - 'ARROW : 6 :: 20%'
+    - 'WOOD_SWORD : 1 :: 40%'
+    - 'STONE_SWORD : 1 :: 20%'
+    - 'LEATHER_HELMET : 1 :: 20%'
+    - 'LEATHER_CHESTPLATE : 1 :: 20%'
+    - 'LEATHER_LEGGINGS : 1 :: 20%'
+    - 'LEATHER_BOOTS : 1 :: 20%'
+    - 'LEATHER_BOOTS : 1 :: 20%'
+    - 'CHAINMAIL_HELMET : 1 :: 20%'
+    - 'CHAINMAIL_CHESTPLATE : 1 :: 20%'
+    - 'CHAINMAIL_LEGGINGS : 1 :: 20%'
+    - 'CHAINMAIL_BOOTS : 1 :: 20%'
+    - 'IRON_HELMET : 1 :: 20%'
+    - 'IRON_LEGGINGS : 1 :: 20%'
+    - 'SPLASH_POTION:REGEN:false:false : 1 :: 20%'
+    - 'SPLASH_POTION:SPEED:false:false : 1 :: 20%'
+    - 'SPLASH_POTION:POISON:false:false : 1 :: 20%'
+    - 'SPLASH_POTION:INSTANT_HEAL:false:false : 1 :: 20%'
+  Carepackage:
+    min-items: 2
+    max-items: 5
+    items:
+    - 'GOLDEN_APPLE : 3 :: 20%'
+    - 'DIAMOND_SWORD : 1 :: 20%'
+    - 'DIAMOND_HELMET : 1 :: 20%'
+    - 'DIAMOND_CHESTPLATE : 1 :: 20%'
+    - 'DIAMOND_LEGGINGS : 1 :: 20%'
+    - 'DIAMOND_BOOTS : 1 :: 20%'
+  Supply-Drops:
+    min-items: 2
+    max-items: 5
+    items:
+      - 'BattleRoyaleX:Cash:50 : 3 :: 75%'
+      - 'BattleRoyaleX:Cash:100 : 2 :: 25%'
+      - 'GOLDEN_APPLE : 3 :: 20%'
+      - 'DIAMOND_SWORD : 1 :: 10%'
+      - 'DIAMOND_HELMET : 1 :: 20%'
+      - 'DIAMOND_CHESTPLATE : 1 :: 20%'
+      - 'DIAMOND_LEGGINGS : 1 :: 20%'
+      - 'DIAMOND_BOOTS : 1 :: 20%'

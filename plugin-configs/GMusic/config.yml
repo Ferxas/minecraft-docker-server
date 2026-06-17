@@ -1,0 +1,50 @@
+Lang:
+  lang: en_us
+  client-lang: true
+
+Options:
+  check-for-update: true
+
+  Sound:
+    extened-range: true
+    force-resources: true
+
+  jukebox-range: 50
+  max-jukebox-range: 500
+
+  ActionBar:
+    show-messages: true
+    show-while-playing: true
+
+  Radio:
+    active: false
+    play-on-join: false
+
+  environment-effects: true
+
+  # SakuraSpawn tiene WorldGuard — si está en true, la música no suena en regiones protegidas
+  trusted-region-only: false
+
+  WorldBlacklist:
+  - "blocked_world"
+
+  WorldWhitelist: []
+
+  PlayerSettings:
+    time-until-shuffle: 1000
+    time-until-repeat: 1000
+    save-on-quit: true
+
+    Default:
+      playlist-mode: 0
+      volume: 70
+      join: false
+      play-mode: 0
+      particles: true
+      reverse: false
+
+  GUI:
+    disable-random-song: false
+    disable-playlist: false
+    disable-options: false
+    disable-search: false

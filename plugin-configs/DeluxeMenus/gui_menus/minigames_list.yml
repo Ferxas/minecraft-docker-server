@@ -1,0 +1,119 @@
+menu_title: '&e&lMinijuegos'
+open_command:
+  - minigames
+  - juegos
+  - mg
+register_command: true
+size: 36
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7Volver al menú'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] main_hub'
+
+  'hg':
+    material: GOLDEN_APPLE
+    slot: 11
+    display_name: '&c&lHunger Games'
+    lore:
+      - '&7Lobby, partidas y stats'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] hungergames_hub'
+
+  'sw':
+    material: DIAMOND_SWORD
+    slot: 13
+    display_name: '&b&lSkyWars'
+    lore:
+      - '&7Lobby y partidas'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+      - HIDE_UNBREAKABLE
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] skywars_hub'
+
+  'tnt':
+    material: TNT_MINECART
+    slot: 15
+    display_name: '&6&lTNTRun'
+    lore:
+      - '&7Lobby y arenas'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] tntrun_lobby'
+
+  'pg':
+    material: CAKE
+    slot: 9
+    display_name: '&d&lParty Games'
+    lore:
+      - '&722 minijuegos en rotación'
+      - '&7Carteles de join en el lobby'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] partygames_hub'
+
+  'brx':
+    material: FEATHER
+    slot: 22
+    display_name: '&4&lBattle Royale X'
+    lore:
+      - '&7Paracaídas, armas y 4 mapas'
+      - '&7Clic para ir al lobby BRX'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] brxplay'
+
+  'arcade':
+    material: GOLD_INGOT
+    slot: 17
+    display_name: '&6&lArcade Games'
+    lore:
+      - '&7Minijuegos arcade clásicos'
+      - '&8Requiere arenas (staff)'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] arcade_hub'
+
+  'close':
+    material: BARRIER
+    slot: 35
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: YELLOW_STAINED_GLASS_PANE
+    hide_tooltip: true
+    slots:
+      - 1-8
+      - 10
+      - 12
+      - 14
+      - 16
+      - 18-21
+      - 23-34
+    display_name: ' '

@@ -1,0 +1,83 @@
+services:
+
+  mc-init:
+    image: alpine:3.21
+    container_name: mc-init
+    restart: "no"
+    volumes:
+      - ./server-data:/data
+      - ./plugin-configs:/bootstrap/plugin-configs:ro
+      - ./skript:/bootstrap/skript:ro
+      - ./plugins:/bootstrap/plugins:ro
+      - ./worlds:/bootstrap/worlds:ro
+      - ./configs:/bootstrap/configs:ro
+      - ./bootstrap:/bootstrap/extras:ro
+      - ./scripts/mc-init.sh:/init/mc-init.sh:ro
+    entrypoint: ["/bin/sh", "/init/mc-init.sh"]
+
+  mysql:
+    image: mysql:8.0
+    container_name: mc-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: minecraft
+      MYSQL_USER: discordsrv
+      MYSQL_PASSWORD: discordsrvpass
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: mc
+    restart: unless-stopped
+    depends_on:
+      mc-init:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+    ports:
+      - "25565:25565"
+      - "8804:8804"
+      - "8100:8100"
+      - "19132:19132/udp"
+    environment:
+      EULA: "TRUE"
+      ONLINE_MODE: "FALSE"
+      ENABLE_AUTOPAUSE: "FALSE"
+      ENABLE_COMMAND_BLOCK: "FALSE"
+      TYPE: "PAPER"
+      VERSION: "1.21.11"
+      MEMORY: 8G
+      UID: "1000"
+      GID: "1000"
+    volumes:
+      - ./server-data:/data
+    stdin_open: true
+    tty: true
+
+  volume-backup:
+    image: offen/docker-volume-backup:latest
+    container_name: mc-backup
+    restart: unless-stopped
+    depends_on:
+      mc-init:
+        condition: service_completed_successfully
+    environment:
+      BACKUP_CRON_EXPRESSION: "0 3 * * *"
+      BACKUP_RETENTION_DAYS: "7"
+      BACKUP_FILENAME: mc-backup-latest.tar.gz
+      TZ: America/Bogota
+    volumes:
+      - ./server-data:/backup/minecraft-data:ro
+      - ./mysql-data:/backup/mysql-data:ro
+      - ./mc-backups:/archive
+      - /var/run/docker.sock:/var/run/docker.sock:ro

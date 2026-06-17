@@ -1,0 +1,14 @@
+# Simple format: 'Item'
+# Complex format: 'Item:Durability'
+
+Cages:
+  Default:
+    item: GLASS
+    permission: none
+    rarity: COMMON
+    value: 0
+    floor: GLASS
+    lower-middle: GLASS
+    middle: GLASS
+    higher-middle: GLASS
+    roof: GLASS

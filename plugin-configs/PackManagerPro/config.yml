@@ -1,0 +1,70 @@
+# Alternancia por mundo (PackManagerPro): fuera de Backrooms = pack servidor (f2b7ea…);
+# en TheBackrooms-map = pack fusionado (servidor + resources del mapa).
+#
+# Puedes usar solo mc-packs.net: mismo sitio, dos ZIP distintos = dos URLs distintas (normal).
+# Genera el fusionado local con:
+#   python scripts\merge_resourcepacks.py --base "https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip" --overlay "worlds\TheBackrooms-map\TheBackrooms-map\resources.zip" -o merged-backrooms.zip
+# Súbelo en mc-packs.net y reemplaza SOLO pack-url de TheBackrooms-map abajo.
+# (Opcional API mcpacks.dev: https://mcpacks.dev/docs/api — si devuelve 500, usa la web de mc-packs.)
+#
+# Bunker y KROTHOLE: un ZIP distinto por mundo (base servidor + overlay de worlds/.../resources).
+# Bunker fusionado ~235 MiB → solo GitHub Releases. KROTHOLE ~48 MiB → GitHub o mc-packs.
+# Generar local: scripts\build_map_merged_packs.ps1
+# Publicar (gh): scripts\publish_per_map_resourcepacks.ps1 -Tag per-map-packs-v1
+#
+# server.properties: deja require-resource-pack=false y resource-pack vacíos; un pack global obligatorio
+# impide que el cliente cambie bien al pack por mundo de PackManagerPro (solo sonidos o mezcla rara).
+# Los mundos lobby/world/skywars y los mapas usan solo las URLs de este archivo (force-pack según mundo).
+
+enable-pack: true
+
+application-type: per-world
+
+global-application:
+  pack-url: ''
+  force-pack: false
+  prompt-message: ''
+
+per-world-application:
+  example_world:
+    pack-url: ''
+    force-pack: false
+    prompt-message: ''
+  lobbySW:
+    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
+    force-pack: true
+    prompt-message: '&ePack del servidor (texturas Ferxas).'
+  world:
+    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
+    force-pack: true
+    prompt-message: '&ePack del servidor (texturas Ferxas).'
+  world_nether:
+    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
+    force-pack: true
+    prompt-message: '&ePack del servidor (texturas Ferxas).'
+  world_the_end:
+    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
+    force-pack: true
+    prompt-message: '&ePack del servidor (texturas Ferxas).'
+  skywars1:
+    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
+    force-pack: true
+    prompt-message: '&ePack del servidor (texturas Ferxas).'
+  TheBackrooms-map:
+    pack-url: https://download.mc-packs.net/pack/54917103f853f55f15a0df6670ee343199053760.zip
+    force-pack: true
+    prompt-message: '&ePack del mapa Backrooms (fusionado con el del servidor).'
+  # Nombres de mundo = carpetas en /data (Multiverse no admite espacios): Bunker_of_the_infected, KROTHOLE_Nouvelle_Ere
+  Bunker_of_the_infected:
+    pack-url: https://github.com/Ferxas/mc-compose-resourcepacks/releases/download/per-map-packs-v1/server-bunker-map.zip
+    force-pack: true
+    prompt-message: '&ePack del mapa Bunker (fusionado con el del servidor).'
+  KROTHOLE_Nouvelle_Ere:
+    pack-url: https://github.com/Ferxas/mc-compose-resourcepacks/releases/download/per-map-packs-v1/server-krothole-map.zip
+    force-pack: true
+    prompt-message: '&ePack del mapa KROTHOLE (fusionado con el del servidor).'
+
+messages:
+  prefix: '&8[&2&lPackManagerPro&8] &r'
+  reload: '&7PackManagerPro recargado.'
+  no-permission: '&cNo tienes permiso.'

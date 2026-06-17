@@ -1,0 +1,13 @@
+priority: 1
+
+profiles:
+  - motd:
+      - 'A randomized MOTD.'
+      - 'Lines change, but hover is the same.'
+  - motd: ['Different Syntax.', 'May be more readable.']
+
+playerCount:
+  hover:
+    - 'This player count hover always'
+    - 'stays the same, no matter what'
+    - 'MOTD is being used here.'

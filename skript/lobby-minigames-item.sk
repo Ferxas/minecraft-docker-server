@@ -1,0 +1,82 @@
+# Reloj Menú en lobbies del hub (NO en arenas ni en PartyGames/SkyWars — chocan con hotbar del plugin)
+# Slot 0 en la mayoría de lobbies
+
+function isHubMenuWorld(w: text) :: boolean:
+    if {_w} is "SakuraSpawn":
+        return true
+    if {_w} is "Runnerslobby":
+        return true
+    if {_w} is "HGLobby":
+        return true
+    return false
+
+function isNoMenuWorld(w: text) :: boolean:
+    if {_w} is "PartyGames":
+        return true
+    if {_w} is "BattleRoyaleLobby":
+        return true
+    if {_w} is "BattleRoyaleMap1":
+        return true
+    if {_w} is "BattleRoyaleMap2":
+        return true
+    if {_w} is "BattleRoyaleMap3":
+        return true
+    if {_w} is "BattleRoyaleMap4":
+        return true
+    if {_w} is "lobbySW":
+        return true
+    if {_w} is "LobbySW":
+        return true
+    if {_w} is "HGPlay":
+        return true
+    if {_w} is "tntrun_void":
+        return true
+    if {_w} is "skywars1":
+        return true
+    return false
+
+function hubMenuSlot(w: text) :: number:
+    return 0
+
+function removeHubMenuItem(p: player):
+    remove all clock named "&6&lMenú" from {_p}'s inventory
+
+function giveHubMenuItem(p: player):
+    set {_w} to name of world of {_p}
+    if isNoMenuWorld({_w}) is true:
+        removeHubMenuItem({_p})
+        stop
+    if isHubMenuWorld({_w}) is false:
+        removeHubMenuItem({_p})
+        stop
+    set {_slot} to hubMenuSlot({_w})
+    removeHubMenuItem({_p})
+    set {_c} to clock named "&6&lMenú" with lore "&7Clic derecho: abrir menú" and "&7Minijuegos, spawn, skin..."
+    set slot {_slot} of {_p} to {_c}
+
+on join:
+    wait 1 second
+    giveHubMenuItem(player)
+    wait 3 seconds
+    giveHubMenuItem(player)
+
+on world change:
+    wait 5 ticks
+    if isNoMenuWorld(name of event-world) is true:
+        removeHubMenuItem(player)
+        stop
+    giveHubMenuItem(player)
+    wait 2 seconds
+    giveHubMenuItem(player)
+
+every 25 seconds:
+    loop all players:
+        if isNoMenuWorld(name of world of loop-player) is true:
+            removeHubMenuItem(loop-player)
+        else:
+            giveHubMenuItem(loop-player)
+
+on right click with clock:
+    name of event-item contains "Menú"
+    cancel event
+    execute player command "menu"

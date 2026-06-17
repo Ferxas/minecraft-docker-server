@@ -1,0 +1,15 @@
+enabled: true
+type: normal
+team-size: 1
+min-teams: 2
+max-teams: 4
+lobby-countdown: 30
+lobby-countdown-shortening:
+  min-teams: 4
+  shorten-to: 10
+game-length: 900
+event-time: 450
+refill-times:
+- 600
+- 300
+effects: []

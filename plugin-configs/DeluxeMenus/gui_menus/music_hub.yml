@@ -1,0 +1,110 @@
+menu_title: '&d&lMúsica'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7← Volver'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] utilities_hub'
+
+  'gui':
+    material: JUKEBOX
+    slot: 11
+    display_name: '&d&lAbrir reproductor'
+    lore:
+      - '&7Elige canción, volumen'
+      - '&7y modo de reproducción'
+      - ''
+      - '&eClic para abrir'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[player] music'
+
+  'random':
+    material: MUSIC_DISC_CAT
+    slot: 13
+    display_name: '&eCanción aleatoria'
+    lore:
+      - '&7Para la anterior y elige'
+      - '&7una canción al azar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] music stop'
+      - '[player] music random'
+      - '[message] &d♪ &7Nueva canción aleatoria'
+
+  'pause':
+    material: ORANGE_DYE
+    slot: 15
+    display_name: '&6Pausar'
+    lore:
+      - '&7Pausa tu música actual'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] music pause'
+      - '[message] &d♪ &7Música pausada'
+
+  'resume':
+    material: LIME_DYE
+    slot: 16
+    display_name: '&aReanudar'
+    lore:
+      - '&7Continúa la canción pausada'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] music resume'
+      - '[message] &d♪ &7Música reanudada'
+
+  'stop':
+    material: BARRIER
+    slot: 22
+    display_name: '&cParar música'
+    lore:
+      - '&7Detiene por completo tu música'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] music stop'
+      - '[message] &d♪ &7Música detenida'
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: MAGENTA_STAINED_GLASS_PANE
+    slots:
+      - 1-10
+      - 12
+      - 14
+      - 17-21
+      - 23-25
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

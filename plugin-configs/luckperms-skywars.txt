@@ -1,0 +1,26 @@
+# SkyWars X — permisos LuckPerms
+# Ejecutar en consola del servidor (docker exec mc rcon-cli "...")
+
+# ── Jugadores (default) ─────────────────────────────────────────────
+lp group default permission set skywars.unblockcmds true
+lp group default permission set skywars.globalchat true
+lp group default permission set skywars.vote.health true
+lp group default permission set skywars.vote.time true
+lp group default permission set skywars.vote.chests true
+lp group default permission set skywars.vote.events true
+
+# Multiverse — mundo lobby (nombre real en MV: lobbySW)
+lp group default permission set multiverse.access.lobbySW true
+lp group default permission set multiverse.teleport.self.w.lobbySW true
+
+# ── Grupo admin ─────────────────────────────────────────────────────
+lp group admin permission set skywars.* true
+lp group admin permission set skywars.admin true
+lp group admin permission set skywars.start true
+lp group admin permission set skywars.stop true
+lp group admin permission set skywars.createsigns true
+lp group admin permission set skywars.breaksigns true
+lp group admin permission set skywars.worldmanager true
+
+lp group default reload
+lp group admin reload

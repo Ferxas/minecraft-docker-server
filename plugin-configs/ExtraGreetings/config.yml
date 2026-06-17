@@ -1,0 +1,138 @@
+# ExtraGreetings — solo se quitó el diamante del primer join (join.firstTime.commands)
+
+settings:
+  enableJoin: true
+  enableQuit: true
+  cooldownSeconds: 60
+  debug: false
+  joinDelay: 1
+
+join:
+  firstTime:
+    title: "<gradient:#FF55FF:#55FFFF>Welcome</gradient>"
+    subtitle: "<italic>%player% has joined for the first time!</italic>"
+    actionbar: "<rainbow>Enjoy your stay!</rainbow>"
+    bossbar:
+      enable: true
+      text: "Welcome, %player%!"
+      color: BLUE
+      style: SOLID
+      duration: 10
+    particles:
+      enable: true
+      effect: "HEART"
+      count: 50
+      offset:
+        x: 0.5
+        y: 1.0
+        z: 0.5
+      speed: 0.1
+    sound:
+      enable: true
+      effect: "ENTITY_PLAYER_LEVELUP"
+      volume: 1.0
+      pitch: 1.0
+    message: "<bold><gold>[+]</bold> <white>%player%</white> joined the server for the first time!"
+    commands:
+      - "broadcast &aWelcome our new player %player%!"
+
+  recurring:
+    title: "<yellow>¡Bienvenido de vuelta!</yellow>"
+    subtitle: "<gray>¡Disfrta de tu estadía aquí!</gray>"
+    actionbar: "<green>Qué bonito tenerte de vuelta ^^</green>"
+    bossbar:
+      enable: false
+      text: "Welcome back, %player%!"
+      color: GREEN
+      style: SOLID
+      duration: 5
+    particles:
+      enable: false
+      effect: "VILLAGER_HAPPY"
+      count: 20
+      offset:
+        x: 0.3
+        y: 0.5
+        z: 0.3
+      speed: 0.1
+    sound:
+      enable: true
+      effect: "ENTITY_EXPERIENCE_ORB_PICKUP"
+      volume: 0.8
+      pitch: 1.2
+    message: "<gray>[+]</gray> <white>%player%</white> returned!"
+    commands: []
+
+  vip:
+    enable: true
+    title: "<gradient:#FFD700:#FFA500>VIP</gradient> <gold>Welcome!</gold>"
+    subtitle: "<yellow>%player% the VIP has joined!</yellow>"
+    actionbar: "<rainbow>VIP perks activated!</rainbow>"
+    bossbar:
+      enable: true
+      text: "VIP %player% is here!"
+      color: YELLOW
+      style: NOTCHED_10
+      duration: 15
+    particles:
+      enable: true
+      effect: "FLAME"
+      count: 100
+      offset:
+        x: 1.0
+        y: 1.5
+        z: 1.0
+      speed: 0.2
+    sound:
+      enable: true
+      effect: "ENTITY_ENDER_DRAGON_GROWL"
+      volume: 1.0
+      pitch: 1.5
+    message: "<bold><gold>[VIP]</gold></bold> <yellow>%player%</yellow> has joined the server!"
+    commands:
+      - "effect give %player% minecraft:glowing 30 0 true"
+
+quit:
+  vip:
+    message: "<bold><gold>[VIP]</gold></bold> <yellow>%player%</yellow> has left the server!"
+    particles:
+      enable: true
+      effect: "DRAGON_BREATH"
+      count: 30
+      offset:
+        x: 0.5
+        y: 1.0
+        z: 0.5
+      speed: 0.15
+    sound:
+      enable: true
+      effect: "ENTITY_ENDER_DRAGON_FLAP"
+      volume: 1.0
+      pitch: 1.2
+    commands:
+      - "say VIP %player% has left the server!"
+
+  regular:
+    message: "<gray>[-]</gray> <white>%player%</white> left the server."
+    particles:
+      enable: true
+      effect: "SMOKE_NORMAL"
+      count: 20
+      offset:
+        x: 0.0
+        y: 0.5
+        z: 0.0
+      speed: 0.1
+    sound:
+      enable: true
+      effect: "ENTITY_HORSE_SADDLE"
+      volume: 0.8
+      pitch: 1.0
+    commands: []
+
+customPermissions: {}
+
+placeholders:
+  online_players: "%server_online%"
+  max_players: "%server_max_players%"
+  server_name: "%server_name%"

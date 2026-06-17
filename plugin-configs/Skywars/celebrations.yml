@@ -1,0 +1,38 @@
+# If you change a celebration name here, you should also change it in the shop in order for it to display there.
+
+Celebrations:
+  Falling-Anvils:
+    enabled: true
+    name: 'Falling-Anvils'
+    item: ANVIL
+    value: 2000
+    permission: none
+    rarity: COMMON
+  Party-Spitter:
+    enabled: true
+    name: 'Party-Spitter'
+    item: RED_WOOL
+    value: 3000
+    permission: none
+    rarity: RARE
+  Ghast:
+    enabled: true
+    name: 'Ghast'
+    item: GHAST_TEAR
+    value: 4000
+    permission: none
+    rarity: LEGENDARY
+  Zeus:
+    enabled: true
+    name: 'Zeus'
+    item: BEACON
+    value: 3000
+    permission: none
+    rarity: RARE
+  Rocket:
+    enabled: true
+    name: 'Rocket'
+    item: FIREWORK_ROCKET
+    value: 2000
+    permission: none
+    rarity: COMMON

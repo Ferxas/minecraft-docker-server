@@ -1,0 +1,297 @@
+# # # # # # # # # # # # # # # # # # # # # # 
+#           Made by Wazup92               #
+#     If you really like the plugin       #
+#     Then please dont forget to leave    #
+#        A positive 5 stars review!       #
+# # # # # # # # # # # # # # # # # # # # # # 
+#
+# Rollback speed is measured in Blocks per tick, default settings are made for average servers
+# Queue-Size is how many arenas can rollback in the same time, Send-Status-Update-Every is how often the rollback percentage updates, and its in ticks
+# The Max-Arena-Size is completely up to you, thats why i added it here, but obviously, the smaller the size is, the better.
+# Executed commands on Player-Win variables -> %player%, %world%, Arena-Start -> %world%
+# Custom party slots format -> 'Slot amount : Permission'
+# Mystery-Box chances don't have to add up to 100%
+# If Empty-Chunk-Generator is enabled, the world importing feature will import worlds with a custom generator that generates empty chunks
+# Please BE AWARE. Holographic-Stats are resource intensive. and so is an animated Title
+# Chest-Checks -> Slot-Overwrite is the amount of times the plugin tries to find a random slot that is empty before it just overwrites an occupied one [Ranges from 1, 10]
+# Chest-Checks -> Item-Duplicate is the amount of times the plugin tries to generate a random item that is not inside the chest before it just places anything. [Ranges from 1, 10]
+# Increasing Chest-Checks too much might decrease the performance.
+# Example of MySQL query-url-properties: 'useSSL=true', 'verifyServerCertificate=false&useSSL=true'
+
+Use-FastAsyncWorldEdit-When-Possible: true
+Load-Delay-Ticks: 10
+Empty-Chunk-Generator: false
+
+use-UUID: false
+use-Vault: false
+
+Check-For-Updates: false
+Check-For-General-Notifications: false
+
+String-Coins: 2000
+Coins-Per-Kill: 10
+Coins-Per-Win: 50
+Min-Exp-Per-Kill: 2
+Max-Exp-Per-Kill: 5
+Celebration-Length: 10
+Max-Warnings: 3
+Party-Invitation-Length: 30
+Lobby-Chat: false
+In-Game-Chat: false
+Team-Chat: false
+Spectators-Chat: true
+Lobby-Scoreboard-Enabled: true
+Allow-Spectators-Inventory-View: true
+Load-Skins-On-Skulls: true
+Disable-Natural-Mob-Spawning: true
+Show-Health-On-Bow-Hit: true
+Show-Health-Below-Name: true
+Show-Health-In-Tablist: false
+Fireworks-Enabled: true
+Allow-Spectator-Join: true
+Leash-Mobs: false
+Void-Instant-Kill: false
+Teleport-Mobs: true
+Display-Rank-In-Chat: true
+Use-Gamemode-3-For-Spectators: true
+Achievement-Firework: true
+Selling-Value: 0.33
+Max-Arena-Size: 4500000
+Leave-Countdown-Seconds: 5
+Update-Leaderboard-Every-Minutes: 15
+Default-Kit: NONE
+Date-Format: dd/MM/yyyy
+Broadcast-Time: [60, 30, 15, 5, 4, 3, 2, 1]
+Allowed-Commands: [sw, skywars, tell, help, r, msg, menu, hub, minigames, mv, m, music, scoreboard, sit, gsit, salir, pgplay, pgleave, partygames, pg]
+
+Saying-GG-Rewards:
+  enabled: true
+  earned-coins: 10
+  executed-commands: []
+
+ELO:
+  Starting-Value: 1000
+  Change-Factor: 40
+
+Block-Behind-Join-Signs:
+  WAITING: 'STAINED_GLASS:5'
+  STARTING: 'STAINED_GLASS:4'
+  UNAVAILABLE: 'STAINED_GLASS:14'
+
+Mystery-Box:
+  Block-Type: ENDER_CHEST
+  Cost: 1000
+  Contents:
+  - 'Kits : 20%'
+  - 'Cages : 30%'
+  - 'Trails : 30%'
+  - 'Celebrations : 20%'
+  Rarities:
+  - 'Common : 60%'
+  - 'Rare : 30%'
+  - 'Legendary : 10%'
+
+Party:
+  Default-Slots: 3
+  Custom-Slots: ['4 : skywars.party.slots.4', '5 : skywars.party.slots.5', '6 : skywars.party.slots.6']
+
+Hotbar-Items:
+  Lobby-Items:
+    Arena-Selector:
+      enabled: true
+      slot: 1
+    Autojoin:
+      enabled: false
+      slot: 1
+    Shop:
+      enabled: true
+      slot: 2
+    Party:
+      enabled: true
+      slot: 3
+    Profile:
+      enabled: true
+      slot: 5
+    Boosters:
+      enabled: true
+      slot: 6
+    Quit:
+      enabled: true
+      slot: 9
+  Arena-Items:
+    Vote:
+      enabled: true
+      slot: 1
+    Inventory:
+      enabled: true
+      slot: 2
+    Profile:
+      enabled: true
+      slot: 5
+    Quit:
+      enabled: true
+      slot: 9
+  Spectator-Items:
+    Arena-Selector:
+      enabled: true
+      slot: 1
+    Teleporter:
+      enabled: true
+      slot: 2
+    Bounties:
+      enabled: true
+      slot: 3
+    Profile:
+      enabled: true
+      slot: 5
+    Quit:
+      enabled: true
+      slot: 9
+
+Chest-Checks:
+  Slot-Overwrite: 3
+  Item-Duplicate: 3
+  
+Bungee-Mode:
+  enabled: false
+  hub: lobby
+  restart-command: restart
+  
+MySQL:
+  enabled: false
+  table: Skywars
+  host: localhost
+  port: 3306
+  database: database
+  username: root
+  password: root
+  max_uuid_size: 36
+  query-url-properties: ''
+
+Rollback:
+  Scan-Speed: 50000
+  Repair-Speed: 10000
+  Queue-Size: 1
+  Send-Status-Update-Every: 20
+
+Ranks:
+  First-Rank-Exp: 20
+  Rank-Modifier: 1.3
+  Max-Rank: 30
+  Commands:
+  - '30 : broadcast %player% has reached the highest rank!'
+  
+Executed-Commands:
+  Player-Win: []
+  Arena-Countdown: [broadcast Arena %arena% is about to start in %seconds% seconds!]
+  Arena-Start: [time set 1000 %world%]
+  
+Killstreaks:
+  - '2 : give %player% beef 3'
+  - '5 : give %player% golden_apple 2'
+  - '7 : give %player% diamond 5'
+  
+Bounties: [25, 50, 100, 150, 200, 300, 400, 500]
+  
+Saving-Task:
+  Enabled: true
+  Save-Every-Minutes: 10
+  
+Team-Coloring:
+  default: '&a'
+  randomizer-enabled: true
+  randomizer-colors: ['&2', '&3', '&5', '&6', '&7', '&8', '&9', '&a', '&b', '&c', '&d', '&e']
+  
+Scoreboard-Title-Animation:
+  enabled: false
+  interval: 8
+  frames: ['&b&lSKYWARS', '&e&lSKYWARS', '&b&lSKYWARS', '&a&lSKYWARS', '&b&lSKYWARS', '&c&lSKYWARS', '&e&lS&b&lKYWARS', '&b&lS&e&lK&b&lYWARS', '&b&lSK&e&lY&b&lWARS', '&b&lSKY&e&lW&b&lARS', '&b&lSKYW&e&lA&b&lRS', '&b&lSKYWA&e&lR&b&lS', '&b&lSKYWAR&e&lS']
+  
+Action-Bar-Enabled: true
+Titles-Enabled: true
+  
+Voting-Options:
+  Time:
+    enabled: true
+    item: 'CLOCK : name:&bTime'
+    options:
+    - '&eSunrise : 0'
+    - '&6Noon : 2000'
+    - '&dSunset : 12000'
+    - '&3Midnight : 15000'
+  Chests:
+    enabled: true
+    item: 'CHEST : name:&eChests'
+  Events:
+    enabled: true
+    item: 'ANVIL : name:&6Events'
+  Health:
+    enabled: true
+    item: 'APPLE : name:&cHealth'
+    options:
+    - '&c10 Hearts : 10'
+    - '&e20 Hearts : 20'
+    - '&630 Hearts : 30'
+ 
+Custom-Maps:
+  Winner-Map:
+    enabled: true
+    texts:
+    - 'Congratulations'
+    - '   For winning!!!'
+    image: 'https://i.imgur.com/FrgIjmJ.png'
+    
+Play-Again-Message:
+  enabled: true
+  header: '&b&m---------&e Skywars &b&m---------'
+  content:
+  - ' '
+  - '         &6Click to play again!'
+  - ' '
+  footer: '&b&m---------------------------'
+ 
+Active-Boosters: []
+
+Sounds:
+  Command-Execute:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+  Arena-Countdown:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+  Arena-Start-Countdown-Shorten:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+  Achievement-Unlock:
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_PLING
+  Mystery-Box-Animation:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+  Mob-Attack-Event:
+    enabled: true
+    sound: BLOCK_ANVIL_LAND
+  Poisoning-Event:
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_PLING
+  Random-Teleport-Event:
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_PLING
+  Starvation-Event:
+    enabled: true
+    sound: BLOCK_ANVIL_LAND
+  Rocket-Celebration-Sound:
+    enabled: true
+    sound: UI_BUTTON_CLICK
+  Booster-Activate:
+    enabled: true
+    sound: ENTITY_FIREWORK_ROCKET_BLAST
+  Bounty-Set:
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_PLING
+  Player-Kill:
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_PLING
+
+# Lobby de espera (mundo lobbySW) — mismo spawn que SkyWarsReloaded
+Lobby: lobbySW, -220.67322652913725, 62.0, -86.96611379403554, -175.94868, 56.699688

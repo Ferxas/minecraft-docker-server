@@ -1,0 +1,344 @@
+# In death messages, you can add a new death detection message if you want to!
+# Here is a list of death causes https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
+
+prefix: '&7[&6Battle Royale X&7] '
+
+Messages:
+  No-Permission: You dont have the permission to do this!
+  Unknown-Command: Unknown command! use /BattleRoyale for a list of commands
+  Player-Join: You have joined the lobby!
+  Player-Leave: You have left the game!
+  Lobby-Not-Set: Lobby has not been set yet!
+  Already-In-Game: You are already in the game!
+  Not-In-Game: You are not in the game!
+  Not-In-Lobby: You must be in the lobby to do this!
+  Coins-Update: Your coins have been updated!
+  Modifier-Update: Your modifier has been updated!
+  No-Available-Arena: Could not find any available arena!
+  Arena-No-Lobby: The arena does not have a lobby yet!
+  Routes-Not-Ready: The arena bus setup is incomplete!
+  Must-Have-Empty-Hand: You must have an empty hand to use this sign!
+  Player-Kill: 'You have killed &e%target% &7and received &d%coins% &7coins and &d%exp% &7exp!'
+  Killstreak-Award: '&a&lYou have received the &e&l%killstreak% &a&lplayer killstreak awards!'
+  Player-Teleport: '&aYou have been teleported!'
+  Player-Spectate: You are now spectating the arena!
+  Craft-Deny: 'You cannot craft this item any more!'
+  Shift-Click-Craft-Deny: 'You are trying to craft this item more than the allowed crafting amount!'
+  Not-Enough-Coins: You do not have enough coins to do this!
+  Not-Enough-Space: You do not have enough inventory space!
+  Item-Purchase: 'You have &asuccessfully &6purchased the item!'
+  Item-Select: 'You have selected the item: &a%item%'
+  Item-Owned: '&cYou have already purchased this item!'
+  Cooldown: 'You must wait &d%seconds% &6seconds to do this again!'
+  Pvp-Enable: '&c&lPlayer damage has been enabled!'
+  Deathmatch-Start: '&c&lDeathmatch has started!'
+  Unknown-Player: Could not find that player!
+  No-Available-Items: There are no available items that you can unlock!
+  Mystery-Box-Item-Unlock: '&aCongratulations! &6you have unlocked the item: %item%'
+  Party-Already-In-Party: You are already in a party!
+  Player-Already-Invited: That player is already invited!
+  Item-Sell: 'You have &asuccessfully &6sold your item for &b%value% &6coin(s)!'
+  Player-Inactive: That player is no longer active in the arena!
+  Command-Block: You may not use that command while ingame!
+  Player-Rank-Up: 'You have &aranked &6up to rank &b%rank%&6!'
+  Arena-Not-Available: You may not join the arena at this time!
+  Arena-Full: The arena does not have enough space!
+  No-Available-Team: The arena does not have an available team for your party!
+  Player-Join-Arena: '&e%player% &6has joined the game! &d(%players%/%maxplayers%)!'
+  Player-Select-Team: 'You are now on the %team% &6team!'
+  Player-Select-Team-Error: You can not join this team right now!
+  Player-Leave-Arena: '&e%player% &6has left the game! &d(%players%/%maxplayers%)!'
+  Leave-Arena-Error: Only the leader of the party can do this!
+  Countdown-Cancel: Countdown has been cancelled due to insufficient amount of players!
+  Arena-Starting-Countdown: 'The arena is starting in &b%seconds% &6seconds!'
+  Arena-Starting-Countdown-Shortening: 'The countdown timer has been skipped to &b%seconds% &6seconds!'
+  Spectator-Tip: 'As a spectator, you can left click air or right click a block to access the &a&nspectator gui!'
+  Kit-Receive: 'You have received your &a%kit% &6kit items!'
+  Player-Vote: '&d%player% &6has voted for &e%option% &c(%votes%)!'
+  Arena-Borders-Leave: '&cYou can not leave the arena borders!'
+  Arena-Borders-Outside: '&cYou are outside the arena borders!'
+  Arena-Win: '&a&lCongratulations! &6you have won the game!'
+  Arena-Win-Prize: 'You have received &d%coins% &6coins for winning!'
+  Arena-Lose: 'You failed to reach the safe point!'
+  Arena-Lose-Spectators-Message: 'The arena has concluded! No one won!'
+  Party-Player-Leave: You have left the party!
+  Party-Player-Leave-Alert: '&c%player% &6has left the party!'
+  Arrow-Hit: '&e%player% &7is now on &c%health% %heart%&e!'
+  Tracking-Player: '&eTracking the player: %target%'
+  Invalid-Party: Invalid party.
+  Invalid-Arena: Invalid arena.
+  Invalid-Entity: Invalid entity type.
+  Reload-Kick: Plugin has been reloaded! due to that you have been kicked
+  Party-Must-Be-Leader: You must be the party leader to do this!
+  Party-Player-Not-Available: 'Party member &b%member% &6is not available currently!'
+  Party-Full: This party is full!
+  Party-Join: '&e%player% &6has joined the party!'
+  Party-Not-Invited: 'You are not invited to this party!'
+  Party-Invite-Send: '&e%player% &6has sent an invitation to &a%target%'
+  Party-Invite-Receive: 'You have been invited to &b%leader%&6 party! this invitation will expire in &d%seconds% &6seconds!'
+  Party-Invite-Receive-Clickable-Message: '&a&nClick here to accept this invitation!'
+  Party-Invitation-Expire: 'Party invitation has expired!'
+  Party-Player-Kick: You have been kicked!
+  Party-Player-Kick-Alert: '&e%leader% &6has kicked &c%player%'
+  Party-New-Leader: '&e%player% &6is the new party leader!'
+  Party-Unknown-Player: Could not find that player in your party!
+  Party-Self-Invite: You cant invite your self!
+  Bleeding-Faster-Tip: '&cShift click to bleed faster...'
+  Carepackage-Denied: '&cYou cannot place a carepackage here!'
+  Cash-Extraction: '&aCash extraction complete! Your team has secured a total of $&e&l%cash%!'
+  Bounty-Deny: '&cYou cannot set a bounty now!'
+  Bounty-Set: '&e&lA bounty has been set on &c&n%target%!&e&l Total bounty amount on %target% is now &a&n%total_bounty%&e&l coins! &a&l(+%bounty%)'
+  Bounty-Claim: '&a&l%killer% &e&lhas claimed the bounty on &c&l%player% &a&l(%bounty% coins!)'
+  Bounty-Survive: '&e&lNo one was able to kill you! Your bounty (%bounty%) is now yours to claim! &a&l(+%bounty% coins)'
+  Bounty-Cancel: '&e&lYour bounty on %player% has been cancelled! You have been refunded %bounty% coins!'
+
+Death-Messages:
+  FALL: '&e%player% &7fell to their death!'
+  ENTITY_ATTACK: '&e%player% &7was killed by a monster!'
+  LAVA: '&e%player% &7thought swimming in lava is fun!'
+  SUFFOCATION: '&e%player% &7suffocated!'
+  VOID: '&e%player% &7fell into the void!'
+  DROWNING: '&e%player% &7does not know how to swim!'
+  FIRE: '&e%player% &7burned to their death!'
+  FIRE_TICK: '&e%player% &7burned to their death!'
+  ENTITY_EXPLOSION: '&e%player% &7exploded into million pieces!'
+  BLOCK_EXPLOSION: '&e%player% &7exploded into million pieces!'
+  UNKNOWN: '&e%player% &7has been killed by an unknown object!'
+  PLAYER:
+    SUICIDE: '&e%player% &7has killed himself!'
+    OTHER:
+      - '&c%player% &ehas been killed by &a%killer%&e!'
+      - '&c%player% &ewas brutally murdered by &a%killer%&e!'
+      - '&c%player% &eweapon could not stand against &a%killer%&e!'
+      - '&a%killer% &egave a helping hand in &c%player% &edeath!'
+      - '&a%killer% &ecould not resist killing &c%player%&e!'
+
+Arena-Settings:
+  - '&3======== &bArena Settings &3======='
+  - '&b - &6Time: &e&l%votedTime%'
+  - '&b - &6Scenario: &e&l%votedScenario%'
+  - '&b - &6Health: &e&l%votedHealth%'
+  - '&3============================'
+
+Signs:
+  Title: '&a&l[BattleRoyale]'
+  Leave: '&9&lleave'
+  Autojoin: '&9&lautojoin'
+  Join: '&9&ljoin'
+  Arena-Color: 'l'
+  Arena-Players: '&9%players%&d&l/&9%max_players%'
+  Leaderboard-Title: '&bTop #&4'
+  Leaderboard-Stat-Color: '4'
+
+States:
+  WAITING: '&aWaiting'
+  STARTING: '&eStarting'
+  INGAME: '&cIngame'
+  ENDING: '&cEnding'
+  DISABLED: '&cDisabled'
+
+Items:
+  Arena-Selector: 'DIAMOND_AXE : name:&6&lPlay : lore:&7Click to join a game!'
+  Profile: 'SKULL_ITEM:3 : name:&b&lProfile : lore:&7Click to view your profile!'
+  Party: 'WORKBENCH : name:&d&lParty : lore:&7Click to manage your party!'
+  Quit: 'MAGMA_CREAM : name:&c&lQuit : lore:&7Click to quit the game!'
+  Teleporter: 'COMPASS : name:&b&lTeleport : lore:&7Click to teleport to other players'
+  Autojoin: 'WATCH : name:&b&lAutojoin : lore:&7Click to join the best : lore:&7available arena!'
+  Back: 'EYE_OF_ENDER : name:&a&lBack : lore:&7Click to go back!'
+  Stats: 'PAPER : name:&aStats'
+  Loadouts: 'GOLD_INGOT : name:&cPlunder Mode Loadouts'
+  Kits: 'IRON_SWORD : name:&bNormal Mode Kits'
+  Owned-Kits: 'CHEST : name:&bOwned kits'
+  Celebrations: 'BEACON : name:&6Celebrations'
+  Owned-Celebrations: 'CHEST : name:&bOwned celebrations'
+  Shop: 'EMERALD : name:&aShop : lore:&7Click to buy more!'
+  Achievements: 'ENDER_CHEST : name:&dAchievements'
+  Confirm: 'STAINED_GLASS:5 : name:&a&lConfirm'
+  Cancel: 'STAINED_GLASS:14 : name:&c&lCancel'
+  Next: 'STAINED_GLASS:5 : name:&aNext page'
+  Previous: 'STAINED_GLASS:14 : name:&cPrevious page'
+  Recipes: 'ENCHANTED_BOOK : name:&b&lCustom Recipes'
+  Team-Selector: 'BEACON : name:&a&lTeam Selector'
+  Vote: 'WATCH : name:&d&lVote : lore:&7Click to vote for the arena settings'
+  Bounties: 'GOLD_INGOT : name:&6Bounties : lore:&7Click to set a bounty on someone!'
+
+Inventories:
+  Profile-Inventory: '&9Your profile'
+  Stats-Inventory: '&9Your Stats'
+  Kit-Options: '&9Kits'
+  Owned-Kits: '&9Owned Kits'
+  Celebration-Options: '&9Celebrations'
+  Owned-Celebrations: '&9Owned Celebrations'
+  Loadouts: '&9Loadouts'
+  Achievements-Inventory: '&cAchievements'
+  Spectator-Menu: '&9Spectator Menu'
+  Quit-Inventory: '&cAre you sure you want to quit?'
+  Confirm-Purchase: '&cConfirm your purchase!'
+  Confirm-Sell: '&cAre you sure about this?'
+  Party-Settings: '&cParty Settings'
+  Party-Players: '&9Party Players:'
+  Teleporter: '&cTeleport to players'
+  Recipe: '&cCustom Recipe'
+  Recipes: '&cCustom Recipes'
+  Team-Selector: '&9Team Selector'
+  Arena-Settings: '&9Arena Settings'
+  Shopping-Station: '&9Shopping station'
+  Bounty-Target: '&cSelect target player'
+  Bounty-Options: '&cSelect bounty amount'
+
+Titles:
+  Starting: '&cStarting in &e%seconds% &cseconds'
+  Starting-Shortening: '&cTimer skipped to &6%seconds% &cseconds'
+  Start: '&e&lGet ready soldier!'
+  Win: '&aCongratulations!'
+  Player-Spectate: '&cYou are now spectating!'
+  Killstreak: '&cYou have a killstreak of &b%killstreak%'
+  Parachute-Deploy: '&eDeployed!'
+  Parachute-Exit: '&a&lLanded'
+
+Lores:
+  Description: '&eDescription:'
+  Rarity: '&eRarity: %rarity%'
+  Value: '&eValue: &d%price%$'
+  Armor: '&eArmor:'
+  Helmet: '&5 - &aHelmet: &d%helmet%'
+  Chestplate: '&5 - &aChestplate: &d%chestplate%'
+  Leggings: '&5 - &aLeggings: &d%leggings%'
+  Boots: '&5 - &aBoots: &d%boots%'
+  Items: '&eItems:'
+  Item: '&5 - &d%item%'
+  No-Items: '&dNONE'
+  Permission-Needed: '&cRequires Permission'
+  Selling: '&cSold for &e%coins% &ccoin(s)!'
+  Lines: '&b&m-------------'
+  Players: '&ePlayers: &b%players%&e/&b%maxplayers%'
+  Team-Size: '&eTeam size: &b%teamsize%'
+  State: '&eState: %state%'
+  Arena-Mode: '&eMode: &b%mode%'
+  Cost: '&eCost: &d%cost%'
+  Content: '&eContent:'
+  Rarities: '&eRarities:'
+  Inventory-Instructions: '&5- &b&nLeft click to equip &5/ &c&nRight click to sell'
+
+Scoreboards:
+  Lobby:
+    Title: '&d%pointedstar% &6&lBattle Royale X &d%pointedstar%'
+    Content:
+      - '&e&m-----------'
+      - '&a> Coins:'
+      - '%coins%'
+      - '&a> Games played:'
+      - '%games_played%'
+      - '&a> Normal/Plunder Wins:'
+      - '%normal_wins%/%plunder_wins%'
+      - '&a> Exp/Rank:'
+      - '%player_exp%/%player_rank%'
+      - ' '
+      - '&a> Kit:'
+      - '%selected_kit%'
+      - '&a> Celebration:'
+      - '%selected_celebration%'
+      - '&e&m-----------'
+  Arena-Lobby:
+    Title: '&d%pointedstar% &6&lBattle Royale X &d%pointedstar%'
+    Content:
+      - '&e&m-----------'
+      - '&a> Time: &f%timer%'
+      - ' '
+      - '&a> Players: &f%players%&e/&f%max_players%'
+      - '&a> Map: &f%arena%'
+      - '&a> Mode: &f%mode%'
+      - ' '
+      - '&7%date%'
+      - '&e&m-----------'
+  Arena-Game:
+    Title: '&d%pointedstar% &6&lBattle Royale X &d%pointedstar%'
+    Content:
+      - '&e&m-----------'
+      - '&a%current_event% &fin'
+      - '%current_event_timer%'
+      - ' '
+      - '&a> Players:'
+      - '&f%players%&e/&f%max_players%'
+      - ' '
+      - '&aWorld Border'
+      - '-%border_distance%, +%border_distance%'
+      - ' '
+      - '&7%date%'
+
+Normal-Mode-Start:
+  - '&m==============================='
+  - ' '
+  - '  &nBattle Royale X'
+  - ' '
+  - '  &a&lNormal mode:'
+  - '  &eEliminate all other teams and'
+  - '  &eBe the last team standing! &6%star%'
+  - ' '
+  - '&m==============================='
+
+Plunder-Mode-Start:
+  - '&m==============================='
+  - ' '
+  - '  &nBattle Royale X'
+  - ' '
+  - '  &b&lPlunder mode $$$:'
+  - '  &eGather as much cash as you can!'
+  - '  &eTeam with the highest amount of cash wins the game! &6%star%'
+  - '  Deliver your cash to the extraction point to secure it!'
+  - ' '
+  - '&m==============================='
+
+Match-Conclusion:
+- '%randomcolor%&m==============================='
+- ' '
+- '    &e%star% %winners% &7won the game! &e%star%'
+- ' '
+- '&6       1st Killer - %topkiller1_name% - %topkiller1_kills%'
+- '&e        2nd Killer - %topkiller2_name% - %topkiller2_kills%'
+- '&c         3rd Killer - %topkiller3_name% - %topkiller3_kills%'
+- ' '
+- '%randomcolor%&m==============================='
+
+Stats:
+  KILLS: 'Kills'
+  DEATHS: 'Deaths'
+  KDR: 'KDR'
+  PROJECTILES_HIT: 'Projectiles Hit'
+  BLOCKS_PLACED: 'Blocks placed'
+  BLOCKS_BROKEN: 'Blocks broken'
+  GAMES_PLAYED: 'Games played'
+  COINS: 'Coins'
+  NORMAL_WINS: 'Normal Wins'
+  PLUNDER_WINS: 'Plunder Wins'
+  MODIFIER: 'Modifier'
+  PLAY_TIME: 'Play Time'
+  PLAYER_EXP: 'Exp'
+  RANK: 'Rank'
+  NEXT_RANK_NEEDED_EXP: 'Next rank needed exp'
+
+Stats-Inventory-Styling:
+  Stat: '&a%stat%:'
+  Value: '&e%value%'
+
+Holographic-Leaderboard-Styling:
+  Header: '&7&m--------&a Leaderboard &7&m--------'
+  Body: '&7#&d1 &b%stat% &7- %player% - &e%score%'
+  Footer: '&7&m-------------------------'
+
+Holographic-Stats:
+  - '&7&m---&a %player_name% &7stats &m---'
+  - '&bKills &7%arrow% &e%kills%'
+  - '&bCoins &7%arrow% &e%coins%'
+  - '&bDeaths &7%arrow% &e%deaths%'
+  - '&bGames played &7%arrow% &e%games_played%'
+  - '&bNormal/Plunder Wins &7%arrow% &e%normal_wins%&7/&e%plunder_wins%'
+  - '&bProjectiles hit &7%arrow% &e%projectiles_hit%'
+  - '&bExp &7%arrow% &e%player_exp%'
+  - '&bRank &7%arrow% &e%player_rank%'
+  - '&bBlocks placed &7%arrow% &e%blocks_placed%'
+  - '&bBlocks broken &7%arrow% &e%blocks_broken%'
+  - '&7&m----------------------'
+
+Action-Bars:
+  Arena-Player-Data: '&7Armor: &e%armor% &7Cash: &a$%cash%'

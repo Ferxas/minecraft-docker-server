@@ -1,0 +1,11 @@
+priority: 1
+
+# Display this profile, if the version of the player is below 760 (1.19.1)
+condition: '${player protocol} < 760'
+
+motd:
+  - '<red>You are using an outdated client!'
+  - '<red>Please update to 1.19.1 to join.'
+
+playerCount:
+  text: '<red>Outdated Client!'

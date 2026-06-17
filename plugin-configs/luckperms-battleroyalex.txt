@@ -1,0 +1,30 @@
+# Battle Royale X — permisos LuckPerms
+# Ejecutar en consola del servidor (docker exec mc rcon-cli "...")
+
+# ── Jugadores (default) ─────────────────────────────────────────────
+lp group default permission set battleroyalex.unblockcmds true
+lp group default permission set battleroyalex.globalchat true
+
+# Multiverse — lobby y mapas BRX
+lp group default permission set multiverse.access.BattleRoyaleLobby true
+lp group default permission set multiverse.access.BattleRoyaleMap1 true
+lp group default permission set multiverse.access.BattleRoyaleMap2 true
+lp group default permission set multiverse.access.BattleRoyaleMap3 true
+lp group default permission set multiverse.access.BattleRoyaleMap4 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleLobby true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap1 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap2 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap3 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap4 true
+
+# ── Grupo admin ─────────────────────────────────────────────────────
+lp group admin permission set battleroyalex.* true
+lp group admin permission set battleroyalex.admin true
+lp group admin permission set battleroyalex.start true
+lp group admin permission set battleroyalex.stop true
+lp group admin permission set battleroyalex.createsigns true
+lp group admin permission set battleroyalex.breaksigns true
+lp group admin permission set battleroyalex.worldmanager true
+
+lp group default reload
+lp group admin reload

@@ -1,0 +1,77 @@
+menu_title: '&d&lParty Games'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7Volver a minijuegos'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] minigames_list'
+
+  'info':
+    material: BOOK
+    slot: 4
+    display_name: '&e&l¿Cómo se juega?'
+    lore:
+      - '&7Pulsa &aJugar &7para ir al lobby.'
+      - '&7Verás unos &fcarteles &7delante.'
+      - '&7Haz &fclic derecho &7(mano vacía)'
+      - '&7en un cartel para entrar a una partida.'
+      - ''
+      - '&7Si quieres volver antes: &cVolver al spawn'
+      - '&7(cama en el slot 4 del inventario)'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  'play':
+    material: CAKE
+    slot: 12
+    display_name: '&a&lJugar'
+    lore:
+      - '&7Ir al lobby de Party Games'
+      - '&7y elegir partida en los carteles'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] pgplay'
+
+  'leave':
+    material: BARRIER
+    slot: 14
+    display_name: '&c&lSalir'
+    lore:
+      - '&7Abandonar Party Games'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] pgleave'
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: MAGENTA_STAINED_GLASS_PANE
+    hide_tooltip: true
+    slots:
+      - 1-3
+      - 5-11
+      - 13
+      - 15-25
+    display_name: ' '

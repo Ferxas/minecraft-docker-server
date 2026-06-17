@@ -1,0 +1,9 @@
+# Kits follow the exact same format of chest items. Please read the comments of chests.yml if you have not done so already
+# In order to understand how items are formatted.
+#
+# Kit potion effect format: 'PotionEffectType : Duration : Amplifier'
+# For a list of PotionEffectType visit this website: # For a list of potions you can use visit this website https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+# Example potion-effects: ['SPEED : 9999 : 1', 'JUMP : 9999 : 1']
+# Kit executed commands placeholders: %player%
+# Example of kit executed commands --->>> executed-commands: ['broadcast %player% has selected an OP kit']
+# For a list of enchantments, visit https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html

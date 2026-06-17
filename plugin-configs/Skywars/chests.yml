@@ -1,0 +1,14 @@
+# If you want to increase the chance of an item, simply add it twice or more
+#
+# You can create new chest types, simply copy the default one, rename it, and modify its content
+# You SHOULD NOT delete or rename the Default type, only change its content
+# You can create for example OP chest category to vote for by copying the Normal category and pasting it. DO NOT DELETE THE 'NORMAL' CATEGORY
+# EVERY CHEST CATEGORY MUST HAVE THE 'DEFAULT' CHEST TYPE
+# If you created your own chest types they must be added in all categories including the Normal one..
+
+Chests:
+  Normal:
+    Default:
+      min-items: 5
+      max-items: 8
+      chest-items-id: 1

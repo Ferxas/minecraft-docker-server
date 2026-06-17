@@ -1,0 +1,27 @@
+# Party Games — permisos LuckPerms
+# Ejecutar en consola del servidor (docker exec mc rcon-cli "...")
+
+# ── Jugadores (default) ─────────────────────────────────────────────
+# Los comandos /pg join, leave, list, stats, shop, autojoin no requieren nodo extra.
+# Estos extras sí son útiles en partida:
+
+lp group default permission set partygames.unblockcmds true
+lp group default permission set partygames.globalchat true
+
+# ── Grupo admin (staff / OP de verdad en LP) ────────────────────────
+lp creategroup admin
+lp group admin permission set partygames.* true
+lp group admin permission set partygames.forcestart true
+lp group admin permission set partygames.createsigns true
+lp group admin permission set partygames.breaksigns true
+lp group admin permission set partygames.wazup92 true
+
+# Admin hereda permisos de default (menús, multiverse, etc.)
+lp group admin parent add default
+
+# ── Asignar staff (cambia los nombres si hace falta) ────────────────
+lp user ferxitas parent add admin
+lp user ferxas parent add admin
+
+lp group default reload
+lp group admin reload

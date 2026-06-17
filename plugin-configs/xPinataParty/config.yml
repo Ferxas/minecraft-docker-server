@@ -1,0 +1,87 @@
+# xPinataParty — reservado para mapa de eventos (NO SakuraSpawn)
+# Cuando crees el mundo EventWorld, actualiza spawn-location abajo.
+
+pinata:
+  entity: "LLAMA"
+  health: 100
+  spawn-location: "EventWorld,0,100,0"
+  effects:
+    fireworks: true
+    particles: "HEART"
+  sounds:
+    summon: "entity.lightning.thunder"
+    hit: "entity.llama.hurt"
+    destroy: "entity.generic.explode"
+  rewards:
+    - "minecraft:iron_ingot 3"
+    - "minecraft:diamond 1"
+    - "minecraft:golden_apple 1"
+  tiers:
+    enabled: true
+    types:
+      bronze:
+        health: 50
+        rewards:
+          - "minecraft:iron_ingot 5"
+          - "minecraft:gold_ingot 2"
+      silver:
+        health: 100
+        rewards:
+          - "minecraft:diamond 3"
+          - "minecraft:emerald 5"
+      gold:
+        health: 200
+        rewards:
+          - "minecraft:netherite_ingot 1"
+          - "minecraft:diamond 10"
+    boss:
+      enabled: true
+      chance: 5
+      health: 500
+      rewards:
+        - "minecraft:netherite_ingot 3"
+        - "minecraft:diamond_block 2"
+
+leaderboard:
+  enabled: true
+  top-reward: "minecraft:netherite_ingot 1"
+  participation-rewards:
+    enabled: true
+    tiers:
+      - "hits: 10, reward: minecraft:iron_ingot 2"
+      - "hits: 25, reward: minecraft:gold_ingot 3"
+      - "hits: 50, reward: minecraft:diamond 1"
+
+bossbar:
+  enabled: true
+  color: "RGB"
+
+hologram:
+  enabled: true
+  text:
+    - "&6&lxPinata Party!"
+    - "&e¡Golpéala para premios!"
+    - "&bTop: &f%player%"
+    - "&aVida: &f%health%&7/&f%maxhealth%"
+
+auto-pinata:
+  enabled: false
+  interval: 600
+  placeholder: "%xpinata_timer%"
+  announcements:
+    start: "&6[&exPinata&6] &a¡Piñata en %location%!"
+    progress: "&6[&exPinata&6] &eVida: %health%%"
+    end: "&6[&exPinata&6] &cDestruida por %player%!"
+
+protection:
+  anti-killaura: true
+  hit-cooldown: 500
+  max-hits-per-second: 3
+
+discord:
+  webhook:
+    enabled: false
+    url: ""
+    messages:
+      start: ""
+      end: ""

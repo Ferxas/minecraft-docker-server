@@ -1,0 +1,42 @@
+# Cinemática welcome al primer spawn en SakuraSpawn (presentación, no flash del lobby)
+
+function playWelcomeCinematic(p: player):
+    if {_p}'s world's name is not "SakuraSpawn":
+        stop
+    set {_loc} to location at -9.3, -57, -71.82 in world "SakuraSpawn"
+    set yaw of {_loc} to -91.65
+    set pitch of {_loc} to 6.9
+    teleport {_p} to {_loc}
+    execute console command "cinematic load welcome"
+    wait 8 ticks
+    make {_p} execute command "cinematic play welcome"
+
+on load:
+    wait 5 seconds
+    execute console command "cinematic load welcome"
+
+on join:
+    set {welcome.cinematic.play::%uuid of player%} to true
+
+on quit:
+    delete {welcome.cinematic.play::%uuid of player%}
+
+# Multiverse suele mandar a SakuraSpawn justo después del join
+on world change:
+    if {welcome.cinematic.play::%uuid of player%} is not true:
+        stop
+    if player's world's name is not "SakuraSpawn":
+        stop
+    delete {welcome.cinematic.play::%uuid of player%}
+    wait 5 ticks
+    playWelcomeCinematic(player)
+
+# Si ya spawnean en SakuraSpawn sin world change
+on join:
+    wait 1 second
+    if {welcome.cinematic.play::%uuid of player%} is not true:
+        stop
+    if player's world's name is not "SakuraSpawn":
+        stop
+    delete {welcome.cinematic.play::%uuid of player%}
+    playWelcomeCinematic(player)

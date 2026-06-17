@@ -1,0 +1,19 @@
+# Format 'ITEM :: Cost'
+# Items in this file can have the same additional tags taught in chests.yml
+# For example, you can add an enchantment, lore, and names.
+
+Material: ENDER_CHEST
+
+Items:
+- 'GOLDEN_APPLE : 1 : lore:&7| : lore:&7Costs $&a100 :: 100'
+- 'DIAMOND_SWORD : 1 : lore:&7| : lore:&7Costs $&a200 :: 200'
+- 'DIAMOND_HELMET : 1 : lore:&7| : lore:&7Costs $&a250 :: 250'
+- 'DIAMOND_CHESTPLATE : 1 : lore:&7| : lore:&7Costs $&a250 :: 250'
+- 'DIAMOND_LEGGINGS : 1 : lore:&7| : lore:&7Costs $&a250 :: 250'
+- 'DIAMOND_BOOTS : 1 : lore:&7| : lore:&7Costs $&a250 :: 250'
+- 'BattleRoyaleX:Carepackage : 1 : lore:&7| : lore:&7Costs $&a500 :: 500'
+- 'QualityArmory:rpg : 1 : lore:&7| : lore:&7Costs $&a400 :: 400'
+- 'QualityArmory:awp : 1 : lore:&7| : lore:&7Costs $&a400 :: 400'
+
+# - 'BattleRoyaleX:UAV : 1 : 2000'
+# Something that revives team mates

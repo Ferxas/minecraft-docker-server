@@ -1,0 +1,8 @@
+priority: 1
+
+# Display this profile, if the version of the player is below 735 (1.16)
+condition: '${player protocol} < 735'
+
+motd:
+  - '<grey>Welcome to <aqua>YourServer.com</aqua>!'
+  - '<grey>Enjoy your stay.'

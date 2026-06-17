@@ -1,0 +1,36 @@
+# Effects format: 'POTION_TYPE : DURATION : AMPLIFIER'
+# For a list of potion effect types -> https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html
+# If you don't want to use the lobby countdown shortening system keep the 'shorten-to' value equal to something bigger than the lobby countdown value
+# For time options, if the option does not say 'minutes' then it is in seconds by default
+# World border shrinkage options don't apply to plunder mode arenas
+
+type: normal
+world: world
+enabled: false
+min-teams: 2
+max-teams: 10
+team-size: 1
+game-length-in-minutes: 60
+lobby-countdown: 30
+
+lobby-countdown-shortening:
+  min-players: 4
+  shorten-to: 10
+
+effects: ['REGENERATION : 99999 : 1']
+
+world-border:
+  initial-size: 600
+  final-size: 100
+  total-number-of-shrinks: 3
+  each-shrinkage-duration: 60
+  announce-safezone-before-seconds-of-each-shrink: 90
+
+supply-drops:
+  announce-supply-drop-before-seconds-of-drop: 90
+  drop-at-minutes:
+  - 50
+  - 40
+  - 30
+  - 20
+  - 10

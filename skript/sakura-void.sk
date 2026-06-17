@@ -1,0 +1,10 @@
+# SakuraSpawn: devuelve al spawn si caen al vacío (Y <= -70)
+every 5 ticks:
+    loop all players:
+        loop-player's world's name is "SakuraSpawn"
+        y-coordinate of loop-player <= -70:
+            set {_loc} to location(23.5, -61, -92.5, world "SakuraSpawn")
+            set yaw of {_loc} to -88.5
+            set pitch of {_loc} to 7.0
+            teleport loop-player to {_loc}
+            send "&aTe devolvimos al spawn." to loop-player

@@ -1,0 +1,14 @@
+priority: 1
+
+condition: '${player name} != "Anonymous"' # "Anonymous" would be the value from the "unknownPlayer > name" option.
+
+motd:
+  - '<grey>Hello there <aqua>${player name}</aqua>!'
+  - '<grey>It''s nice to see you again.'
+
+playerCount:
+  hover:
+    - '<grey>Welcome back <aqua>${player name}</aqua>!'
+    - '<grey>'
+    - '<grey>Come and join <aqua>${server playersOnline}'
+    - '<aqua>other players</aqua> <grey>on the Server!'

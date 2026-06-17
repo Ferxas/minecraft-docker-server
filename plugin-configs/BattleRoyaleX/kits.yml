@@ -1,0 +1,15 @@
+# Kit item format: 'Item:Durability'
+# Kit armor format: 'Item:Durability : enchant:<enchantment>:level : name:<name> : lore:<lore>'
+# Kit items format: 'Item:Durability : Amount : enchant:<enchantment>:level : name:<name> : lore:<lore>'
+# Kit potion effect format: 'PotionEffectType : Duration : Amplifier'
+# For a list of PotionEffectType visit this website: # For a list of potions you can use visit this website https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+# Example potion-effects: ['SPEED : 9999 : 1', 'JUMP : 9999 : 1']
+# Kit executed commands placeholders: %player%
+# Example of kit executed commands --->>> executed-commands: ['broadcast %player% has selected an OP kit']
+# For a list of enchantments, visit https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+# There is no lock on the enchantment level!
+# For POTIONS, if your server is below 1.9 then use POTION:DURABILITY to make potions like POTION:16421, otherwise you should use the form
+# POTION/SPLASH_POTION/LINGERING_POTION:POTION_TYPE:EXTENDED:UPGRADED
+# Example of the form -> 'SPLASH_POTION:INSTANT_DAMAGE:false:true : 1'
+# List of potion types: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html
+# You can also add items from other plugins. Read chests.yml for further documentation on format

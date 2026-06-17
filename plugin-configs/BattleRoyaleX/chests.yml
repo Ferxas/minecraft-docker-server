@@ -1,0 +1,102 @@
+Chests:
+  Normal:
+    min-items: 3
+    max-items: 6
+    items:
+    # Utilidad vanilla
+    - 'WOOD : 16 :: 15%'
+    - 'STONE : 16 :: 15%'
+    - 'WEB : 4 :: 15%'
+    - 'GOLDEN_APPLE : 1 :: 25%'
+    - 'COMPASS : 1 :: 15%'
+    - 'SPLASH_POTION:REGEN:false:false : 1 :: 15%'
+    - 'SPLASH_POTION:SPEED:false:false : 1 :: 15%'
+    - 'SPLASH_POTION:INSTANT_HEAL:false:false : 1 :: 15%'
+    # Armadura vanilla
+    - 'LEATHER_HELMET : 1 :: 15%'
+    - 'LEATHER_CHESTPLATE : 1 :: 15%'
+    - 'LEATHER_LEGGINGS : 1 :: 15%'
+    - 'LEATHER_BOOTS : 1 :: 15%'
+    - 'CHAINMAIL_HELMET : 1 :: 12%'
+    - 'CHAINMAIL_CHESTPLATE : 1 :: 12%'
+    - 'IRON_HELMET : 1 :: 10%'
+    - 'IRON_LEGGINGS : 1 :: 10%'
+    # Pistolas / SMG (comunes)
+    - 'QualityArmory:glock : 1 :: 18%'
+    - 'QualityArmory:cz75 : 1 :: 18%'
+    - 'QualityArmory:makarov : 1 :: 16%'
+    - 'QualityArmory:fnfiveseven : 1 :: 16%'
+    - 'QualityArmory:sw1911 : 1 :: 16%'
+    - 'QualityArmory:deagle : 1 :: 8%'
+    - 'QualityArmory:uzi : 1 :: 14%'
+    - 'QualityArmory:mp5k : 1 :: 14%'
+    - 'QualityArmory:mac10 : 1 :: 14%'
+    - 'QualityArmory:skorpion : 1 :: 12%'
+    # Rifles / escopetas (poco frecuentes)
+    - 'QualityArmory:ak47u : 1 :: 10%'
+    - 'QualityArmory:m4a1s : 1 :: 10%'
+    - 'QualityArmory:galil : 1 :: 10%'
+    - 'QualityArmory:remington : 1 :: 12%'
+    - 'QualityArmory:sawedoffshotgun : 1 :: 12%'
+    - 'QualityArmory:spas12 : 1 :: 8%'
+    # Munición
+    - 'QualityArmory:9mm : 24 :: 30%'
+    - 'QualityArmory:556 : 20 :: 22%'
+    - 'QualityArmory:762 : 20 :: 22%'
+    - 'QualityArmory:shell : 8 :: 20%'
+    # Consumibles QA
+    - 'QualityArmory:medkit : 1 :: 15%'
+    - 'QualityArmory:flashbang : 1 :: 10%'
+    - 'QualityArmory:smokegrenade : 1 :: 10%'
+    - 'QualityArmory:grenade : 1 :: 8%'
+  Carepackage:
+    min-items: 3
+    max-items: 6
+    items:
+    - 'GOLDEN_APPLE : 3 :: 25%'
+    - 'DIAMOND_HELMET : 1 :: 20%'
+    - 'DIAMOND_CHESTPLATE : 1 :: 20%'
+    - 'DIAMOND_LEGGINGS : 1 :: 20%'
+    - 'DIAMOND_BOOTS : 1 :: 20%'
+    # Armas medias / fuertes
+    - 'QualityArmory:ak47 : 1 :: 18%'
+    - 'QualityArmory:m4a1s : 1 :: 18%'
+    - 'QualityArmory:fnfal : 1 :: 15%'
+    - 'QualityArmory:fnp90 : 1 :: 15%'
+    - 'QualityArmory:sg553 : 1 :: 15%'
+    - 'QualityArmory:dragunov : 1 :: 10%'
+    - 'QualityArmory:m40 : 1 :: 10%'
+    - 'QualityArmory:awp : 1 :: 6%'
+    - 'QualityArmory:rpg : 1 :: 4%'
+    - 'QualityArmory:minigun : 1 :: 3%'
+    # Munición generosa
+    - 'QualityArmory:9mm : 48 :: 25%'
+    - 'QualityArmory:556 : 40 :: 25%'
+    - 'QualityArmory:762 : 40 :: 25%'
+    - 'QualityArmory:50bmg : 12 :: 12%'
+    - 'QualityArmory:rocket : 2 :: 8%'
+    - 'QualityArmory:ammobag : 1 :: 15%'
+    - 'QualityArmory:medkit : 2 :: 20%'
+    - 'QualityArmory:incendarygrenade : 1 :: 10%'
+  Supply-Drops:
+    min-items: 4
+    max-items: 7
+    items:
+    - 'BattleRoyaleX:Cash:50 : 3 :: 75%'
+    - 'BattleRoyaleX:Cash:100 : 2 :: 25%'
+    - 'GOLDEN_APPLE : 3 :: 20%'
+    - 'DIAMOND_HELMET : 1 :: 20%'
+    - 'DIAMOND_CHESTPLATE : 1 :: 20%'
+    - 'DIAMOND_LEGGINGS : 1 :: 20%'
+    - 'DIAMOND_BOOTS : 1 :: 20%'
+    - 'QualityArmory:ak47 : 1 :: 20%'
+    - 'QualityArmory:m4a1s : 1 :: 20%'
+    - 'QualityArmory:awp : 1 :: 12%'
+    - 'QualityArmory:barrett : 1 :: 6%'
+    - 'QualityArmory:rpg : 1 :: 8%'
+    - 'QualityArmory:556 : 48 :: 30%'
+    - 'QualityArmory:762 : 48 :: 30%'
+    - 'QualityArmory:50bmg : 16 :: 15%'
+    - 'QualityArmory:rocket : 3 :: 12%'
+    - 'QualityArmory:ammobag : 1 :: 18%'
+    - 'QualityArmory:medkit : 2 :: 22%'

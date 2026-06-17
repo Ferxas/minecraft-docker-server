@@ -1,0 +1,6 @@
+# All effects: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html
+# The default blacklisted trails are bad looking or even break the server!! Beware!! You shouldn't remove them unless you know what you are doing
+
+Generate-Default-Commands-Shop: true
+
+Commands-Shop: {}

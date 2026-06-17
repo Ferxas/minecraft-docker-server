@@ -1,0 +1,6 @@
+Maps:
+  free_parkour:
+    Spawnpoint: PartyGames, -0.5, 104, 288.5, 178.3299, 16.168327
+    Barrier-Cuboid: PartyGames, -4, 104, 285, 2, 105, 285
+    Losing-Cuboid: PartyGames, -7, 100, 211, 5, 102, 295
+    Winning-Cuboid: PartyGames, -2, 121, 223, 0, 123, 225

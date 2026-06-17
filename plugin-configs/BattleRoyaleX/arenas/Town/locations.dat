@@ -1,0 +1,27 @@
+Map-Center: BattleRoyaleMap4, 0.5, 38, -2.5, -99.68331, 4.418052
+Routes:
+  '1':
+    Start: BattleRoyaleMap4, -175.0, 81, 2.0, 269.3131, 19.693375
+    Finish: BattleRoyaleMap4, 179.0, 81, -2.0, 269.3131, 19.693375
+  '2':
+    Start: BattleRoyaleMap4, 2.0, 81, 178.0, 178.20142, 5.2012057
+    Finish: BattleRoyaleMap4, -8.0, 81, -162.0, 178.20142, 5.2012057
+Vehicle-Spawnpoints:
+  '1': BattleRoyaleMap4, -21.5, 37, -152.5, 268.484, 8.138886
+  '2': BattleRoyaleMap4, 97.5, 37, -127.5, 338.98682, 10.880668
+  '3': BattleRoyaleMap4, 78.5, 37, -34.5, 116.86426, 19.301754
+  '4': BattleRoyaleMap4, 158.5, 37, -6.5, 106.244385, 13.230717
+  '5': BattleRoyaleMap4, 127.5, 36, 137.5, 80.58716, 12.643206
+  '6': BattleRoyaleMap4, -126.5, 34, 136.5, 154.02197, 28.702047
+  '7': BattleRoyaleMap4, -85.5, 37, 55.5, 192.40771, 13.818195
+  '8': BattleRoyaleMap4, 42.5, 37, 17.5, 282.49634, 16.168234
+  '9': BattleRoyaleMap4, 55.5, 37, 98.5, 266.1985, 5.984609
+Supply-Drops:
+  '1': BattleRoyaleMap4, -63.5, 37, 89.5, 184.73071, 2.851107
+  '2': BattleRoyaleMap4, 2.5, 31, 9.5, 266.979, 22.826729
+  '3': BattleRoyaleMap4, 8.5, 37, -146.5, 271.86572, 9.117965
+  '4': BattleRoyaleMap4, 77.5, 37, 44.5, 272.25635, 17.734858
+Spectators-Spawnpoint: BattleRoyaleMap4, 0.5, 41, -2.5, 265.88037, -4.394868
+Lobby: BattleRoyaleLobby, -191.5, 24, 2.5, 1.9581026, 0.58729476
+Signs:
+  '1': BattleRoyaleLobby, -144.0, 31, -85.0, 0.0, 0.0

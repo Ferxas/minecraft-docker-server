@@ -1,0 +1,104 @@
+# Permisos jugadores normales — ejecutar en consola del servidor
+
+# Menús DeluxeMenus
+lp group default permission set deluxemenus.menu.main_hub true
+lp group default permission set deluxemenus.menu.profile_hub true
+lp group default permission set deluxemenus.menu.utilities_hub true
+lp group default permission set deluxemenus.menu.music_hub true
+lp group default permission set deluxemenus.menu.scoreboard_hub true
+lp group default permission set deluxemenus.menu.events_hub true
+lp group default permission set deluxemenus.menu.minigames_list true
+lp group default permission set deluxemenus.menu.skywars_hub true
+lp group default permission set deluxemenus.menu.tntrun_lobby true
+lp group default permission set deluxemenus.menu.tntrun_pick true
+lp group default permission set deluxemenus.menu.hungergames_hub true
+lp group default permission set deluxemenus.menu.partygames_hub true
+lp group default permission set deluxemenus.menu.partygames_pick true
+lp group default permission set deluxemenus.menu.battleroyale_hub true
+lp group default permission set deluxemenus.menu.arcade_hub true
+
+# Ocultar /plugins y alias para jugadores normales
+lp group default permission set bukkit.command.plugins false
+lp group default permission set bukkit.command.pl false
+
+# SkinsRestorer
+lp group default permission set skinsrestorer.command.gui true
+lp group default permission set skinsrestorer.command.skins true
+lp group default permission set skinsrestorer.command.clear true
+lp group default permission set skinsrestorer.command.random true
+
+# Multiverse
+lp group default permission set multiverse.access.SakuraSpawn true
+lp group default permission set multiverse.access.Lain true
+lp group default permission set multiverse.access.lobbySW true
+lp group default permission set multiverse.access.LobbySW true
+lp group default permission set multiverse.access.Runnerslobby true
+lp group default permission set multiverse.access.HGLobby true
+lp group default permission set multiverse.access.HGPlay true
+lp group default permission set multiverse.access.PartyGames true
+lp group default permission set multiverse.access.tntrun_void true
+lp group default permission set multiverse.teleport.self.w.HGLobby true
+lp group default permission set multiverse.teleport.self.w.HGPlay true
+lp group default permission set multiverse.teleport.self.w true
+lp group default permission set multiverse.teleport.self.w.SakuraSpawn true
+lp group default permission set multiverse.teleport.self.w.Lain true
+lp group default permission set multiverse.teleport.self.w.lobbySW true
+lp group default permission set multiverse.teleport.self.w.LobbySW true
+lp group default permission set multiverse.teleport.self.w.Runnerslobby true
+lp group default permission set multiverse.teleport.self.w.tntrun_void true
+lp group default permission set multiverse.teleport.self.w.PartyGames true
+lp group default permission set multiverse.access.BattleRoyaleLobby true
+lp group default permission set multiverse.access.BattleRoyaleMap1 true
+lp group default permission set multiverse.access.BattleRoyaleMap2 true
+lp group default permission set multiverse.access.BattleRoyaleMap3 true
+lp group default permission set multiverse.access.BattleRoyaleMap4 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleLobby true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap1 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap2 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap3 true
+lp group default permission set multiverse.teleport.self.w.BattleRoyaleMap4 true
+lp group default permission set multiverse.core.command.tp true
+
+# GMusic — reproductor personal (/music sin argumentos abre la GUI)
+lp group default permission set GMusic.Music true
+lp group default permission set GMusic.Music.Play true
+lp group default permission set GMusic.Music.Random true
+lp group default permission set GMusic.Music.Stop true
+lp group default permission set GMusic.Music.Pause true
+lp group default permission set GMusic.Music.Resume true
+lp group default permission set GMusic.Music.Playing true
+lp group default permission set GMusic.Music.Toggle true
+
+# SimpleScore — mostrar/ocultar panel lateral
+lp group default permission set simplescore.cmd.toggle true
+
+# LibsDisguises — solo staff (versión free = OP/consola)
+# lp group default permission set libsdisguises.seecmd.* true
+
+# CS Cinematic — ver intro (/cinematic, NO /cs — conflicto con FAWE)
+lp group default permission set cs.use true
+
+# AdvancedReplay — list/play (admin grabaciones en replay.command.* default op)
+lp group default permission set replay.command.list true
+lp group default permission set replay.command.play true
+lp group default permission set replay.command.leave true
+
+# ArcadeGames — /start /leave /rejoin
+lp group default permission set arcade.start true
+lp group default permission set arcade.leave true
+lp group default permission set arcade.rejoin true
+
+# GSit — sentarse en escaleras/losas (mano vacía + clic derecho)
+lp group default permission set GSit.Sit true
+lp group default permission set GSit.SitClick true
+lp group default permission set GSit.SitToggle true
+
+# Party Games — permisos base jugadores (admin en luckperms-partygames.txt)
+lp group default permission set partygames.unblockcmds true
+lp group default permission set partygames.globalchat true
+
+# Battle Royale X — permisos base jugadores (admin en luckperms-battleroyalex.txt)
+lp group default permission set battleroyalex.unblockcmds true
+lp group default permission set battleroyalex.globalchat true
+
+lp group default reload

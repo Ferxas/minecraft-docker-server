@@ -1,0 +1,274 @@
+# # # # # # # # # # # # # # # # # # # # # # 
+#           Made by Wazup92               #
+#     If you really like the plugin       #
+#     Then please dont forget to leave    #
+#        A positive 5 stars review!       #
+# # # # # # # # # # # # # # # # # # # # # # 
+
+# Executed commands on Player-Win variables -> %player%, Arena-Start -> %world%, Arena-Countdown -> %arena%, Arena-End -> %world%, %arena%
+# Party custom slots format -> 'Slot amount : Permission'
+# Mystery-Box chances don't have to add up to 100%
+# Please BE AWARE. Holographic-Stats are resource intensive. and so is an animated Title
+# List of potion types: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html
+# You can look for good seeds using this website: https://www.chunkbase.com/apps/biome-finder#7481151250779441525
+# Option Ride-Invisible-Chicken is disabled for 1.16+
+# If you enable Check-For-General-Notifications, I will be able to send you in-game notifications of events such as plugin sales or other things.
+
+Load-Delay-Ticks: 10
+Check-For-Updates: false
+Check-For-General-Notifications: false
+use-UUID: false
+use-Vault: false
+
+Starting-Coins: 2000
+Ending-Length: 15
+Party-Invitation-Length: 30
+Load-Skins-On-Skulls: true
+Fireworks-Enabled: true
+Lobby-Scoreboard: true
+Display-Rank-In-Chat: true
+Allow-Spectator-Join: true
+Show-Health-On-Bow-Hit: true
+Disable-Quality-Armory-Recoil: true
+Selling-Value: 0.33
+Tracking-Compass-Cooldown: 3
+Bleeding-Damage: 1.5
+Update-Leaderboard-Every-Minutes: 15
+Use-GameMode-3-For-Spectators: true
+Teleport-Owned-Mobs: true
+Disable-Natural-Mob-Spawning: true
+Disable-Hunger: true
+Auto-Remove-Potion-Bottles: true
+Load-Chunks-On-World-Load-Immediately: true
+Give-All-Kits-Compass: true
+Default-Kit: Tactician
+Clear-Shopping-Station-Item-Lore-On-Purchase: false
+Broadcast-Time: [60, 30, 15, 5, 4, 3, 2, 1]
+Allowed-Commands: [battleroyale, br, battleroyalex, brx, tell, help, r, msg, menu, hub, minigames, mv, m, music, scoreboard, sit, gsit, salir, brxplay, brxleave, pgplay, pgleave, partygames, pg, sw, skywars]
+Command-Aliases: []
+
+Downing-System:
+  enabled: true
+
+Display-Health:
+  Under-Name: true
+  In-Tablist: true
+
+Realistic-Items:
+  Drops: true
+  Chests: true
+
+Quality-Armory-Guns-Damage-Modification:
+  Enabled: true
+  Body-Shot-Max-Damage: 15
+  Head-Shot-Damage: 18
+
+Quality-Armory-Vehicles:
+  Vehicles-Default-Fuel: 750
+  Max-Vehicle-Health: 50
+
+Armor:
+  initial-armor: 20
+  max-armor: 20
+  armor-refill-amount: 6
+
+Parachute:
+  Vertical-Speed: -0.5
+  General-Speed-Modifier: 0.75
+  Ride-Invisible-Chicken: true
+
+Rewards:
+  Coins-Per-Kill: 10
+  Coins-Per-Win: 50
+  Exp-Per-Death: 1
+  Min-Exp-Per-Kill: 2
+  Max-Exp-Per-Kill: 5
+  Exp-Per-Normal-Win: 50
+  Exp-Per-Plunder-Win: 40
+
+Separate-Chats:
+  Lobby: false
+  Spectators: true
+  Arena-Players: false
+
+Mystery-Box:
+  Block-Type: ENDER_CHEST
+  Cost: 1000
+  Contents:
+    - 'Kits : 80%'
+    - 'Celebrations : 20%'
+  Rarities:
+    Common: '60%'
+    Rare: '30%'
+    Legendary: '10%'
+
+Party:
+  Default-Slots: 3
+  More-Slots: ['4 : battleroyalex.party.slots.4', '5 : battleroyalex.party.slots.5', '6 : battleroyalex.party.slots.6']
+
+Loadouts:
+  Default-Amount: 2
+  More-Loadouts: ['3 : battleroyalex.loadouts.3', '4 : battleroyalex.loadouts.4', '5 : battleroyalex.loadouts.5']
+
+Bungee-Mode:
+  enabled: false
+  hub: lobby
+  restart-command: restart
+  
+MySQL:
+  enabled: false
+  table: BattleRoyaleX
+  host: localhost
+  port: 3306
+  database: database
+  username: root
+  password: root
+  max_uuid_size: 36
+
+Ranks:
+  First-Rank-Exp: 20
+  Rank-Modifier: 1.3
+  Max-Rank: 30
+  Commands:
+  - '30 : broadcast %player% has reached the highest rank!'
+
+Hotbar-Items:
+  Lobby:
+    Arena-Selector:
+      enabled: true
+      slot: 1
+    Profile:
+      enabled: true
+      slot: 2
+    Party:
+      enabled: true
+      slot: 5
+    Recipes:
+      enabled: true
+      slot: 6
+    Quit:
+      enabled: true
+      slot: 9
+  Arena:
+    Team-Selector:
+      enabled: true
+      slot: 1
+    Vote:
+      enabled: true
+      slot: 5
+    Profile:
+      enabled: true
+      slot: 2
+    Quit:
+      enabled: true
+      slot: 9
+  Spectator:
+    Arena-Selector:
+      enabled: true
+      slot: 1
+    Teleporter:
+      enabled: true
+      slot: 2
+    Bounties:
+      enabled: true
+      slot: 3
+    Profile:
+      enabled: true
+      slot: 5
+    Quit:
+      enabled: true
+      slot: 9
+
+Executed-Commands:
+  Player-Win: []
+  Arena-Countdown: [broadcast Battle Royale X Arena %arena% is about to start in %seconds% seconds!]
+  Arena-Start: []
+  Arena-End: []
+
+Killstreaks:
+  - '2 :: brx giveitem %player% GOLDEN_APPLE : 2'
+  - '4 :: brx giveitem %player% BattleRoyaleX:Carepackage : 1'
+
+Bounties: [25, 50, 100, 150, 200, 300, 400, 500]
+
+Saving-Task:
+  Enabled: true
+  Save-Every-Minutes: 10
+
+Scoreboard-Title-Animation:
+  enabled: false
+  interval: 8
+  frames:
+  - '&b&lBattle Royale X'
+  - '&e&lBattle Royale X'
+  - '&b&lBattle Royale X'
+  - '&a&lBattle Royale X'
+  - '&b&lBattle Royale X'
+  - '&c&lBattle Royale X'
+  - '&e&lB&b&lattle Royale X'
+  - '&b&lB&e&la&b&lttle Royale X'
+  - '&b&lBa&e&lt&b&ltle Royale X'
+  - '&b&lBat&e&lt&b&lle Royale X'
+  - '&b&lBatt&e&ll&b&le Royale X'
+  - '&b&lBattl&e&le &b&lRoyale X'
+  - '&b&lBattle &e&lR&b&loyale X'
+  - '&b&lBattle R&e&lo&b&lyale X'
+  - '&b&lBattle Ro&e&ly&b&lale X'
+  - '&b&lBattle Roy&e&la&b&lle X'
+  - '&b&lBattle Roya&e&ll&b&le X'
+  - '&b&lBattle Royal&e&le &b&lX'
+  - '&b&lBattle Royale &e&lX'
+  
+Action-Bar-Enabled: true
+Titles-Enabled: true
+ 
+Custom-Maps:
+  Winner-Map:
+    enabled: true
+    texts:
+    - 'Congratulations'
+    - '   For winning!!!'
+    image: 'https://i.imgur.com/FrgIjmJ.png'
+
+Play-Again-Message:
+  enabled: true
+  header: '&b&m---------&e Battle Royale X &b&m---------'
+  content:
+    - ' '
+    - '         &6Click to play again!'
+    - ' '
+  footer: '&b&m--------------------------------'
+
+Carepackage:
+  Needed-Height: 30
+  Needed-Time: 10
+  Cause-Explosion: true
+
+Clear-Entities-On-Game-End:
+  enabled: true
+  entity-type-exceptions: ['ARMOR_STAND', 'ITEM_FRAME']
+
+Voting-Options:
+  Time:
+    enabled: true
+    item: 'CLOCK : name:&bTime'
+    options:
+      - '&eSunrise : 0'
+      - '&6Noon : 2000'
+      - '&dSunset : 12000'
+      - '&3Midnight : 15000'
+  Scenarios:
+    enabled: true
+    item: 'CHEST : name:&eScenarios'
+  Health:
+    enabled: true
+    item: 'APPLE : name:&cHealth'
+    options:
+      - '&c10 Hearts : 10'
+      - '&e20 Hearts : 20'
+      - '&630 Hearts : 30'
+
+# Free setup — lobby global y hologramas
+Lobby: BattleRoyaleLobby, -167.5, 31, -84.5, 270.2597, -3.6114385
+Holographic-Stats: BattleRoyaleLobby, -159.0, 34, -80.0, 131.36249, 0.3052692
+Holographic-Leaderboard: BattleRoyaleLobby, -159.0, 33, -90.0, 351.09497, 19.301777

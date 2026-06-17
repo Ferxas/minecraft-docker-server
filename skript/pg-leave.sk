@@ -1,0 +1,179 @@
+# Party Games — kit visitante en lobby de carteles (y≥112); se quita en arena y vuelve al salir.
+
+# Solo el lobby de carteles (spawn ~37,116,52). y>=112 solo no basta: Sumo y otros minis también están arriba.
+function isPgMainLobbyArea(p: player) :: boolean:
+    set {_x} to x-coordinate of {_p}
+    set {_y} to y-coordinate of {_p}
+    set {_z} to z-coordinate of {_p}
+    if {_y} < 110:
+        return false
+    if {_y} > 125:
+        return false
+    if {_x} < 30:
+        return false
+    if {_x} > 55:
+        return false
+    if {_z} < 33:
+        return false
+    if {_z} > 70:
+        return false
+    return true
+
+function hasPgHotbar(p: player) :: boolean:
+    loop integers from 0 to 8:
+        set {_item} to slot loop-integer of {_p}'s inventory
+        if {_item} is not air:
+            set {_n} to name of {_item}
+            if {_n} contains "Quit":
+                return true
+            if {_n} contains "Shop":
+                return true
+            if {_n} contains "Profile":
+                return true
+            if {_n} contains "Autojoin":
+                return true
+            if {_n} contains "Party":
+                return true
+            if {_n} contains "Prestige":
+                return true
+            if {_n} contains "Boosters":
+                return true
+            if {_n} contains "Play":
+                return true
+            if {_n} contains "Arena":
+                return true
+            if type of {_item} is magma cream:
+                return true
+            if type of {_item} is player head:
+                return true
+    return false
+
+function removePgVisitorBed(p: player):
+    remove all red bed named "&c&lVolver al spawn" from {_p}'s inventory
+
+function removePgVisitorMenu(p: player):
+    remove all clock named "&6&lMenú" from {_p}'s inventory
+
+function removePgVisitorKit(p: player):
+    removePgVisitorBed({_p})
+    removePgVisitorMenu({_p})
+
+function givePgVisitorKit(p: player):
+    if name of world of {_p} is not "PartyGames":
+        stop
+    if isPgMainLobbyArea({_p}) is false:
+        stop
+    if hasPgHotbar({_p}) is true:
+        stop
+    removePgVisitorKit({_p})
+    set {_menu} to clock named "&6&lMenú" with lore "&7Clic derecho: abrir menú" and "&7Minijuegos, spawn, skin..."
+    set slot 0 of {_p} to {_menu}
+    set {_back} to red bed named "&c&lVolver al spawn" with lore "&7Clic derecho: ir a SakuraSpawn"
+    set slot 4 of {_p} to {_back}
+
+function pgMarkActive(p: player):
+    set {pg.active::%uuid of {_p}%} to true
+    removePgVisitorKit({_p})
+
+function pgClearActive(p: player):
+    delete {pg.active::%uuid of {_p}%}
+
+function pgCheckPlayer(p: player):
+    if name of world of {_p} is not "PartyGames":
+        stop
+    if hasPgHotbar({_p}) is true:
+        pgMarkActive({_p})
+        stop
+    if isPgMainLobbyArea({_p}) is true:
+        pgClearActive({_p})
+        givePgVisitorKit({_p})
+        stop
+    pgMarkActive({_p})
+
+function pgLobby(p: player):
+    pgClearActive({_p})
+    execute console command "mv tp %name of {_p}% PartyGames"
+    wait 5 ticks
+    set {_l} to location(37.5, 116, 52.5, world "PartyGames", -90, 0)
+    teleport {_p} to {_l}
+    wait 3 ticks
+    givePgVisitorKit({_p})
+    send "" to {_p}
+    send "&d&lParty Games" to {_p}
+    send "&7Camina hacia los &fcarteles &7y haz &fclic derecho &7(mano vacía) para entrar." to {_p}
+    send "&7Para volver al spawn: &cVolver al spawn &7(cama, slot 4) o &6Menú &7(reloj, slot 0)." to {_p}
+    send "" to {_p}
+
+function pgExitToSpawn(p: player):
+    if hasPgHotbar({_p}) is true:
+        make {_p} execute command "partygames leave"
+        wait 8 ticks
+    pgClearActive({_p})
+    removePgVisitorKit({_p})
+    execute console command "mv tp %name of {_p}% SakuraSpawn"
+    wait 5 ticks
+    send "&a→ Has vuelto al spawn." to {_p}
+
+command /pgplay:
+    executable by: players
+    trigger:
+        pgLobby(player)
+
+command /pgleave:
+    executable by: players
+    trigger:
+        if name of world of player is not "PartyGames":
+            send "&cNo estás en Party Games." to player
+            stop
+        pgExitToSpawn(player)
+
+# "Click to play again!" ejecuta /partygames join (roto en el JAR crackeado)
+on command "/pg join":
+    cancel event
+    pgLobby(player)
+
+on command "/pg autojoin":
+    cancel event
+    pgLobby(player)
+
+on command "/partygames join":
+    cancel event
+    pgLobby(player)
+
+on command "/partygames autojoin":
+    cancel event
+    pgLobby(player)
+
+on world change:
+    set {_from} to name of past event-world
+    set {_to} to name of event-world
+    wait 8 ticks
+    if {_from} is "PartyGames":
+        pgClearActive(player)
+        removePgVisitorKit(player)
+    if {_to} is "PartyGames":
+        pgCheckPlayer(player)
+
+every 1 second:
+    loop all players in world "PartyGames":
+        pgCheckPlayer(loop-player)
+
+on right click:
+    name of player's world is "PartyGames"
+    wait 6 ticks
+    pgCheckPlayer(player)
+
+on right click with red bed:
+    name of event-item contains "Volver al spawn"
+    name of player's world is "PartyGames"
+    cancel event
+    pgExitToSpawn(player)
+
+on right click with clock:
+    name of event-item contains "Menú"
+    name of player's world is "PartyGames"
+    cancel event
+    execute player command "menu"
+
+on quit:
+    delete {pg.active::%uuid of player%}

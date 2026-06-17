@@ -1,0 +1,6 @@
+# This list is incomplete by default.
+# You can add as many material as you want to this list!
+# Format is <Material>: R-G-B
+# You can use this website https://www.rapidtables.com/web/color/RGB_Color.html to see what different RGB combinations yield
+
+Materials: {}

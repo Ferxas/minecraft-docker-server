@@ -1,0 +1,35 @@
+Create-Default-GUI: false
+
+Pages:
+  '&cNormal':
+    Size: 27
+    Design:
+      1: 'GRAY_STAINED_GLASS_PANE : name: '
+      2: 'GRAY_STAINED_GLASS_PANE : name: '
+      3: 'GRAY_STAINED_GLASS_PANE : name: '
+      4: 'GRAY_STAINED_GLASS_PANE : name: '
+      5: 'GRAY_STAINED_GLASS_PANE : name: '
+      6: 'GRAY_STAINED_GLASS_PANE : name: '
+      7: 'GRAY_STAINED_GLASS_PANE : name: '
+      8: 'GRAY_STAINED_GLASS_PANE : name: '
+      9: 'GRAY_STAINED_GLASS_PANE : name: '
+      10: 'GRAY_STAINED_GLASS_PANE : name: '
+      12: 'GRAY_STAINED_GLASS_PANE : name: '
+      14: 'GRAY_STAINED_GLASS_PANE : name: '
+      16: 'GRAY_STAINED_GLASS_PANE : name: '
+      17: 'GRAY_STAINED_GLASS_PANE : name: '
+      18: 'GRAY_STAINED_GLASS_PANE : name: '
+      19: 'GRAY_STAINED_GLASS_PANE : name: '
+      20: 'GRAY_STAINED_GLASS_PANE : name: '
+      21: 'GRAY_STAINED_GLASS_PANE : name: '
+      22: 'GRAY_STAINED_GLASS_PANE : name: '
+      23: 'GRAY_STAINED_GLASS_PANE : name: '
+      24: 'GRAY_STAINED_GLASS_PANE : name: '
+      25: 'GRAY_STAINED_GLASS_PANE : name: '
+      26: 'GRAY_STAINED_GLASS_PANE : name: '
+      27: 'GRAY_STAINED_GLASS_PANE : name: '
+    Navigation:
+      AUTOJOIN:
+        22: 'WATCH : name:&b&lAutojoin : lore:&7Entrar a la mejor : lore:&7arena disponible'
+    Items:
+      '13': skywars1

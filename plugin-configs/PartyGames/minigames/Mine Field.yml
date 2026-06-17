@@ -1,0 +1,5 @@
+Maps:
+  free_minefield:
+    Spawnpoint: PartyGames, -258.5, 113, 69.5, -177.53708, 29.289574
+    Barrier-Cuboid: PartyGames, -268, 113, 65, -247, 113, 65
+    Winning-Cuboid: PartyGames, -268, 112, 19, -247, 119, 25

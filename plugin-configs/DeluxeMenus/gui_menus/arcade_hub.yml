@@ -1,0 +1,94 @@
+menu_title: '&6&lArcade Games'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7← Volver a minijuegos'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] minigames_list'
+
+  'info':
+    material: BOOK
+    slot: 4
+    display_name: '&e&l¿Cómo funciona?'
+    lore:
+      - '&7Arcade Games necesita arenas'
+      - '&7configuradas por un admin.'
+      - ''
+      - '&7Cuando estén listas:'
+      - '&f/start &8— unirse a partida'
+      - '&f/rejoin &8— volver si te desconectaste'
+      - '&f/leave &8— salir de la partida'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  'play':
+    material: EMERALD
+    slot: 11
+    display_name: '&a&lUnirse (/start)'
+    lore:
+      - '&7Busca una arena disponible'
+      - '&cRequiere arenas configuradas'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] start'
+      - '[message] &6Arcade &8» &7Si no pasa nada, aún no hay arenas. Pide a staff.'
+
+  'rejoin':
+    material: RED_BED
+    slot: 13
+    display_name: '&eReconectar (/rejoin)'
+    lore:
+      - '&7Vuelve a tu partida anterior'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] rejoin'
+
+  'leave':
+    material: BARRIER
+    slot: 15
+    display_name: '&cSalir (/leave)'
+    lore:
+      - '&7Abandona la partida actual'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] leave'
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: ORANGE_STAINED_GLASS_PANE
+    slots:
+      - 1-3
+      - 5-10
+      - 12
+      - 14
+      - 16-25
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

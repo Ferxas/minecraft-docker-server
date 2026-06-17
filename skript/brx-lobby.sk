@@ -1,0 +1,124 @@
+# Battle Royale X — /brxplay usa brx join (hotbar del plugin). Solo limpia kit visitante al salir.
+
+function hasBrxHotbar(p: player) :: boolean:
+    loop integers from 0 to 8:
+        set {_item} to slot loop-integer of {_p}'s inventory
+        if {_item} is not air:
+            set {_n} to name of {_item}
+            if {_n} contains "Quit":
+                return true
+            if {_n} contains "Profile":
+                return true
+            if {_n} contains "Party":
+                return true
+            if {_n} contains "Recipes":
+                return true
+            if {_n} contains "Arena":
+                return true
+            if {_n} contains "Team":
+                return true
+            if {_n} contains "Vote":
+                return true
+            if {_n} contains "Teleporter":
+                return true
+            if {_n} contains "Bounties":
+                return true
+            if {_n} contains "Play":
+                return true
+            if type of {_item} is player head:
+                return true
+    return false
+
+function removeBrxVisitorBed(p: player):
+    remove all red bed named "&c&lVolver al spawn" from {_p}'s inventory
+
+function removeBrxVisitorMenu(p: player):
+    remove all clock named "&6&lMenú" from {_p}'s inventory
+
+function removeBrxVisitorKit(p: player):
+    removeBrxVisitorBed({_p})
+    removeBrxVisitorMenu({_p})
+
+function brxMarkActive(p: player):
+    set {brx.active::%uuid of {_p}%} to true
+    removeBrxVisitorKit({_p})
+
+function brxClearActive(p: player):
+    delete {brx.active::%uuid of {_p}%}
+
+function isBrxWorld(w: text) :: boolean:
+    if {_w} is "BattleRoyaleLobby":
+        return true
+    if {_w} is "BattleRoyaleMap1":
+        return true
+    if {_w} is "BattleRoyaleMap2":
+        return true
+    if {_w} is "BattleRoyaleMap3":
+        return true
+    if {_w} is "BattleRoyaleMap4":
+        return true
+    return false
+
+function brxCheckPlayer(p: player):
+    set {_w} to name of world of {_p}
+    if isBrxWorld({_w}) is false:
+        stop
+    if hasBrxHotbar({_p}) is true:
+        brxMarkActive({_p})
+        stop
+    if {brx.active::%uuid of {_p}%} is set:
+        removeBrxVisitorKit({_p})
+
+function brxLobby(p: player):
+    brxClearActive({_p})
+    removeBrxVisitorKit({_p})
+    make {_p} execute command "brx join"
+    wait 10 ticks
+    send "" to {_p}
+    send "&4&lBattle Royale X" to {_p}
+    send "&7Usa el &bselector de arenas &7(slot 1) o los carteles &f[BRX]&7." to {_p}
+    send "&7Para salir: ítem &cQuit &7(slot 9) o &f/brxleave&7." to {_p}
+    send "" to {_p}
+
+function brxExitToSpawn(p: player):
+    if hasBrxHotbar({_p}) is true:
+        make {_p} execute command "brx leave"
+        wait 10 ticks
+    else if {brx.active::%uuid of {_p}%} is set:
+        make {_p} execute command "brx leave"
+        wait 10 ticks
+    brxClearActive({_p})
+    removeBrxVisitorKit({_p})
+    execute console command "mv tp %name of {_p}% SakuraSpawn"
+    wait 5 ticks
+    send "&a→ Has vuelto al spawn." to {_p}
+
+command /brxplay:
+    executable by: players
+    trigger:
+        brxLobby(player)
+
+command /brxleave:
+    executable by: players
+    trigger:
+        set {_w} to name of world of player
+        if isBrxWorld({_w}) is false:
+            send "&cNo estás en Battle Royale X." to player
+            stop
+        brxExitToSpawn(player)
+
+on world change:
+    set {_from} to name of past event-world
+    wait 8 ticks
+    if isBrxWorld({_from}) is true:
+        brxClearActive(player)
+        removeBrxVisitorKit(player)
+    brxCheckPlayer(player)
+
+every 2 seconds:
+    loop all players:
+        if isBrxWorld(name of world of loop-player) is true:
+            brxCheckPlayer(loop-player)
+
+on quit:
+    delete {brx.active::%uuid of player%}

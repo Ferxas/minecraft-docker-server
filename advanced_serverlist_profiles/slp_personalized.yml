@@ -1,0 +1,61 @@
+priority: 1
+condition: ${player name} != "Someone"
+profiles:
+- motd:
+  - <green>A Minecraft Server. <grey>|  <yellow>Hello, <bold>${player name}!
+  - <grey>Now with [<green><bold>PvP<grey>], [<green><bold>Minigames<grey>], and much
+    more!
+  playerCount:
+    hover: []
+    text: ''
+    hidePlayers: false
+    extraPlayers:
+      enabled: false
+      amount: 0
+    maxPlayers:
+      enabled: false
+      amount: 0
+  favicon: favicon1.png
+- motd:
+  - <green>A Minecraft Server. <grey>|  <yellow>Hello, <bold>${player name}!
+  - <yellow>Now running the latest <bold>Minecraft <yellow>version!
+  playerCount:
+    hover: []
+    text: ''
+    hidePlayers: false
+    extraPlayers:
+      enabled: false
+      amount: 0
+    maxPlayers:
+      enabled: false
+      amount: 0
+  favicon: favicon2.png
+- motd:
+  - <green><#45bf55>A Minecraft <#0288d1>Server.
+  - <yellow><gradient:#ffbe00:#f4511e>Now with RGB colors. Hello ${player name}!</gradient>
+  playerCount:
+    hover: []
+    text: ''
+    hidePlayers: false
+    extraPlayers:
+      enabled: false
+      amount: 0
+    maxPlayers:
+      enabled: false
+      amount: 0
+  favicon: ''
+motd: []
+playerCount:
+  hover:
+  - <green>Welcome back, <bold>${player name}<green>!
+  - <green>Currently <yellow><bold>${server playersOnline}/${server playersMax} <green>players
+    are playing on our server!
+  text: ''
+  hidePlayers: false
+  extraPlayers:
+    enabled: false
+    amount: 0
+  maxPlayers:
+    enabled: false
+    amount: 0
+favicon: ''

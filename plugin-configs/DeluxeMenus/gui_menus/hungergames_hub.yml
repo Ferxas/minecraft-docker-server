@@ -1,0 +1,79 @@
+menu_title: '&c&lHunger Games'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7Volver a minijuegos'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] minigames_list'
+
+  'lobby':
+    material: RED_BED
+    slot: 11
+    display_name: '&c&lLobby de espera'
+    lore:
+      - '&7Ir al lobby de Hunger Games'
+      - '&7Desde ahí puedes unirte'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% HGLobby'
+      - '[message] &a→ Lobby &cHunger Games'
+
+  'play':
+    material: GOLDEN_APPLE
+    slot: 13
+    display_name: '&a&lUnirse a partida'
+    lore:
+      - '&7Entrar directo a la arena'
+      - '&7Espera en los pods de HGPlay'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] hg join HGPlay'
+      - '[message] &a→ &cHunger Games &7| &fEsperando jugadores...'
+
+  'stats':
+    material: BOOK
+    slot: 15
+    display_name: '&eMis estadísticas'
+    lore:
+      - '&7Victorias, kills y más'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] hg stats'
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: RED_STAINED_GLASS_PANE
+    slots:
+      - 1-10
+      - 12
+      - 14
+      - 16-25
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

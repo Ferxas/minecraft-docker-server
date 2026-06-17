@@ -1,0 +1,20 @@
+worldradios:
+  sakura_radio:
+    enable: true
+    world: SakuraSpawn
+    repeat: true
+    random: true
+    actionbar: false
+    playlist: sakura_playlist
+    delay: 3
+    volume: 70
+
+serverradios:
+  server_radio:
+    enable: false
+    repeat: true
+    random: false
+    actionbar: true
+    playlist: sakura_playlist
+    delay: 0
+    volume: 100

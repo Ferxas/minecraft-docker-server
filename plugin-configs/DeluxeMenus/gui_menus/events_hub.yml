@@ -1,0 +1,50 @@
+menu_title: '&c&lEventos'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7← Volver al menú'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] main_hub'
+
+  'pinata':
+    material: PINK_DYE
+    slot: 13
+    display_name: '&d&lPiñata Party'
+    lore:
+      - '&7Evento especial en mapa dedicado'
+      - '&7(no ocurre en SakuraSpawn)'
+      - ''
+      - '&8Cuando un admin lo active,'
+      - '&8te avisaremos en el chat'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[message] &dPiñata Party &8» &7Este evento se hace en un mapa aparte. Pregunta a staff cuándo es la próxima.'
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: RED_STAINED_GLASS_PANE
+    slots:
+      - 1-12
+      - 14-25
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

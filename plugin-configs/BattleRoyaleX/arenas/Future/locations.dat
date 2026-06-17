@@ -1,0 +1,21 @@
+Map-Center: BattleRoyaleMap3, 99.5, 92, -1189.5, 124.553856, 90.0
+Routes:
+  '1':
+    Start: BattleRoyaleMap3, 335.0, 227, -1188.0, 93.024055, 10.29296
+    Finish: BattleRoyaleMap3, -139.0, 227, -1188.0, 93.61157, 16.755695
+  '2':
+    Start: BattleRoyaleMap3, 101.0, 227, -1432.0, 359.1699, 5.005305
+    Finish: BattleRoyaleMap3, 99.0, 227, -953.0, 355.25323, 13.42642
+Supply-Drops:
+  '1': BattleRoyaleMap3, 221.5, 61, -1232.5, 154.71278, 8.726242
+  '2': BattleRoyaleMap3, 209.5, 14, -1338.5, -44.456665, 11.272123
+  '3': BattleRoyaleMap3, 16.5, 42, -1398.5, 17.970032, -34.5544
+  '4': BattleRoyaleMap3, -72.5, 71, -1318.5, 359.95273, 24.980951
+  '5': BattleRoyaleMap3, 69.5, 69, -1156.5, 20.124634, 1.676158
+Extraction-Points:
+  '1': BattleRoyaleMap3, 116.5, 56, -1171.5, 96.69809, -12.424323
+  '2': BattleRoyaleMap3, -70.5, 62, -1241.5, 28.350128, 8.138901
+Spectators-Spawnpoint: BattleRoyaleMap3, 94.5, 106, -1187.5, 249.65039, 44.956654
+Lobby: BattleRoyaleLobby, -270.5, 28, -104.5, 1.9587046, 0.78329504
+Signs:
+  '1': BattleRoyaleLobby, -144.0, 32, -84.0, 0.0, 0.0

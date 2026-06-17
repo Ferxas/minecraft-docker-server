@@ -1,0 +1,10 @@
+Recipes:
+  1:
+    Result: 'IRON_SWORD : 1 : name:Vorpal Sword : enchant:DAMAGE_ALL:2'
+    Shapeless: false
+    Max-Crafts: 1
+    Rank-Requirement: 0
+    Recipe:
+      - 'AIR : BONE : AIR'
+      - 'AIR : IRON_SWORD : AIR'
+      - 'AIR : ROTTEN_FLESH : AIR'

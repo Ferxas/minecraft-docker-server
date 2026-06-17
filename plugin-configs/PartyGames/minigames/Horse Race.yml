@@ -1,0 +1,13 @@
+Maps:
+  free_horserace:
+    Map-Cuboid: PartyGames, -337, 106, 133, -234, 154, 336
+    Spawnpoints:
+      '1': PartyGames, -303.5, 115, 272.5, -185.17451, 38.49409
+      '2': PartyGames, -298.5, 115, 272.5, -183.21617, 14.993286
+      '3': PartyGames, -298.5, 115, 277.5, -180.47438, 17.343365
+      '4': PartyGames, -303.5, 115, 275.5, -172.44496, 10.097294
+      '5': PartyGames, -303.5, 115, 280.5, -178.71194, 9.118103
+      '6': PartyGames, -298.5, 115, 280.5, -178.71194, 9.118103
+    Winning-Cuboid: PartyGames, -305, 114, 284, -298, 119, 293
+    Barrier-Cuboid: PartyGames, -305, 115, 267, -298, 119, 267
+    Losing-Cuboid: PartyGames, -333, 109, 137, -240, 109, 319

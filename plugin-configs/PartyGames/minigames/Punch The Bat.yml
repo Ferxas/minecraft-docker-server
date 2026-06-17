@@ -1,0 +1,9 @@
+Maps:
+  free_punchthebat:
+    Map-Cuboid: PartyGames, 99, 86, 191, 114, 86, 215
+    Spawnpoint: PartyGames, -217.5, 114, 110.5, 343.32956, -0.8697657
+    Bat-Spawnpoints:
+      '1': PartyGames, -216.5, 116, 114.5, 303.96573, 11.076475
+      '2': PartyGames, -214.5, 116, 110.5, 173.7321, 2.6553586
+      '3': PartyGames, -219.5, 116, 107.5, 83.44984, 0.5011187
+      '4': PartyGames, -218.5, 119, 111.5, -12.315919, -0.08640143

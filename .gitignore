@@ -1,0 +1,31 @@
+merged-packs/
+
+# Datos vivos del servidor (van en GitHub Release, no en git)
+server-data/
+mysql-data/
+worlds/
+
+# Descargas / empaquetado local
+bootstrap/download/
+bootstrap/release/
+
+# Backups locales
+mc-backups/
+
+# Basura / dev / bots (no parte del servidor)
+bots/
+plugin-src/
+rcon-web-admin/
+datapacks-staging/
+tools/
+me/
+
+# Archivos grandes sueltos
+*.zip
+*.tar.gz
+*.7z
+*.7z.*
+
+# OS
+.DS_Store
+Thumbs.db

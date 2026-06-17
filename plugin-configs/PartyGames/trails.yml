@@ -1,0 +1,79 @@
+Trails:
+  SPELL_INSTANT:
+    displayed-name: Spell
+    item: ENCHANTED_BOOK
+    permission: none
+    rarity: RARE
+    value: 2000
+  LAVA:
+    displayed-name: Lava
+    item: LAVA_BUCKET
+    permission: none
+    rarity: LEGENDARY
+    value: 3000
+  VILLAGER_HAPPY:
+    displayed-name: Happy Villager
+    item: MONSTER_EGG:120
+    permission: none
+    rarity: LEGENDARY
+    value: 3000
+  REDSTONE:
+    displayed-name: Redstone
+    item: REDSTONE
+    permission: none
+    rarity: RARE
+    value: 2000
+  SNOWBALL:
+    displayed-name: Snowball
+    item: SNOW_BALL
+    permission: none
+    rarity: COMMON
+    value: 1000
+  SLIME:
+    displayed-name: Slime
+    item: SLIME_BALL
+    permission: none
+    rarity: COMMON
+    value: 1000
+  VILLAGER_ANGRY:
+    displayed-name: Angry Villager
+    item: MONSTER_EGG:120
+    permission: none
+    rarity: LEGENDARY
+    value: 3000
+  HEART:
+    displayed-name: Heart
+    item: RED_WOOL
+    permission: none
+    rarity: LEGENDARY
+    value: 3000
+  CRIT_MAGIC:
+    displayed-name: Critical Magic
+    item: ENCHANTED_BOOK
+    permission: none
+    rarity: COMMON
+    value: 1000
+  DRIP_WATER:
+    displayed-name: Dripping Water
+    item: WATER_BUCKET
+    permission: none
+    rarity: RARE
+    value: 2000
+  WATER_DROP:
+    displayed-name: Water Drop
+    item: WATER_BUCKET
+    permission: none
+    rarity: COMMON
+    value: 1000
+  DAMAGE_INDICATOR:
+    displayed-name: Damage Indicator
+    item: ENCHANTED_BOOK
+    permission: none
+    rarity: RARE
+    value: 2000
+  NOTE:
+    displayed-name: Note
+    item: ENCHANTED_BOOK
+    permission: none
+    rarity: LEGENDARY
+    value: 3000

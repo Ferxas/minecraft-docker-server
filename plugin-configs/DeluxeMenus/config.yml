@@ -1,0 +1,37 @@
+# DeluxeMenus — https://wiki.helpch.at/helpchat-plugins/deluxemenus
+
+check_updates: false
+debug: false
+use_admin_commands: true
+
+gui_menus:
+  main_hub:
+    file: main_hub.yml
+  profile_hub:
+    file: profile_hub.yml
+  utilities_hub:
+    file: utilities_hub.yml
+  music_hub:
+    file: music_hub.yml
+  scoreboard_hub:
+    file: scoreboard_hub.yml
+  events_hub:
+    file: events_hub.yml
+  minigames_list:
+    file: minigames_list.yml
+  hungergames_hub:
+    file: hungergames_hub.yml
+  skywars_hub:
+    file: skywars_hub.yml
+  tntrun_lobby:
+    file: tntrun_lobby.yml
+  tntrun_pick:
+    file: tntrun_pick.yml
+  partygames_hub:
+    file: partygames_hub.yml
+  partygames_pick:
+    file: partygames_pick.yml
+  battleroyale_hub:
+    file: battleroyale_hub.yml
+  arcade_hub:
+    file: arcade_hub.yml

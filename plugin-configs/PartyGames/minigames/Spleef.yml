@@ -1,0 +1,5 @@
+Maps:
+  free_spleef:
+    Map-Cuboid: PartyGames, -192, 93, -109, -118, 123, -40
+    Floor-Cuboid: PartyGames, -182, 108, -103, -122, 108, -43
+    Spawnpoint: PartyGames, -150.5, 109, -73.5, 358.64087, -0.19593348

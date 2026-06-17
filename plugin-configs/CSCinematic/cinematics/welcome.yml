@@ -1,0 +1,51 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║                    CS CINEMATIC FILE                          ║
+# ║                                                               ║
+# ║  You can edit this file manually!                             ║
+# ║  After editing, use: /cs load welcome           
+# ║                                                               ║
+# ║  Duration units: seconds                                      ║
+# ║  Speed units: blocks per second                               ║
+# ║  Interpolation: LINEAR, EASE_IN, EASE_OUT, EASE_IN_OUT,      ║
+# ║                 SMOOTH, BOUNCE, ELASTIC, BACK                 ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+info:
+  name: welcome
+  author: ferxas
+  description: ''
+  created: '2026-05-24 23:17:58'
+  modified: '2026-05-24 23:22:07'
+  total-duration: 8.8 seconds (00:08)
+  position-count: 2
+settings:
+  looping: false
+  comedy-mode: false
+  default-speed: 2.0
+  default-duration: 2.0
+  default-interpolation: EASE_IN_OUT
+positions:
+  pos-1:
+    location:
+      world: SakuraSpawn
+      x: -9.3
+      y: -57.0
+      z: -71.82
+      yaw: -91.65
+      pitch: 6.9
+    timing:
+      speed: 2.0
+      duration: 2.0
+      interpolation: EASE_IN_OUT
+  pos-2:
+    location:
+      world: SakuraSpawn
+      x: -15.71
+      y: -61.0
+      z: -71.17
+      yaw: 70.65
+      pitch: 1.05
+    timing:
+      speed: 2.0
+      duration: 3.0
+      interpolation: EASE_IN_OUT

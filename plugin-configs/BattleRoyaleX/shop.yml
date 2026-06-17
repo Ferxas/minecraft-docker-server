@@ -1,0 +1,30 @@
+# Normal-Mode-Kits Format: 'Slot: Kit Name'
+# Loadouts format: 'Item :: Points cost'
+# You can also add items from other plugins. Read chests.yml for further documentation on format
+
+Normal-Mode-Kits: {}
+
+Loadout-Items:
+  Helmets:
+  - 'LEATHER_HELMET : 1 :: 1'
+  - 'CHAINMAIL_HELMET : 1 :: 2'
+  - 'IRON_HELMET : 1 :: 3'
+  - 'DIAMOND_HELMET : 1 :: 4'
+  Chestplates:
+  - 'LEATHER_CHESTPLATE : 1 :: 1'
+  - 'CHAINMAIL_CHESTPLATE : 1 :: 2'
+  - 'IRON_CHESTPLATE : 1 :: 3'
+  - 'DIAMOND_CHESTPLATE : 1 :: 4'
+  Leggings:
+  - 'LEATHER_LEGGINGS : 1 :: 1'
+  - 'CHAINMAIL_LEGGINGS : 1 :: 2'
+  - 'IRON_LEGGINGS : 1 :: 3'
+  - 'DIAMOND_LEGGINGS : 1 :: 4'
+  Boots:
+  - 'LEATHER_BOOTS : 1 :: 1'
+  - 'CHAINMAIL_BOOTS : 1 :: 2'
+  - 'IRON_BOOTS : 1 :: 3'
+  - 'DIAMOND_BOOTS : 1 :: 4'
+  Main Weapon: []
+  Secondary Weapon: []
+  Items: []

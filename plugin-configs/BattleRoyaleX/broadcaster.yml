@@ -1,0 +1,14 @@
+enabled: true
+send-interval-in-seconds: 60
+top-line: '&3&m----------&b Battle Royale X &3&m----------'
+bottom-line: '&3&m----------------------------------'
+Messages:
+- '&b- &eRemember that you can always create a party or join one to play with your friends!'
+- '&b- &eYou can bleed faster by shift-clicking while being downed'
+- '&b- &eWant to earn coins faster? check the achievements you have not unlocked! they provide decent prizes'
+- '&b- &cCheaters &ewill be punished!'
+- '&b- &eYou can send messages to your party members by starting your message with an exclamation mark (!)'
+- '&b- &eFound a bug? make sure to report it to the server admins!'
+- '&b- &eYou can quickly invite players to your party by shift right clicking them!'
+- '&b- &eYou can instantly join others party by shift right clicking them!'
+- '&b- &eUse the command /battleroyale recipes to view a list of custom recipes!'

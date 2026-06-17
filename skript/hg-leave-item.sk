@@ -1,0 +1,155 @@
+# HG — salir de cola (barrier) o de espectador (chat + subtítulo + /salir).
+# HGPlay/config.yml: hgarena busy|waiting + hgleave remove al start/end.
+
+options:
+    hg leave slot: 8
+
+function isHgArenaWorld(w: text) :: boolean:
+    if {_w} is "HGPlay":
+        return true
+    return false
+
+function isHgArenaBusy(w: text) :: boolean:
+    if {hg.arenaBusy::%{_w}%} is true:
+        return true
+    return false
+
+function removeHgLeaveItem(p: player):
+    remove all barrier named "&c&lSalir" from {_p}'s inventory
+
+function removeHgLeaveHint(p: player):
+    reset title of {_p}
+    delete {hg.spectatorHint::%uuid of {_p}%}
+
+function giveHgLeaveItem(p: player):
+    set {_w} to name of world of {_p}
+    if isHgArenaWorld({_w}) is false:
+        stop
+    if isHgArenaBusy({_w}) is true:
+        removeHgLeaveItem({_p})
+        stop
+    remove all barrier named "&c&lSalir" from {_p}'s inventory
+    set slot {@hg leave slot} of {_p} to barrier named "&c&lSalir" with lore "&7Clic derecho: volver al lobby" and "&7Abandona la cola de espera"
+
+function showHgSpectatorLeaveHint(p: player):
+    send "" to {_p}
+    send "&c&lHas caído en combate" to {_p}
+    send "&7Para volver al lobby:" to {_p}
+    send "&8▸ &f/salir" to {_p}
+    send "&8▸ &7Agáchate &fdos veces &7seguidas" to {_p}
+    send "" to {_p}
+    removeHgLeaveHint({_p})
+    set {hg.spectatorHint::%uuid of {_p}%} to true
+    send title " " with subtitle "&cSalir &8| &f/salir &8• &7agáchate x2" to {_p} for 999 minutes with fadein 10 ticks and fade out 10 ticks
+
+function hgLeaveArena(p: player):
+    set {_w} to name of world of {_p}
+    if isHgArenaWorld({_w}) is false:
+        stop
+    set {_spec} to false
+    if gamemode of {_p} is spectator:
+        set {_spec} to true
+    removeHgLeaveItem({_p})
+    removeHgLeaveHint({_p})
+    execute {_p} command "hg lobby"
+    if {_spec} is true:
+        send "&a→ Has dejado de espectar la partida." to {_p}
+    else:
+        send "&a→ Has salido de la cola de espera." to {_p}
+
+command /salir:
+    trigger:
+        if name of world of player is "PartyGames":
+            make player execute command "partygames leave"
+            send "&a→ Has salido de Party Games." to player
+            stop
+        if isHgArenaWorld(name of world of player) is false:
+            send "&cNo estás en un minijuego con cola de espera." to player
+            stop
+        hgLeaveArena(player)
+
+# Llamado por HG custom-commands (consola)
+command /hgarena <text> <text>:
+    permission: op
+    executable by: console and players
+    trigger:
+        if arg-1 is "busy":
+            set {hg.arenaBusy::%arg-2%} to true
+            loop all players in world arg-2:
+                if gamemode of loop-player is not spectator:
+                    removeHgLeaveItem(loop-player)
+        else if arg-1 is "waiting":
+            delete {hg.arenaBusy::%arg-2%}
+        else:
+            stop
+
+command /hgleave <text> [<offline player>]:
+    permission: op
+    executable by: console and players
+    trigger:
+        if arg-1 is "remove":
+            if arg-2 is set:
+                removeHgLeaveItem(arg-2)
+                removeHgLeaveHint(arg-2)
+            else:
+                removeHgLeaveItem(player)
+                removeHgLeaveHint(player)
+
+on world change:
+    set {_prev} to name of past event-world
+    set {_w} to name of event-world
+    if isHgArenaWorld({_prev}) is true:
+        removeHgLeaveItem(player)
+        removeHgLeaveHint(player)
+    wait 12 ticks
+    if isHgArenaWorld({_w}) is true:
+        if isHgArenaBusy({_w}) is false:
+            giveHgLeaveItem(player)
+
+on death of player:
+    if name of victim's world is not "HGPlay":
+        stop
+    wait 40 ticks
+    if isHgArenaBusy("HGPlay") is false:
+        stop
+    if gamemode of victim is spectator:
+        showHgSpectatorLeaveHint(victim)
+
+every 5 seconds:
+    loop all players:
+        set {_w} to name of world of loop-player
+        if isHgArenaWorld({_w}) is false:
+            continue
+        if isHgArenaBusy({_w}) is true:
+            removeHgLeaveItem(loop-player)
+        else:
+            giveHgLeaveItem(loop-player)
+
+on right click with barrier:
+    name of event-item contains "Salir"
+    cancel event
+    hgLeaveArena(player)
+
+on sneak toggle:
+    if gamemode of player is not spectator:
+        stop
+    if isHgArenaWorld(name of world of player) is false:
+        stop
+    if isHgArenaBusy(name of world of player) is false:
+        stop
+    if player is sneaking:
+        if {hg.sneakLeave::%uuid of player%} is set:
+            delete {hg.sneakLeave::%uuid of player%}
+            hgLeaveArena(player)
+        else:
+            set {hg.sneakLeave::%uuid of player%} to true
+            wait 3 seconds
+            delete {hg.sneakLeave::%uuid of player%}
+
+on command "/hg end":
+    wait 2 ticks
+    if arg-1 is set:
+        if isHgArenaWorld(arg-1) is true:
+            delete {hg.arenaBusy::%arg-1%}
+    else if isHgArenaWorld(name of world of player) is true:
+        delete {hg.arenaBusy::%name of world of player%}

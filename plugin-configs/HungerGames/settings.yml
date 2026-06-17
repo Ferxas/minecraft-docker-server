@@ -1,0 +1,41 @@
+# AymanIsam HungerGames 1.9.0 — https://hungergames.aymanisam.me/docs/introduction
+# whitelist-worlds: false → solo mundos NO listados abajo son arenas HG.
+# NO poner HGPlay aquí: si está en ignored-worlds el plugin ignora muertes/PvP en esa arena.
+lobby-world: HGLobby
+default-language: es_es
+# Los tips de HG se envían a TODOS los jugadores online — desactivados fuera de partidas HG
+tips: false
+whitelist-worlds: false
+ignored-worlds:
+  - world
+  - world_nether
+  - world_the_end
+  - HGLobby
+  - HGArena
+  - SakuraSpawn
+  - Lain
+  - LobbySW
+  - lobbySW
+  - Runnerslobby
+  - minestar_tnt_run
+  - tntrun_void
+  - tntrun_2
+  - Bunker_of_the_infected
+  - KROTHOLE_Nouvelle_Ere
+  - iDisguise-Dummy
+  - testWorld
+  - forestv2
+  - pvp_animation
+  - piratetown
+  - aihunter_world
+  - skywars
+  - skywars1
+  - TheBackrooms-map
+# true = al morir pasas a espectador en HGPlay hasta que acabe la partida.
+# Skript hg-leave-item.sk da barrier para salir con /hg lobby (clic o agacharse 2x).
+# NO usar hg-gamerules force-respawn con spectating: true (rompe el espectador).
+spectating: true
+reset-world: false
+custom-teams: false
+database:
+  enabled: false

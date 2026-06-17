@@ -1,0 +1,38 @@
+# If you don't want to use the lobby countdown shortening system keep the 'shorten-to' value equal to something bigger than the lobby countdown value
+
+enabled: true
+world: PartyGames
+min-players: 2
+max-players: 16
+lobby-countdown: 30
+lobby-countdown-shortening:
+  min-players: 4
+  shorten-to: 10
+minigames:
+- oneinthechamber
+- animalslaughter
+- hotpotato
+- tntrun
+- punchthebat
+- splegg
+- spleef
+- thedropper
+- oreminer
+- craftingmaster
+- sumo
+- minefield
+- mobshooter
+- survivalgames
+- horserace
+- parkour
+- volcano
+- floorshuffle
+- hoehoehoe
+- colorfulrun
+- quake
+- minecartracing
+Lobby: PartyGames, -69.5, 105, 65.5, 44.167786, 0.58754265
+Signs:
+  '1': PartyGames, 48.0, 116, 50.0, 0.0, 0.0
+
+# mZEEYN6jsBbLLcFTOoR9Y07RCeOaCFJNj7KvXXGz0IC69Q0A5ML3nRuSVyDDRVZxrjiOnYAwivWNH8NQS8Kgo9/e/pEKw8xTtJzM9Q4GIR4=

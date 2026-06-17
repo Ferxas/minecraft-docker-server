@@ -1,0 +1,176 @@
+menu_title: '&d&lParty Games &7| &fSalas'
+open_command: []
+size: 36
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7Volver'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] partygames_hub'
+
+  'info':
+    material: BOOK
+    slot: 4
+    display_name: '&eCarteles de join'
+    lore:
+      - '&7Clic derecho en el cartel'
+      - '&7con la mano vacía'
+      - ''
+      - '&f[PartyGames]'
+      - '&cjoin &7+ nombre de arena'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  'arena_1':
+    material: PURPLE_CONCRETE
+    slot: 10
+    display_name: '&d&lArena 1'
+    lore:
+      - '&7free_setup1 · hasta 16 jugadores'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% PartyGames'
+      - '[console] tp %player_name% 48.5 116 50.5 90 0'
+      - '[message] &a→ &dArena 1 &7| &fClic derecho en el cartel (mano vacía)'
+
+  'arena_2':
+    material: MAGENTA_CONCRETE
+    slot: 12
+    display_name: '&d&lArena 2'
+    lore:
+      - '&7free_setup2 · hasta 16 jugadores'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% PartyGames'
+      - '[console] tp %player_name% 48.5 116 51.5 90 0'
+      - '[message] &a→ &dArena 2 &7| &fClic derecho en el cartel (mano vacía)'
+
+  'arena_3':
+    material: PINK_CONCRETE
+    slot: 14
+    display_name: '&d&lArena 3'
+    lore:
+      - '&7free_setup3 · hasta 16 jugadores'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% PartyGames'
+      - '[console] tp %player_name% 48.5 116 52.5 90 0'
+      - '[message] &a→ &dArena 3 &7| &fClic derecho en el cartel (mano vacía)'
+
+  'arena_4':
+    material: RED_CONCRETE
+    slot: 16
+    display_name: '&d&lArena 4'
+    lore:
+      - '&7free_setup4 · hasta 16 jugadores'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% PartyGames'
+      - '[console] tp %player_name% 48.5 116 53.5 90 0'
+      - '[message] &a→ &dArena 4 &7| &fClic derecho en el cartel (mano vacía)'
+
+  'arena_5':
+    material: ORANGE_CONCRETE
+    slot: 22
+    display_name: '&d&lArena 5'
+    lore:
+      - '&7free_setup5 · hasta 16 jugadores'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% PartyGames'
+      - '[console] tp %player_name% 48.5 116 54.5 90 0'
+      - '[message] &a→ &dArena 5 &7| &fClic derecho en el cartel (mano vacía)'
+
+  'autojoin':
+    material: FIREWORK_ROCKET
+    slot: 31
+    display_name: '&a&lAutojoin'
+    lore:
+      - '&7Cartel con línea &cautojoin'
+      - '&7en el muro de carteles'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% PartyGames'
+      - '[console] tp %player_name% 48.5 116 52.5 90 0'
+      - '[message] &e→ Busca el cartel &fautojoin &7(mano vacía)'
+
+  'lobby':
+    material: RED_BED
+    slot: 29
+    display_name: '&dMuro de carteles'
+    lore:
+      - '&7Volver al lobby de join'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] mv tp %player_name% PartyGames'
+      - '[console] tp %player_name% 48.5 116 52.5 90 0'
+      - '[message] &a→ &dParty Games &7| &fCarteles'
+
+  'leave':
+    material: BARRIER
+    slot: 33
+    display_name: '&cSalir'
+    lore:
+      - '&7Abandonar Party Games'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] execute %player_name% run partygames leave'
+      - '[message] &c→ Saliendo...'
+
+  'close':
+    material: BARRIER
+    slot: 35
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: MAGENTA_STAINED_GLASS_PANE
+    slots:
+      - 1-3
+      - 5-9
+      - 11
+      - 13
+      - 15
+      - 17-21
+      - 23-28
+      - 30
+      - 32
+      - 34
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

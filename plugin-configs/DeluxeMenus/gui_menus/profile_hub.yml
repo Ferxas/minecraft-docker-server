@@ -1,0 +1,78 @@
+menu_title: '&b&lMi apariencia'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7Volver'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] main_hub'
+
+  'skin_browser':
+    material: PLAYER_HEAD
+    slot: 11
+    display_name: '&d&lElegir skin'
+    lore:
+      - '&7Explora y elige un look nuevo'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] skins'
+      - '[message] &d→ &fSelector de skins'
+
+  'skin_clear':
+    material: MILK_BUCKET
+    slot: 13
+    display_name: '&7Skin original'
+    lore:
+      - '&7Quitar la skin actual'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] skin clear'
+      - '[message] &7Skin restaurada.'
+
+  'skin_random':
+    material: ENDER_PEARL
+    slot: 15
+    display_name: '&5Skin aleatoria'
+    lore:
+      - '&7Prueba una skin al azar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] skin random'
+      - '[message] &5→ &fSkin aleatoria aplicada'
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    slots:
+      - 1-10
+      - 12
+      - 14
+      - 16-25
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

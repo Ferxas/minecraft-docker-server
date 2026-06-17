@@ -1,0 +1,77 @@
+menu_title: '&e&lPanel de información'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7← Volver'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] utilities_hub'
+
+  'toggle_scoreboard':
+    material: LIME_DYE
+    slot: 11
+    display_name: '&a&lMostrar / Ocultar panel'
+    lore:
+      - '&7Alterna el panel derecho'
+      - '&7con tu ping, mundo, etc.'
+      - ''
+      - '&eClic para cambiar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] sb toggle'
+      - '[message] &ePanel &8» &7Estado cambiado. Usa &f/sb toggle &7de nuevo si hace falta.'
+
+  'info_header':
+    material: NAME_TAG
+    slot: 13
+    display_name: '&b&lEncabezado del chat (TAB)'
+    lore:
+      - '&7El texto arriba del inventario'
+      - '&7lo gestiona el plugin TAB'
+      - '&8No se puede ocultar desde aquí'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  'info_tablist':
+    material: PLAYER_HEAD
+    slot: 15
+    display_name: '&f&lLista de jugadores (Tab)'
+    lore:
+      - '&7Presiona &fTab &7para ver'
+      - '&7quién está conectado'
+      - '&7y su ping'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: YELLOW_STAINED_GLASS_PANE
+    slots:
+      - 1-10
+      - 12
+      - 14
+      - 16-25
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

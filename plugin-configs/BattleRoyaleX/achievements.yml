@@ -1,0 +1,7 @@
+Styling:
+  Locked-Material: 'COAL_BLOCK'
+  Locked-Lore: '&cLocked'
+  Unlocked-Material: 'DIAMOND_BLOCK'
+  Unlocked-Lore: '&aUnlocked'
+  Name: '&b%description%'
+  Prize: '&6Prize: &e%prizeDescription%'

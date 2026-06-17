@@ -1,0 +1,33 @@
+# Guía rápida para crear la arena skywars1 en SkyWars X (requiere OP in-game)
+command /swsetup:
+    permission: skywars.admin
+    permission message: &cNecesitas permiso skywars.admin
+    trigger:
+        send ""
+        send &6&lSkyWars X — Setup arena &eskywars1
+        send &7El plugin solo crea arenas con comandos in-game.
+        send ""
+        send &e0. &7Si la carpeta rota existe, un admin puede borrarla desde consola.
+        send &8   &f/data/plugins/Skywars/arenas/skywars1
+        send ""
+        send &e1. &7Ve al lobby: &f/mv tp lobbySW
+        send &e2. &7Define lobby SW: &f/sw setlobby
+        send &e3. &7Ve al mapa: &f/mv tp skywars1
+        send &e4. &7Pide la varita: &f/sw wand
+        send &e5. &7Marca esquina &a1&7: &f-160 85 -190 &7(bloque inferior)
+        send &e6. &7Marca esquina &a2&7: &f10 140 10 &7(bloque superior)
+        send &e7. &7Crea la arena: &f/sw create skywars1 1 2 4 normal
+        send &8   (espera el escaneo de bloques — puede tardar)
+        send &e8. &7Añade spawns (&f/sw addspawn skywars1&7) en:
+        send &8   • -145.5 112 -99.5
+        send &8   • -83.5 114 -172.5
+        send &8   • -82.5 115 -35.5
+        send &8   • -27.5 114 -99.5
+        send &e9. &7Espectadores: &f/sw setspectators skywars1 &7(en -86.5 123 -99.5)
+        send &e10. &7Activa: &f/sw edit skywars1 &7→ enabled ON
+        send &e11. &7Recarga: &f/sw reload
+        send &e12. &7Prueba: &f/sw join skywars1
+        send ""
+        send &aTip: &7Con FAWE activo, tras crear usa &f/sw updateregion skywars1
+        send &7para generar el schematic de rollback.
+        send ""

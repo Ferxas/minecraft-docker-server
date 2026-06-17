@@ -1,0 +1,28 @@
+# 20 Ticks = 1 second
+
+Tnt Rain:
+  Enabled: true
+  Message: '&cWatch out! The sky is raining tnt!'
+  Spawn-Interval-Ticks: 10
+  TNT-Fuse-In-Seconds: 5
+  Target-Players-Only: false
+
+Random Teleport:
+  Enabled: true
+  Message: '&aYou have been teleported to a random location!'
+  Fail-Message: '&eLucky you? you will not be randomly teleported'
+
+Mob Attack:
+  Enabled: true
+  Message: '&cMonsters have appeared nearby!'
+  Mobs-Amount: 3
+
+Poisoning:
+  Enabled: true
+  Message: '&cYou have been poisoned!'
+  Duration: 60
+
+Starvation:
+  Enabled: true
+  Message: '&cYou have been starved!'
+  Duration: 60

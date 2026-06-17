@@ -1,0 +1,32 @@
+Map-Center: BattleRoyaleMap2, 257.5, 79, 256.5, -274.9107, 7.9430485
+Routes:
+  '1':
+    Start: BattleRoyaleMap2, 236.0, 139, 427.0, -181.15668, 13.230411
+    Finish: BattleRoyaleMap2, 229.0, 139, 68.0, -181.15668, 13.230411
+  '2':
+    Start: BattleRoyaleMap2, 449.0, 139, 250.0, 87.927475, 2.2633626
+    Finish: BattleRoyaleMap2, 57.0, 139, 258.0, -90.09106, 0.89248514
+Extraction-Points:
+  '1': BattleRoyaleMap2, 257.5, 79, 256.5, -88.915955, -2.0451372
+Supply-Drops:
+  '1': BattleRoyaleMap2, 128.5, 91, 340.5, -97.48697, 3.438402
+  '2': BattleRoyaleMap2, 414.5, 87, 342.5, -96.899475, 15.384623
+  '3': BattleRoyaleMap2, 356.5, 77, 266.5, -266.8883, 10.096929
+  '4': BattleRoyaleMap2, 375.5, 78, 133.5, -277.85425, 0.10910921
+  '5': BattleRoyaleMap2, 230.5, 93, 132.5, -290.58417, 2.06749
+  '6': BattleRoyaleMap2, 179.5, 86, 266.5, -93.71991, 16.95124
+Vehicle-Spawnpoints:
+  '1': BattleRoyaleMap2, 62.5, 109, 341.5, -90.97827, 2.850797
+  '2': BattleRoyaleMap2, 175.5, 86, 343.5, -89.41174, 11.271918
+  '3': BattleRoyaleMap2, 292.5, 84, 341.5, -89.99933, 11.271918
+  '4': BattleRoyaleMap2, 436.5, 80, 280.5, -177.73596, 12.44695
+  '5': BattleRoyaleMap2, 400.5, 77, 180.5, -315.8047, 4.6133537
+  '6': BattleRoyaleMap2, 346.5, 77, 254.5, -6.918457, 13.230328
+  '7': BattleRoyaleMap2, 258.5, 78, 237.5, -78.64197, 17.930513
+  '8': BattleRoyaleMap2, 144.5, 126, 155.5, -224.00146, 15.580442
+  '9': BattleRoyaleMap2, 385.5, 85, 82.5, -33.057556, 17.930494
+  '10': BattleRoyaleMap2, 354.5, 91, 384.5, -181.7005, 2.0674345
+Spectators-Spawnpoint: BattleRoyaleMap2, 263.5, 83, 256.5, -176.60962, 5.788795
+Lobby: BattleRoyaleLobby, 31.5, 18, -5.5, 358.38788, -1.3711694
+Signs:
+  '1': BattleRoyaleLobby, -144.0, 32, -86.0, 0.0, 0.0

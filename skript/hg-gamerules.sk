@@ -1,0 +1,10 @@
+# DESACTIVADO mientras spectating: true en HungerGames/settings.yml
+#
+# force respawn choca con el modo espectador del plugin (manda al lobby
+# vía respawn-world en vez de dejar spectating en HGPlay).
+#
+# Si vuelves a spectating: false, descomenta el bloque de abajo.
+
+# on death of player:
+#     if name of victim's world is "HGPlay":
+#         force victim to respawn

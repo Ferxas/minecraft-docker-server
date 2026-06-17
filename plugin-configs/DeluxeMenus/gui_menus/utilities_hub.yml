@@ -1,0 +1,118 @@
+menu_title: '&b&lUtilidades'
+open_command: []
+size: 36
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7← Volver al menú'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] main_hub'
+
+  'music':
+    material: NOTE_BLOCK
+    slot: 11
+    display_name: '&d&lMúsica'
+    lore:
+      - '&7Escucha canciones con el'
+      - '&7reproductor personal (GMusic)'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] music_hub'
+
+  'profile':
+    material: PLAYER_HEAD
+    slot: 13
+    display_name: '&b&lMi apariencia'
+    lore:
+      - '&7Cambia tu skin y look'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] profile_hub'
+
+  'disguise':
+    material: RABBIT_SPAWN_EGG
+    slot: 15
+    display_name: '&a&lDisfraces'
+    lore:
+      - '&7Conviértete en un mob'
+      - '&8Requiere permiso de staff'
+      - '&8Comando: &f/disguise <mob>'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[message] &aDisfraces &8» &7Pide a un admin o usa &f/disguise pig'
+
+  'scoreboard':
+    material: PAINTING
+    slot: 20
+    display_name: '&e&lPanel lateral'
+    lore:
+      - '&7Mostrar u ocultar el panel'
+      - '&7de información a la derecha'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] scoreboard_hub'
+
+  'replay':
+    material: ENDER_EYE
+    slot: 22
+    display_name: '&6&lReplays'
+    lore:
+      - '&7Ver grabaciones de partidas'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] replay list'
+
+  'cinematic':
+    material: SPYGLASS
+    slot: 24
+    display_name: '&3&lIntro del servidor'
+    lore:
+      - '&7Ver la cinemática de bienvenida'
+      - '&8Staff: créala con /cinematic create welcome'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[console] cinematic play welcome %player_name%'
+
+  'close':
+    material: BARRIER
+    slot: 35
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    slots:
+      - 1-10
+      - 12
+      - 14
+      - 16-19
+      - 21
+      - 23
+      - 25-34
+    display_name: ' '
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP

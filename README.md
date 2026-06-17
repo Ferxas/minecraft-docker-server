@@ -9,16 +9,16 @@ Requisitos: [Docker](https://docs.docker.com/get-docker/) (Desktop en Windows, E
 **Windows (PowerShell):**
 
 ```powershell
-git clone https://github.com/Ferxas/conlospibes-server.git
-cd conlospibes-server
+git clone https://github.com/Ferxas/minecraft-docker-server.git
+cd minecraft-docker-server
 .\install.ps1
 ```
 
 **Linux (bash):**
 
 ```bash
-git clone https://github.com/Ferxas/conlospibes-server.git
-cd conlospibes-server
+git clone https://github.com/Ferxas/minecraft-docker-server.git
+cd minecraft-docker-server
 chmod +x install.sh
 ./install.sh
 ```
@@ -43,48 +43,13 @@ Eso descarga el **release de datos** (~5 GB en partes 7z), extrae `server-data/`
 ./install.sh --import-archive /path/to/server-data-v1.7z.001
 ```
 
-## Puertos y red
+## Puertos
 
-| Puerto | Protocolo | Uso |
-|--------|-----------|-----|
-| 25565 | TCP | Minecraft Java |
-| 19132 | UDP | Bedrock (Geyser) — **no es TCP** |
-| 3306 | TCP | MySQL (solo local; no abras en el router salvo que lo necesites) |
-
-### Firewall del host
-
-```powershell
-# Windows — abre puertos en el firewall local
-.\scripts\setup-network.ps1
-```
-
-```bash
-# Linux
-sudo ./scripts/setup-network.sh
-```
-
-### Router (obligatorio para jugar desde fuera de tu red)
-
-En el panel del router, reenvía (**port forwarding / NAT**) hacia la **IP local** de la PC que corre Docker:
-
-| Puerto externo | Puerto interno | Protocolo | Destino |
-|----------------|----------------|-----------|---------|
-| 25565 | 25565 | TCP | IP local de la PC |
-| 19132 | 19132 | **UDP** | IP local de la PC |
-
-`setup-network.ps1` muestra tu IP pública para compartir: `TU_IP:25565` (Java).
-
-### Xbox / Bedrock (BedrockConnect)
-
-La Xbox no tiene pestaña “Servidores”. Cada jugador de consola debe:
-
-1. **Configuración → Red → DNS manual**
-2. DNS primario: el de tu red (o `1.1.1.1`)
-3. **DNS secundario: `104.238.130.180`** (BedrockConnect)
-4. Minecraft → **Servidores → Agregar servidor**
-5. IP:puerto = tu **IP pública** + `:19132` (ej. `203.0.113.10:19132`)
-
-BedrockConnect redirige al servidor configurado; Geyser escucha en el puerto **19132/UDP** del host.
+| Puerto | Uso |
+|--------|-----|
+| 25565 | Java |
+| 19132/UDP | Bedrock (Geyser) |
+| 3306 | MySQL |
 
 ## Estructura
 
@@ -110,7 +75,7 @@ docker logs mc -f             # logs
 ```powershell
 .\scripts\export-volume-to-server-data.ps1   # migrar desde volumen Docker
 .\scripts\package-server-data.ps1            # crear 7z en bootstrap/release/
-gh release create server-data-v2 bootstrap/release/server-data-v1.7z.* --title "Server data v2"
+gh release create server-data-v2 bootstrap/release/server-data-v1.7z.* --repo Ferxas/minecraft-docker-server --title "Server data v2"
 ```
 
 Actualiza `$ReleaseTag` en `install.ps1` / `--release-tag` en `install.sh` al publicar una versión nueva.

@@ -28,23 +28,24 @@ if (-not (Test-Path (Join-Path $ServerData "eula.txt"))) {
 }
 
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
-$Staging = Join-Path $env:TEMP "conlospibes-pack-staging"
-if (Test-Path $Staging) { Remove-Item -Recurse -Force $Staging }
-New-Item -ItemType Directory -Force -Path "$Staging/server-data", "$Staging/mysql-data" | Out-Null
-
-Write-Host "Staging copy..." -ForegroundColor Cyan
-robocopy $ServerData "$Staging/server-data" /MIR /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
-if (Test-Path $MysqlData) {
-  robocopy $MysqlData "$Staging/mysql-data" /MIR /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
-}
 
 $7z = "C:\Users\ferxas\scoop\shims\7z.exe"
 if (-not (Test-Path $7z)) { $7z = (Get-Command 7z -ErrorAction SilentlyContinue).Source }
 if (-not $7z) { throw "7-Zip required" }
 
-Write-Host "Creating 7z volumes..." -ForegroundColor Cyan
+$sources = @($ServerData)
+if (Test-Path $MysqlData) { $sources += $MysqlData }
+
+Write-Host "Creating 7z volumes (direct, no staging copy)..." -ForegroundColor Cyan
 Remove-Item "$ArchiveBase.7z.*" -Force -ErrorAction SilentlyContinue
-& $7z a -mx1 -v1800m "$ArchiveBase.7z" "$Staging/*"
+Push-Location $Root
+try {
+  & $7z a -mx1 -v1800m "$ArchiveBase.7z" @sources
+  if ($LASTEXITCODE -gt 1) { throw "7z failed with exit code $LASTEXITCODE" }
+}
+finally {
+  Pop-Location
+}
 
 Write-Host "Release files:" -ForegroundColor Green
 Get-ChildItem $OutDir -Filter "server-data-v1.7z.*" | Format-Table Name, @{N='MB';E={[math]::Round($_.Length/1MB,1)}}
@@ -52,6 +53,6 @@ Get-ChildItem $OutDir -Filter "server-data-v1.7z.*" | Format-Table Name, @{N='MB
 Write-Host @"
 
 Subir a GitHub:
-  gh release create server-data-v1 bootstrap/release/server-data-v1.7z.* --repo Ferxas/conlospibes-server --title "Server data v1"
+  gh release create server-data-v1 bootstrap/release/server-data-v1.7z.* --repo Ferxas/minecraft-docker-server --title "Server data v1"
 
 "@ -ForegroundColor Yellow

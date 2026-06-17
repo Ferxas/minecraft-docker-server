@@ -11,7 +11,7 @@
 param(
   [switch] $SkipDataDownload,
   [string] $ImportArchive = "",
-  [string] $ReleaseRepo = "Ferxas/conlospibes-server",
+  [string] $ReleaseRepo = "Ferxas/minecraft-docker-server",
   [string] $ReleaseTag = "server-data-v1"
 )
 

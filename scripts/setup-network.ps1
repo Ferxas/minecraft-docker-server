@@ -38,14 +38,20 @@ function Ensure-Rule {
     Write-Host "Already exists: $($Rule.Name)" -ForegroundColor DarkGray
     return
   }
-  New-NetFirewallRule `
-    -DisplayName $Rule.Name `
-    -Direction Inbound `
-    -Action Allow `
-    -Protocol $Rule.Protocol `
-    -LocalPort $Rule.Port `
-    -Profile Any | Out-Null
-  Write-Host "Added: $($Rule.Name) ($($Rule.Protocol) $($Rule.Port))" -ForegroundColor Green
+  try {
+    New-NetFirewallRule `
+      -DisplayName $Rule.Name `
+      -Direction Inbound `
+      -Action Allow `
+      -Protocol $Rule.Protocol `
+      -LocalPort $Rule.Port `
+      -Profile Any | Out-Null
+    Write-Host "Added: $($Rule.Name) ($($Rule.Protocol) $($Rule.Port))" -ForegroundColor Green
+  } catch {
+    Write-Host "Sin permisos para crear regla: $($Rule.Name)" -ForegroundColor Red
+    Write-Host "  Ejecuta PowerShell como Administrador y vuelve a correr este script." -ForegroundColor Yellow
+    throw
+  }
 }
 
 Write-Host "=== Con Los Pibes - firewall (Windows) ===" -ForegroundColor Cyan

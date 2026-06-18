@@ -23,7 +23,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-Eso descarga el **release de datos** (~5 GB en partes 7z), extrae `server-data/` + `mysql-data/` y ejecuta `docker compose up -d`.
+Eso descarga el **release de datos** (~3.7 GB comprimido / ~5 GB extraído, en partes 7z) desde [GitHub Releases](https://github.com/Ferxas/minecraft-docker-server/releases/tag/server-data-v1), extrae `server-data/` + `mysql-data/` y ejecuta `docker compose up -d`.
 
 ### Alternativas
 

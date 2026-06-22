@@ -4,7 +4,13 @@ Servidor Paper **1.21.11** con minijuegos (BRX, SkyWars, PartyGames, HungerGames
 
 ## Instalación en una PC nueva
 
-Requisitos: [Docker](https://docs.docker.com/get-docker/) (Desktop en Windows, Engine en Linux), [Git](https://git-scm.com/), [GitHub CLI](https://cli.github.com/) (para descargar datos), 7-Zip / p7zip (solo si importas archivos locales).
+Requisitos: [Docker](https://docs.docker.com/get-docker/) (Desktop en Windows, Engine en Linux), **Docker Compose** (`docker compose` o `docker-compose`), [Git](https://git-scm.com/), [GitHub CLI](https://cli.github.com/) (para descargar datos), 7-Zip / p7zip (solo si importas archivos locales).
+
+En Kali/Debian, si falta Compose:
+```bash
+sudo apt update && sudo apt install docker-compose-plugin
+# o: sudo apt install docker-compose
+```
 
 **Windows (PowerShell):**
 
@@ -41,6 +47,34 @@ Eso descarga el **release de datos** (~3.7 GB comprimido / ~5 GB extraído, en p
 
 # Linux — desde un backup 7z local
 ./install.sh --import-archive /path/to/server-data-v1.7z.001
+```
+
+### Instalación fresh (plugins + mapas, sin datos viejos)
+
+Descarga el release pero **borra** MySQL, permisos LuckPerms, cuentas Discord, userdata de Essentials y progreso de jugadores en mundos. **Conserva** plugins, configs y mapas/arenas construidos.
+
+```powershell
+.\install.ps1 -Fresh
+```
+
+```bash
+./install.sh --fresh
+```
+
+Si ya extrajiste los datos y solo quieres limpiarlos:
+
+```powershell
+.\install.ps1 -Fresh -SkipDataDownload
+```
+
+```bash
+./install.sh --fresh --skip-data-download
+```
+
+También puedes ejecutar solo la limpieza:
+
+```bash
+./scripts/strip-server-runtime-data.sh .
 ```
 
 ## Puertos

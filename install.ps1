@@ -5,10 +5,12 @@
 
 .EXAMPLE
   .\install.ps1
+  .\install.ps1 -Fresh                  # plugins + mapas, sin datos de jugadores/MySQL
   .\install.ps1 -SkipDataDownload   # si ya tienes server-data/
   .\install.ps1 -ImportArchive "D:\backup\server-data.7z.001"
 #>
 param(
+  [switch] $Fresh,
   [switch] $SkipDataDownload,
   [string] $ImportArchive = "",
   [string] $ReleaseRepo = "Ferxas/minecraft-docker-server",
@@ -78,6 +80,10 @@ if (-not (Test-ServerDataReady)) {
   throw "server-data/ incompleto. Usa -ImportArchive o publica/descarga el release de datos."
 }
 
+if ($Fresh) {
+  & (Join-Path $Root "scripts/strip-server-runtime-data.ps1") -Root $Root
+}
+
 New-Item -ItemType Directory -Force -Path $MysqlData | Out-Null
 
 Push-Location $Root
@@ -92,6 +98,13 @@ Listo.
   Logs:    docker logs mc -f
 
 "@ -ForegroundColor Green
+  if ($Fresh) {
+    Write-Host @"
+Modo fresh: MySQL, LuckPerms y datos de jugadores están vacíos.
+  Reconfigura permisos (/lp editor) y DiscordSRV si lo usas.
+
+"@ -ForegroundColor Yellow
+  }
 }
 finally {
   Pop-Location

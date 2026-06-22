@@ -4,6 +4,7 @@
 #
 # Uso:
 #   ./install.sh
+#   ./install.sh --fresh                 # plugins + mapas, sin datos de jugadores/MySQL
 #   ./install.sh --skip-data-download    # si ya tienes server-data/
 #   ./install.sh --import-archive /path/to/server-data.7z.001
 #
@@ -16,15 +17,24 @@ DOWNLOAD_DIR="$ROOT/bootstrap/download"
 RELEASE_REPO="Ferxas/minecraft-docker-server"
 RELEASE_TAG="server-data-v1"
 SKIP_DATA_DOWNLOAD=0
+FRESH=0
 IMPORT_ARCHIVE=""
 
 usage() {
-  sed -n '2,9p' "$0" | sed 's/^# \?//'
+  cat <<'EOF'
+Uso:
+  ./install.sh
+  ./install.sh --fresh                 # plugins + mapas, sin jugadores/MySQL/permisos
+  ./install.sh --skip-data-download
+  ./install.sh --fresh --skip-data-download
+  ./install.sh --import-archive /path/to/server-data.7z.001
+EOF
   exit "${1:-0}"
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --fresh) FRESH=1; shift ;;
     --skip-data-download) SKIP_DATA_DOWNLOAD=1; shift ;;
     --import-archive)
       [[ $# -lt 2 ]] && { echo "Falta ruta para --import-archive" >&2; exit 1; }
@@ -59,8 +69,31 @@ ensure_docker() {
   }
   docker info >/dev/null 2>&1 || {
     echo "Docker no está corriendo. Inicia el servicio docker e inténtalo de nuevo." >&2
+    echo "  sudo systemctl start docker" >&2
     exit 1
   }
+}
+
+# Compose v2 (plugin) o docker-compose v1 — Kali/Debian a menudo solo tienen el binario clásico.
+docker_compose() {
+  if docker compose version >/dev/null 2>&1; then
+    docker compose "$@"
+  elif command -v docker-compose >/dev/null 2>&1; then
+    docker-compose "$@"
+  else
+    cat >&2 <<'EOF'
+Docker Compose no encontrado.
+
+En Kali/Debian instala uno de estos:
+  sudo apt update
+  sudo apt install docker-compose-plugin    # recomendado (docker compose)
+  # o:
+  sudo apt install docker-compose           # clásico (docker-compose)
+
+Luego vuelve a ejecutar ./install.sh --skip-data-download
+EOF
+    exit 1
+  fi
 }
 
 find_7z() {
@@ -127,11 +160,15 @@ if ! server_data_ready; then
   exit 1
 fi
 
+if [[ "$FRESH" -eq 1 ]]; then
+  bash "$ROOT/scripts/strip-server-runtime-data.sh" "$ROOT"
+fi
+
 mkdir -p "$MYSQL_DATA"
 
 cd "$ROOT"
 echo "Iniciando stack (mc-init + mysql + paper) ..."
-docker compose up -d
+docker_compose up -d
 
 cat <<'EOF'
 
@@ -141,3 +178,11 @@ Listo.
   Logs:    docker logs mc -f
 
 EOF
+
+if [[ "$FRESH" -eq 1 ]]; then
+  cat <<'EOF'
+Modo fresh: MySQL, LuckPerms y datos de jugadores están vacíos.
+  Reconfigura permisos (/lp editor) y DiscordSRV si lo usas.
+
+EOF
+fi

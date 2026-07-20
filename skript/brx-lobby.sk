@@ -49,15 +49,36 @@ function brxClearActive(p: player):
 function isBrxWorld(w: text) :: boolean:
     if {_w} is "BattleRoyaleLobby":
         return true
+    if {_w} is "minecraft:battleroyalelobby":
+        return true
     if {_w} is "BattleRoyaleMap1":
+        return true
+    if {_w} is "minecraft:battleroyalemap1":
         return true
     if {_w} is "BattleRoyaleMap2":
         return true
+    if {_w} is "minecraft:battleroyalemap2":
+        return true
     if {_w} is "BattleRoyaleMap3":
+        return true
+    if {_w} is "minecraft:battleroyalemap3":
         return true
     if {_w} is "BattleRoyaleMap4":
         return true
+    if {_w} is "minecraft:battleroyalemap4":
+        return true
     return false
+
+function brxReturnToSpawn(p: player):
+    if {brx.returning::%uuid of {_p}%} is set:
+        stop
+    set {brx.returning::%uuid of {_p}%} to true
+    brxClearActive({_p})
+    removeBrxVisitorKit({_p})
+    execute console command "mv tp %name of {_p}% SakuraSpawn"
+    wait 5 ticks
+    delete {brx.returning::%uuid of {_p}%}
+    send "&a→ Has vuelto al spawn." to {_p}
 
 function brxCheckPlayer(p: player):
     set {_w} to name of world of {_p}
@@ -67,13 +88,23 @@ function brxCheckPlayer(p: player):
         brxMarkActive({_p})
         stop
     if {brx.active::%uuid of {_p}%} is set:
-        removeBrxVisitorKit({_p})
+        brxReturnToSpawn({_p})
+        stop
+    removeBrxVisitorKit({_p})
 
 function brxLobby(p: player):
     brxClearActive({_p})
     removeBrxVisitorKit({_p})
-    make {_p} execute command "brx join"
+    make {_p} execute command "brx leave"
     wait 10 ticks
+    execute console command "mv tp %name of {_p}% BattleRoyaleLobby"
+    wait 20 ticks
+    make {_p} execute command "brx join"
+    wait 15 ticks
+    if name of world of {_p} is not "BattleRoyaleLobby":
+        if name of world of {_p} is not "minecraft:battleroyalelobby":
+            send "&cNo se pudo entrar al lobby BRX. Prueba: &f/mv tp BattleRoyaleLobby" to {_p}
+            stop
     send "" to {_p}
     send "&4&lBattle Royale X" to {_p}
     send "&7Usa el &bselector de arenas &7(slot 1) o los carteles &f[BRX]&7." to {_p}
@@ -87,11 +118,7 @@ function brxExitToSpawn(p: player):
     else if {brx.active::%uuid of {_p}%} is set:
         make {_p} execute command "brx leave"
         wait 10 ticks
-    brxClearActive({_p})
-    removeBrxVisitorKit({_p})
-    execute console command "mv tp %name of {_p}% SakuraSpawn"
-    wait 5 ticks
-    send "&a→ Has vuelto al spawn." to {_p}
+    brxReturnToSpawn({_p})
 
 command /brxplay:
     executable by: players
@@ -119,6 +146,31 @@ every 2 seconds:
     loop all players:
         if isBrxWorld(name of world of loop-player) is true:
             brxCheckPlayer(loop-player)
+
+command /brxfix:
+    executable by: players
+    trigger:
+        set {_w} to name of world of player
+        if isBrxWorld({_w}) is false:
+            send "&cUsa esto dentro de Battle Royale X (lobby o arena)." to player
+            stop
+        send "&7Reiniciando sesión BRX..." to player
+        make player execute command "brx leave"
+        wait 15 ticks
+        brxLobby(player)
+
+# Evitar bug del cristal verde/rojo: no colocar ítems de menú BRX en el mundo
+on place:
+    if isBrxWorld(name of world of player) is false:
+        stop
+    set {_item} to event-block
+    if type of {_item} is lime stained glass:
+        cancel event
+        send "&cNo puedes colocar ítems del menú BRX en el lobby." to player
+        stop
+    if type of {_item} is red stained glass:
+        cancel event
+        send "&cNo puedes colocar ítems del menú BRX en el lobby." to player
 
 on quit:
     delete {brx.active::%uuid of player%}

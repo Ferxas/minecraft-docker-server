@@ -25,7 +25,9 @@ services:
       MYSQL_USER: discordsrv
       MYSQL_PASSWORD: discordsrvpass
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      # Named volume (WSL2 ext4) — required on Windows. Bind-mounting ./mysql-data
+      # onto NTFS forces lower_case_table_names=2 and crashes DBs initialized with 0.
+      - mc-mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
@@ -78,6 +80,10 @@ services:
       TZ: America/Bogota
     volumes:
       - ./server-data:/backup/minecraft-data:ro
-      - ./mysql-data:/backup/mysql-data:ro
+      - mc-mysql-data:/backup/mysql-data:ro
       - ./mc-backups:/archive
       - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  mc-mysql-data:
+    name: mc-compose_mc-mysql-data

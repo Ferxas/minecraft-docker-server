@@ -14,7 +14,7 @@
 # Option Ride-Invisible-Chicken is disabled for 1.16+
 # If you enable Check-For-General-Notifications, I will be able to send you in-game notifications of events such as plugin sales or other things.
 
-Load-Delay-Ticks: 10
+Load-Delay-Ticks: 100
 Check-For-Updates: false
 Check-For-General-Notifications: false
 use-UUID: false
@@ -268,7 +268,8 @@ Voting-Options:
       - '&e20 Hearts : 20'
       - '&630 Hearts : 30'
 
-# Free setup — lobby global y hologramas
+# Free setup — lobby global (coords sin espacios tras la coma; BRX parsea mal con espacios)
 Lobby: BattleRoyaleLobby, -167.5, 31, -84.5, 270.2597, -3.6114385
-Holographic-Stats: BattleRoyaleLobby, -159.0, 34, -80.0, 131.36249, 0.3052692
-Holographic-Leaderboard: BattleRoyaleLobby, -159.0, 33, -90.0, 351.09497, 19.301777
+# Hologramas desactivados: si fallan al cargar, BRX nunca registra el lobby (bug v4.5)
+# Holographic-Stats: BattleRoyaleLobby,-159.0,34,-80.0,131.36249,0.3052692
+# Holographic-Leaderboard: BattleRoyaleLobby,-159.0,33,-90.0,351.09497,19.301777

@@ -1,0 +1,27 @@
+# Multiverse-Inventories Groups
+  
+# To ADD, DELETE, and EDIT groups use the command /mvinv group.
+# No support will be given for those who manually edit these groups.
+groups:
+  default:
+    worlds:
+    - world
+    - world_nether
+    - world_the_end
+    shares:
+    - all
+  battleroyalex:
+    worlds:
+    - BattleRoyaleLobby
+    - BattleRoyaleMap1
+    - BattleRoyaleMap2
+    - BattleRoyaleMap3
+    - BattleRoyaleMap4
+    disabled-shares:
+    - inventory
+    - armor
+    - ender_chest
+    - health
+    - hunger
+    - saturation
+    - experience

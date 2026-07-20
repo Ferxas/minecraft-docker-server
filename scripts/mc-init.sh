@@ -36,6 +36,16 @@ copy_if_missing_file() {
   fi
 }
 
+sync_file() {
+  src=$1
+  dest=$2
+  mkdir -p "$(dirname "$dest")"
+  if [ ! -f "$dest" ] || ! cmp -s "$src" "$dest"; then
+    cp "$src" "$dest"
+    log "  ~ ${dest#$DATA/}"
+  fi
+}
+
 log "Starting bootstrap..."
 
 mkdir -p "$DATA"
@@ -81,16 +91,27 @@ if [ -d "$BOOT/plugin-configs" ]; then
   done
 fi
 
-# Skript scripts
+# Skript scripts (always sync from repo on mc-init)
 if [ -d "$BOOT/skript" ]; then
-  log "Checking Skript scripts..."
+  log "Syncing Skript scripts from repo..."
   mkdir -p "$DATA/plugins/Skript/scripts"
   for sk in "$BOOT/skript"/*.sk; do
     [ -f "$sk" ] || continue
     base=$(basename "$sk")
-    copy_if_missing_file "$sk" "$DATA/plugins/Skript/scripts/$base"
+    sync_file "$sk" "$DATA/plugins/Skript/scripts/$base"
   done
 fi
+
+# Plugin configs managed in repo (always sync on mc-init)
+for rel in \
+  Multiverse-Inventories/groups.yml \
+  ; do
+  src="$BOOT/plugin-configs/$rel"
+  dest="$DATA/plugins/$rel"
+  if [ -f "$src" ]; then
+    sync_file "$src" "$dest"
+  fi
+done
 
 # Worlds from repo (folder name with spaces -> underscores in /data)
 if [ -d "$BOOT/worlds" ]; then

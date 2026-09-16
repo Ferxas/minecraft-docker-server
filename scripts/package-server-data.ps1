@@ -29,8 +29,20 @@ if (-not (Test-Path (Join-Path $ServerData "eula.txt"))) {
 
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
-$7z = "C:\Users\ferxas\scoop\shims\7z.exe"
-if (-not (Test-Path $7z)) { $7z = (Get-Command 7z -ErrorAction SilentlyContinue).Source }
+function Find-7Zip {
+  $cmd = Get-Command 7z -ErrorAction SilentlyContinue
+  if ($cmd) { return $cmd.Source }
+  $candidates = @(
+    (Join-Path $env:USERPROFILE "scoop\shims\7z.exe"),
+    (Join-Path ${env:ProgramFiles} "7-Zip\7z.exe"),
+    (Join-Path ${env:ProgramFiles(x86)} "7-Zip\7z.exe")
+  )
+  foreach ($path in $candidates) {
+    if ($path -and (Test-Path -LiteralPath $path)) { return $path }
+  }
+  return $null
+}
+$7z = Find-7Zip
 if (-not $7z) { throw "7-Zip required" }
 
 $sources = @($ServerData)

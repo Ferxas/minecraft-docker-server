@@ -37,11 +37,44 @@ function Ensure-Docker {
   if ($LASTEXITCODE -ne 0) { throw "Docker no está corriendo. Abre Docker Desktop e inténtalo de nuevo." }
 }
 
+function Find-7Zip {
+  $cmd = Get-Command 7z -ErrorAction SilentlyContinue
+  if ($cmd) { return $cmd.Source }
+  $candidates = @(
+    (Join-Path $env:USERPROFILE "scoop\shims\7z.exe"),
+    (Join-Path ${env:ProgramFiles} "7-Zip\7z.exe"),
+    (Join-Path ${env:ProgramFiles(x86)} "7-Zip\7z.exe")
+  )
+  foreach ($path in $candidates) {
+    if ($path -and (Test-Path -LiteralPath $path)) { return $path }
+  }
+  return $null
+}
+
+function Wait-MinecraftReady {
+  param([int]$TimeoutMinutes = 25)
+  Write-Host "Esperando a que Paper responda (muchas plugins: suele tardar 10-15 min)..." -ForegroundColor Yellow
+  $deadline = (Get-Date).AddMinutes($TimeoutMinutes)
+  while ((Get-Date) -lt $deadline) {
+    $status = docker inspect mc --format "{{.State.Health.Status}}" 2>$null
+    if ($status -eq "healthy") {
+      Write-Host "Servidor listo para conectar." -ForegroundColor Green
+      return $true
+    }
+    if ($status -eq "unhealthy") {
+      $tail = docker logs mc --tail 1 2>$null
+      Write-Host "  ... cargando ($tail)"
+    }
+    Start-Sleep -Seconds 15
+  }
+  Write-Host "Paper aún no responde. Sigue con: docker logs mc -f" -ForegroundColor Yellow
+  return $false
+}
+
 function Import-ArchiveParts {
   param([string]$FirstPart)
-  $7z = Get-Command 7z -ErrorAction SilentlyContinue
-  if (-not $7z) { $7z = Get-Command "C:\Users\ferxas\scoop\shims\7z.exe" -ErrorAction SilentlyContinue }
-  if (-not $7z) { throw "7-Zip no encontrado. Instala 7z o pasa -SkipDataDownload si server-data/ ya existe." }
+  $7z = Find-7Zip
+  if (-not $7z) { throw "7-Zip no encontrado. Instala 7-Zip (https://www.7-zip.org/) o pasa -SkipDataDownload si server-data/ ya existe." }
   Write-Host "Extrayendo $FirstPart ..." -ForegroundColor Cyan
   & $7z x $FirstPart -o"$Root" -y | Out-Host
 }
@@ -90,11 +123,14 @@ Push-Location $Root
 try {
   Write-Host "Iniciando stack (mc-init + mysql + paper)..." -ForegroundColor Cyan
   docker compose up -d
+  $ready = Wait-MinecraftReady
+  $readyLine = if ($ready) { "Listo." } else { "Stack arriba; Paper sigue cargando — esperá healthy antes de entrar." }
   Write-Host @"
 
-Listo.
-  Java:    localhost:25565
-  Bedrock: localhost:19132 (Geyser)
+$readyLine
+  Java:    localhost:25565  — launcher Java Edition 1.21.11
+  Bedrock: localhost:19132/UDP (Geyser) — no uses el puerto Java en Bedrock
+  playit:  túnel TCP -> 127.0.0.1:25565 (Java); UDP -> 127.0.0.1:19132 (Bedrock)
   Logs:    docker logs mc -f
 
 "@ -ForegroundColor Green

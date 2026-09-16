@@ -65,6 +65,13 @@ services:
       - ./server-data:/data
     stdin_open: true
     tty: true
+    # Heavy plugin stack; Paper may take 10–15+ min before status ping succeeds.
+    healthcheck:
+      test: ["CMD", "mc-monitor", "status", "--host", "localhost", "--port", "25565"]
+      interval: 30s
+      timeout: 15s
+      retries: 20
+      start_period: 1200s
 
   volume-backup:
     image: offen/docker-volume-backup:latest

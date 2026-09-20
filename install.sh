@@ -67,11 +67,23 @@ ensure_docker() {
     echo "Docker no está instalado. Instala Docker Engine: https://docs.docker.com/engine/install/" >&2
     exit 1
   }
-  docker info >/dev/null 2>&1 || {
-    echo "Docker no está corriendo. Inicia el servicio docker e inténtalo de nuevo." >&2
-    echo "  sudo systemctl start docker" >&2
+  # Daemon up but user not in group `docker` → permission denied (misleading if we only say "not running").
+  local err
+  if err="$(docker info 2>&1)"; then
+    return 0
+  fi
+  if echo "$err" | grep -qiE 'permission denied|connect: permission|Got permission denied'; then
+    echo "Docker está corriendo, pero tu usuario no tiene permiso para usarlo." >&2
+    echo "Agregate al grupo docker y reabre la terminal:" >&2
+    echo "  sudo usermod -aG docker \"\$USER\"" >&2
+    echo "  newgrp docker" >&2
+    echo "Luego: ./install.sh" >&2
+    echo "Atajo: sudo ./install.sh" >&2
     exit 1
-  }
+  fi
+  echo "Docker no está corriendo. Inicia el servicio e inténtalo de nuevo:" >&2
+  echo "  sudo systemctl start docker" >&2
+  exit 1
 }
 
 # Compose v2 (plugin) o docker-compose v1 — Kali/Debian a menudo solo tienen el binario clásico.

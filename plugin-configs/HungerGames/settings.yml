@@ -1,7 +1,7 @@
 # AymanIsam HungerGames 1.9.0 — https://hungergames.aymanisam.me/docs/introduction
 # whitelist-worlds: false → solo mundos NO listados abajo son arenas HG.
 # NO poner HGPlay aquí: si está en ignored-worlds el plugin ignora muertes/PvP en esa arena.
-lobby-world: HGLobby
+lobby-world: SakuraSpawn
 default-language: es_es
 # Los tips de HG se envían a TODOS los jugadores online — desactivados fuera de partidas HG
 tips: false

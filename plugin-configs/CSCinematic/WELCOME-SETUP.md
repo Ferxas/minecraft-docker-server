@@ -1,31 +1,27 @@
-# Cinemática welcome — OBLIGATORIO crear in-game una vez
+# Cinemática welcome — CS Cinematic (Ferxas)
 
-La carpeta `cinematics/` está vacía hasta que la grabes. Sin esto, el menú y el Skript no harán nada visible.
+Archivo: `plugins/CSCinematic/cinematics/welcome.yml` (author: ferxas).
 
-## Pasos (OP en SakuraSpawn)
+Al enable, el plugin carga el YAML (`Loaded N cinematics from files`).
 
-```
-/cinematic create welcome
-/cinematic edit welcome
-```
-
-Vuela a cada punto y añade posiciones:
+## Comandos in-game
 
 ```
-/cinematic pos add 2.0 3.0
-/cinematic text 1 &6&lConlospibes
-/cinematic text 2 &d&lSakura Spawn
-/cinematic text 3 &a&l¡A jugar!
-/cinematic save
-/cinematic load welcome
+/cscinematic list
+/cscinematic play welcome
 ```
 
-Probar: `/cinematic play welcome`
+Alias válidos: `cscinematic`, `cinematic` — **evitar `/cs`** si FAWE está instalado.
 
-**No uses `/cs`** — FAWE intercepta ese comando.
+Consola (otro jugador):
 
-## Automático
+```
+cscinematic play welcome <jugador>
+```
 
-El Skript `welcome-cinematic.sk` reproduce la intro **en cada join** si estás en SakuraSpawn (espera 5 s).
+Para la bienvenida automática el Skript hace que **el propio jugador** ejecute `cscinematic play welcome` (así la cámara/spectator funciona).
 
-El menú (`/menu` → Utilidades → Intro) usa consola: `cinematic play welcome <jugador>`.
+## Spawn al entrar
+
+SakuraSpawn en `23.478, -61, -92.564` yaw `-89.2` pitch `-0.8` (frente al edificio / cartel).
+Multiverse `join-destination` + `first-spawn-location` apuntan ahí.

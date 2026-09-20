@@ -19,6 +19,13 @@ rcon-web-admin/
 datapacks-staging/
 tools/
 me/
+HeadlessMC/
+bootstrap/migrate-tmp/
+
+# Logs / basura local
+*.log
+*.log.err
+{{.Destination}}*
 
 # Archivos grandes sueltos
 *.zip

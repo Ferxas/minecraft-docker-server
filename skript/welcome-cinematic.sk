@@ -1,42 +1,72 @@
-# Cinemática welcome al primer spawn en SakuraSpawn (presentación, no flash del lobby)
+# Welcome: spawn en el cartel (F3) + cinemática Ferxas "welcome".
+# Play SIEMPRE como jugador: /cscinematic play welcome
+# HungerGames mete a HGLobby en PlayerJoinEvent → forzamos SakuraSpawn varias veces.
+
+options:
+    spawn-world: SakuraSpawn
+    spawn-x: 23.478
+    spawn-y: -61
+    spawn-z: -92.564
+    spawn-yaw: -89.2
+    spawn-pitch: -0.8
+
+function goSpawn(p: player):
+    set {_loc} to location at {@spawn-x}, {@spawn-y}, {@spawn-z} in world "{@spawn-world}"
+    set yaw of {_loc} to {@spawn-yaw}
+    set pitch of {_loc} to {@spawn-pitch}
+    teleport {_p} to {_loc}
+
+function forceSakuraSpawn(p: player):
+    if {_p} is not online:
+        stop
+    if {_p}'s world's name is not "{@spawn-world}":
+        execute console command "mv tp %name of {_p}% {@spawn-world}"
+        wait 10 ticks
+    if {_p} is not online:
+        stop
+    goSpawn({_p})
 
 function playWelcomeCinematic(p: player):
-    if {_p}'s world's name is not "SakuraSpawn":
+    if {_p} is not set:
         stop
-    set {_loc} to location at -9.3, -57, -71.82 in world "SakuraSpawn"
-    set yaw of {_loc} to -91.65
-    set pitch of {_loc} to 6.9
-    teleport {_p} to {_loc}
-    execute console command "cinematic load welcome"
-    wait 8 ticks
-    make {_p} execute command "cinematic play welcome"
-
-on load:
-    wait 5 seconds
-    execute console command "cinematic load welcome"
+    if {_p} is not online:
+        stop
+    # HG / Multiverse pueden pelear el join: reintentos
+    forceSakuraSpawn({_p})
+    wait 10 ticks
+    forceSakuraSpawn({_p})
+    wait 20 ticks
+    if {_p} is not online:
+        stop
+    forceSakuraSpawn({_p})
+    # Chunks / vista del cartel antes de spectator
+    wait 40 ticks
+    if {_p} is not online:
+        stop
+    if {_p}'s world's name is not "{@spawn-world}":
+        forceSakuraSpawn({_p})
+        wait 20 ticks
+    if {_p} is not online:
+        stop
+    if {_p}'s world's name is not "{@spawn-world}":
+        send "[welcome-cine] abort: still not in {@spawn-world} for %name of {_p}%" to console
+        stop
+    make {_p} execute command "cscinematic play welcome"
+    send "[welcome-cine] player-play welcome for %name of {_p}% at spawn" to console
+    # welcome.yml total-duration ~8.8s
+    wait 12 seconds
+    if {_p} is online:
+        forceSakuraSpawn({_p})
+        send "[welcome-cine] restored spawn for %name of {_p}%" to console
 
 on join:
-    set {welcome.cinematic.play::%uuid of player%} to true
+    set {welcome.cinematic.pending::%uuid of player%} to true
+    # Dejar que HG haga su tp a lobby, luego lo corregimos
+    wait 5 ticks
+    if {welcome.cinematic.pending::%uuid of player%} is not true:
+        stop
+    delete {welcome.cinematic.pending::%uuid of player%}
+    playWelcomeCinematic(player)
 
 on quit:
-    delete {welcome.cinematic.play::%uuid of player%}
-
-# Multiverse suele mandar a SakuraSpawn justo después del join
-on world change:
-    if {welcome.cinematic.play::%uuid of player%} is not true:
-        stop
-    if player's world's name is not "SakuraSpawn":
-        stop
-    delete {welcome.cinematic.play::%uuid of player%}
-    wait 5 ticks
-    playWelcomeCinematic(player)
-
-# Si ya spawnean en SakuraSpawn sin world change
-on join:
-    wait 1 second
-    if {welcome.cinematic.play::%uuid of player%} is not true:
-        stop
-    if player's world's name is not "SakuraSpawn":
-        stop
-    delete {welcome.cinematic.play::%uuid of player%}
-    playWelcomeCinematic(player)
+    delete {welcome.cinematic.pending::%uuid of player%}

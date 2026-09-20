@@ -4,7 +4,7 @@ Servidor Paper **1.21.11** con minijuegos (BRX, SkyWars, PartyGames, HungerGames
 
 ## Instalación en una PC nueva
 
-Requisitos: [Docker](https://docs.docker.com/get-docker/) (Desktop en Windows, Engine en Linux), **Docker Compose** (`docker compose` o `docker-compose`), [Git](https://git-scm.com/), [GitHub CLI](https://cli.github.com/) (para descargar datos), 7-Zip / p7zip (solo si importas archivos locales).
+Requisitos: [Docker](https://docs.docker.com/get-docker/) (Desktop en Windows, Engine en Linux), **Docker Compose** (`docker compose` o `docker-compose`), [Git](https://git-scm.com/), **curl** (Linux) / PowerShell (Windows), **7-Zip / p7zip** para extraer el release de datos. GitHub CLI es opcional.
 
 En Kali/Debian, si falta Compose:
 ```bash
@@ -29,7 +29,12 @@ chmod +x install.sh
 ./install.sh
 ```
 
-Eso descarga el **release de datos** (~3.7 GB comprimido / ~5 GB extraído, en partes 7z) desde [GitHub Releases](https://github.com/Ferxas/minecraft-docker-server/releases/tag/server-data-v1), extrae `server-data/` + `mysql-data/` y ejecuta `docker compose up -d`.
+Eso descarga el **release de datos** (~3.7 GB comprimido / ~5 GB extraído, en partes 7z) desde [GitHub Releases](https://github.com/Ferxas/minecraft-docker-server/releases/tag/server-data-v1) con `curl`/`Invoke-WebRequest` (o `gh` si está instalado), extrae `server-data/` + `mysql-data/` y ejecuta `docker compose up -d`.
+
+En Ubuntu/WSL, si falta el extractor:
+```bash
+sudo apt update && sudo apt install -y p7zip-full
+```
 
 ### Alternativas
 

@@ -80,22 +80,29 @@ function Import-ArchiveParts {
 }
 
 function Download-ReleaseData {
-  if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
-    throw @"
-Faltan los datos del servidor (server-data/ + mysql-data/).
-
-Opciones:
-  1) Instala GitHub CLI y ejecuta de nuevo:  winget install GitHub.cli
-  2) Descarga manualmente el release '$ReleaseTag' de $ReleaseRepo y ejecuta:
-     .\install.ps1 -ImportArchive ruta\server-data.7z.001
-  3) Copia las carpetas server-data/ y mysql-data/ junto al repo.
-"@
-  }
   New-Item -ItemType Directory -Force -Path $DownloadDir | Out-Null
   Write-Host "Descargando datos del servidor desde GitHub Release $ReleaseTag ..." -ForegroundColor Cyan
-  gh release download $ReleaseTag --repo $ReleaseRepo --dir $DownloadDir
+
+  if (Get-Command gh -ErrorAction SilentlyContinue) {
+    gh release download $ReleaseTag --repo $ReleaseRepo --dir $DownloadDir --clobber
+  } else {
+    $api = "https://api.github.com/repos/$ReleaseRepo/releases/tags/$ReleaseTag"
+    try {
+      $rel = Invoke-RestMethod -Uri $api -Headers @{ "User-Agent" = "minecraft-docker-server-install" }
+    } catch {
+      throw "No se pudo leer el release $ReleaseTag. Instala GitHub CLI o descarga manual y usa -ImportArchive."
+    }
+    $assets = @($rel.assets | Where-Object { $_.name -like "server-data*.7z.*" })
+    if ($assets.Count -eq 0) { throw "El release $ReleaseTag no tiene partes server-data*.7z.*" }
+    foreach ($a in $assets) {
+      $out = Join-Path $DownloadDir $a.name
+      Write-Host "  -> $($a.name)"
+      Invoke-WebRequest -Uri $a.browser_download_url -OutFile $out -UseBasicParsing
+    }
+  }
+
   $first = Get-ChildItem $DownloadDir -Filter "server-data*.7z.001" | Select-Object -First 1
-  if (-not $first) { throw "No se encontró server-data*.7z.001 en el release." }
+  if (-not $first) { throw "No se encontro server-data*.7z.001 tras la descarga." }
   Import-ArchiveParts -FirstPart $first.FullName
 }
 

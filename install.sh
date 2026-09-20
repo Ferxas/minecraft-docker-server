@@ -136,24 +136,66 @@ import_archive_parts() {
 }
 
 download_release_data() {
-  command -v gh >/dev/null 2>&1 || {
-    cat >&2 <<EOF
-Faltan los datos del servidor (server-data/ + mysql-data/).
-
-Opciones:
-  1) Instala GitHub CLI y ejecuta de nuevo: https://cli.github.com/
-  2) Descarga manualmente el release '$RELEASE_TAG' de $RELEASE_REPO y ejecuta:
-     ./install.sh --import-archive /ruta/server-data.7z.001
-  3) Copia las carpetas server-data/ y mysql-data/ junto al repo.
-EOF
-    exit 1
-  }
   mkdir -p "$DOWNLOAD_DIR"
   echo "Descargando datos del servidor desde GitHub Release $RELEASE_TAG ..."
-  gh release download "$RELEASE_TAG" --repo "$RELEASE_REPO" --dir "$DOWNLOAD_DIR"
+
+  if command -v gh >/dev/null 2>&1; then
+    gh release download "$RELEASE_TAG" --repo "$RELEASE_REPO" --dir "$DOWNLOAD_DIR" --clobber
+  else
+    command -v curl >/dev/null 2>&1 || {
+      echo "Falta curl (opcional: GitHub CLI https://cli.github.com/)." >&2
+      exit 1
+    }
+    local api="https://api.github.com/repos/${RELEASE_REPO}/releases/tags/${RELEASE_TAG}"
+    local urls=""
+    if command -v python3 >/dev/null 2>&1; then
+      urls="$(
+        curl -fsSL "$api" | python3 -c '
+import json,sys
+r=json.load(sys.stdin)
+for a in r.get("assets",[]):
+  n=a.get("name","")
+  if n.startswith("server-data") and ".7z." in n:
+    print(a["browser_download_url"])
+'
+      )" || true
+    fi
+    if [[ -z "$urls" ]]; then
+      # Public release currently ships .001 .002 .003 — probe until 404.
+      local i u code
+      for i in $(seq -f '%03g' 1 30); do
+        u="https://github.com/${RELEASE_REPO}/releases/download/${RELEASE_TAG}/server-data-v1.7z.${i}"
+        code="$(curl -fsI -o /dev/null -w '%{http_code}' "$u" || true)"
+        if [[ "$code" == "200" || "$code" == "302" ]]; then
+          urls+="${u}"$'\n'
+        else
+          [[ -n "$urls" ]] && break
+          [[ "$i" == "003" ]] && break
+        fi
+      done
+    fi
+    [[ -n "$urls" ]] || {
+      cat >&2 <<EOF
+No se pudieron listar/descargar assets del release $RELEASE_TAG ($RELEASE_REPO).
+Opciones:
+  1) Instala GitHub CLI: https://cli.github.com/
+  2) Descarga manual y: ./install.sh --import-archive /ruta/server-data.7z.001
+  3) Copia server-data/ y mysql-data/ junto al repo.
+EOF
+      exit 1
+    }
+    while IFS= read -r url; do
+      [[ -z "$url" ]] && continue
+      local name
+      name="$(basename "$url")"
+      echo "  -> $name"
+      curl -fL --retry 3 --retry-delay 2 -o "$DOWNLOAD_DIR/$name" "$url"
+    done <<< "$urls"
+  fi
+
   local first
   first="$(find "$DOWNLOAD_DIR" -maxdepth 1 -name 'server-data*.7z.001' -print -quit)"
-  [[ -n "$first" ]] || { echo "No se encontró server-data*.7z.001 en el release." >&2; exit 1; }
+  [[ -n "$first" ]] || { echo "No se encontró server-data*.7z.001 tras la descarga." >&2; exit 1; }
   import_archive_parts "$first"
 }
 

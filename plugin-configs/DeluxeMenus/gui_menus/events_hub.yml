@@ -21,8 +21,8 @@ items:
       - '&7Golpea la piñata con todos'
       - '&7y llévate premios para la survival.'
       - ''
-      - '&7Sale sola cada hora (aviso en el chat).'
-      - '&7Próxima: &f%xpinata_timer%'
+      - '&7Sale sola cada hora; se avisa en el'
+      - '&7chat 5 min, 1 min, 30 s y 10 s antes.'
       - ''
       - '&eClic para ir a la arena'
     item_flags:

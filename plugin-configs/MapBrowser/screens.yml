@@ -1,0 +1,21 @@
+# MapBrowser screens are in-memory only — wiped on every container restart.
+# scripts/mapbrowser-restore.sh runs these via RCON after the server is up.
+# Keep width/height modest (2–4) on software GL in Docker.
+
+screens:
+  - id: hub-google
+    world: SakuraSpawn
+    x: 117
+    y: -49
+    z: -53
+    url: https://www.google.com
+    width: 2
+    height: 2
+  - id: hub-example
+    world: SakuraSpawn
+    x: 70
+    y: -57
+    z: -88
+    url: https://example.com
+    width: 2
+    height: 2

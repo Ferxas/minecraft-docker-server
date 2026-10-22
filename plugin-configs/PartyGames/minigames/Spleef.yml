@@ -3,3 +3,12 @@ Maps:
     Map-Cuboid: PartyGames, -192, 93, -109, -118, 123, -40
     Floor-Cuboid: PartyGames, -182, 108, -103, -122, 108, -43
     Spawnpoint: PartyGames, -150.5, 109, -73.5, 358.64087, -0.19593348
+Tutorial-Messages:
+- '&2 --------- &aSpleef &2--------- '
+- '- Use your shovel to break blocks below'
+- other players to eliminate them
+Display-Name: Spleef
+Coins-Per-Minigame-Win: 10
+Shovel: 'DIAMOND_SPADE : 1 : enchant:DIG_SPEED:4'
+Round-Duration: 90
+Give-Snowballs-On-Break: true

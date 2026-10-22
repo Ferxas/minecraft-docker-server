@@ -1,0 +1,143 @@
+# SkyWars — Quit / salir al hub (SakuraSpawn + reloj Menú). El plugin solo hace sw leave y deja inventario vacío en lobbySW.
+
+function hasSkyWarsHotbar(p: player) :: boolean:
+    loop integers from 0 to 8:
+        set {_item} to slot loop-integer of {_p}'s inventory
+        if {_item} is not air:
+            set {_n} to name of {_item}
+            if {_n} contains "Quit":
+                return true
+            if {_n} contains "Shop":
+                return true
+            if {_n} contains "Profile":
+                return true
+            if {_n} contains "Party":
+                return true
+            if {_n} contains "Play":
+                return true
+            if {_n} contains "Autojoin":
+                return true
+            if {_n} contains "Boosters":
+                return true
+            if type of {_item} is diamond axe:
+                return true
+            if type of {_item} is magma cream:
+                return true
+    return false
+
+function isSkyWarsLeaveWorld(w: text) :: boolean:
+    if {_w} is "lobbySW":
+        return true
+    if {_w} is "LobbySW":
+        return true
+    if {_w} is "skywars1":
+        return true
+    if {_w} is "sw_lighthouse":
+        return true
+    if {_w} is "sw_bonsai":
+        return true
+    if {_w} is "sw_seafloor":
+        return true
+    return false
+
+function skywarsClearLeaveMeta(p: player):
+    delete metadata value "sw_autojoin_pending" of {_p}
+    delete metadata value "sw_plate_cd" of {_p}
+    delete metadata value "sw_lobby_join_cd" of {_p}
+    delete metadata value "sw_hub_syncing" of {_p}
+    delete metadata value "sw_nohotbar_seen" of {_p}
+
+function skywarsFinishHubReturn(p: player):
+    if {_p} is not online:
+        stop
+    if name of world of {_p} is not "SakuraSpawn":
+        stop
+    goSpawn({_p})
+    giveHubMenuItem({_p})
+    wait 1 second
+    if {_p} is online:
+        giveHubMenuItem({_p})
+
+function skywarsReturnToHub(p: player):
+    if {_p} is not online:
+        stop
+    if metadata value "sw_returning" of {_p} is set:
+        stop
+    set metadata value "sw_returning" of {_p} to true
+    skywarsClearLeaveMeta({_p})
+    close inventory of {_p}
+    if hasSkyWarsHotbar({_p}) is true:
+        execute {_p} command "sw leave"
+    wait 12 ticks
+    if {_p} is not online:
+        delete metadata value "sw_returning" of {_p}
+        stop
+    execute console command "mv tp %name of {_p}% SakuraSpawn"
+    wait 10 ticks
+    if {_p} is not online:
+        delete metadata value "sw_returning" of {_p}
+        stop
+    skywarsFinishHubReturn({_p})
+    delete metadata value "sw_returning" of {_p}
+    send "&a→ Has vuelto a &dSakuraSpawn&a." to {_p}
+
+command /swleave:
+    executable by: players
+    trigger:
+        if isSkyWarsLeaveWorld(name of world of player) is false:
+            send "&cNo estás en SkyWars (lobby o arena)." to player
+            stop
+        skywarsReturnToHub(player)
+
+on right click with magma cream:
+    if isSkyWarsLeaveWorld(name of world of player) is false:
+        stop
+    if name of event-item does not contain "Quit":
+        stop
+    cancel event
+    skywarsReturnToHub(player)
+
+on inventory click:
+    if isSkyWarsLeaveWorld(name of world of player) is false:
+        stop
+    set {_title} to name of event-inventory
+    if {_title} is not set:
+        stop
+    if {_title} does not contain "quit":
+        if {_title} does not contain "Quit":
+            stop
+    set {_item} to event-item
+    if {_item} is air:
+        stop
+    set {_n} to name of {_item}
+    if {_n} contains "Confirm":
+        cancel event
+        close inventory of player
+        skywarsReturnToHub(player)
+
+every 3 seconds:
+    loop all players:
+        if isSkyWarsLeaveWorld(name of world of loop-player) is false:
+            continue loop
+        if metadata value "sw_returning" of loop-player is set:
+            continue loop
+        if metadata value "sw_hub_syncing" of loop-player is set:
+            continue loop
+        if metadata value "sw_lobby_join_cd" of loop-player is set:
+            continue loop
+        if metadata value "sw_autojoin_pending" of loop-player is set:
+            continue loop
+        if hasSkyWarsHotbar(loop-player) is true:
+            delete metadata value "sw_nohotbar_seen" of loop-player
+            continue loop
+        if isSkyWarsPluginWorld(name of world of loop-player) is true:
+            if isSkyWarsLobbyWorldName(name of world of loop-player) is false:
+                continue loop
+        # Grace period: a player who just arrived in lobbySW gets the plugin hotbar a few ticks
+        # later (world change -> wait -> sw join). Only send back to the hub if they are still
+        # without it on the next check, otherwise "Jugar" bounced players straight back.
+        if metadata value "sw_nohotbar_seen" of loop-player is not set:
+            set metadata value "sw_nohotbar_seen" of loop-player to true
+            continue loop
+        delete metadata value "sw_nohotbar_seen" of loop-player
+        skywarsReturnToHub(loop-player)

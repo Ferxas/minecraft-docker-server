@@ -1,3 +1,14 @@
 Maps:
   free_oreminer:
     Map-Cuboid: PartyGames, -45, 98, -62, -19, 102, -38
+Tutorial-Messages:
+- '&2 --------- &aOre Miner &2--------- '
+- '- Try to mine as many precious ores as you can!'
+- '- Coal ores (+1 point)!'
+- '- Iron ores (+3 point)!'
+- '- Gold ores (+5 point)!'
+- '- Diamond ores (+7 point)!'
+Display-Name: Ore Miner
+Coins-Per-Minigame-Win: 10
+Pickaxe: 'DIAMOND_PICKAXE : 1 : enchant:DIG_SPEED:3'
+Round-Duration: 30

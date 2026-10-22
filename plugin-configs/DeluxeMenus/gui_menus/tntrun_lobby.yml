@@ -50,7 +50,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[player] tr stats'
+      - '[player] tntrun_reloaded:tntrun stats'
 
   'close':
     material: BARRIER

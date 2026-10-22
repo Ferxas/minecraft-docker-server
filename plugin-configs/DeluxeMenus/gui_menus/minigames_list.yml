@@ -74,13 +74,12 @@ items:
     display_name: '&4&lBattle Royale X'
     lore:
       - '&7Paracaídas, armas y 4 mapas'
-      - '&7Clic para ir al lobby BRX'
+      - '&7Clic para ver opciones'
     item_flags:
       - HIDE_ATTRIBUTES
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
-      - '[close]'
-      - '[player] brxplay'
+      - '[openguimenu] battleroyale_hub'
 
   'arcade':
     material: GOLD_INGOT
@@ -88,12 +87,12 @@ items:
     display_name: '&6&lArcade Games'
     lore:
       - '&7Minijuegos arcade clásicos'
-      - '&8Requiere arenas (staff)'
+      - '&e¡Próximamente!'
     item_flags:
       - HIDE_ATTRIBUTES
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
-      - '[openguimenu] arcade_hub'
+      - '[message] &6Arcade &8» &7Estamos preparando las salas. ¡Próximamente!'
 
   'close':
     material: BARRIER

@@ -42,7 +42,7 @@ items:
     click_commands:
       - '[close]'
       - '[player] start'
-      - '[message] &6Arcade &8» &7Si no pasa nada, aún no hay arenas. Pide a staff.'
+      - '[message] &6Arcade &8» &7Todavía no hay salas montadas para Arcade. ¡Próximamente!'
 
   'rejoin':
     material: RED_BED

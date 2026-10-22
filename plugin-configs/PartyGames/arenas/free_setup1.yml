@@ -1,5 +1,7 @@
 # If you don't want to use the lobby countdown shortening system keep the 'shorten-to' value equal to something bigger than the lobby countdown value
 
+max-minigame-rounds: 22
+coins-per-arena-win: 50
 enabled: true
 world: PartyGames
 min-players: 2

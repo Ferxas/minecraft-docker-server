@@ -10,3 +10,14 @@ Maps:
       '5': PartyGames, 243.5, 95, 8.5, 276.22296, 13.818401
       '6': PartyGames, 242.5, 95, 16.5, 244.1051, 3.4388912
       '7': PartyGames, 248.5, 94, 1.5, 279.94376, 3.6347225
+Tutorial-Messages:
+- '&2 --------- &aMob Shooter &2--------- '
+- '- Shoot mobs down to earn points!'
+Display-Name: Mob Shooter
+Coins-Per-Minigame-Win: 10
+Round-Duration: 30
+Spawned-Mobs: 8
+Freeze-Mobs: true
+Player-Items:
+- 'BOW : 1 : enchant:ARROW_INFINITE:1 : enchant:ARROW_DAMAGE:10'
+- 'ARROW : 1'

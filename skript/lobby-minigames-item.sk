@@ -29,9 +29,19 @@ function isNoMenuWorld(w: text) :: boolean:
         return true
     if {_w} is "HGPlay":
         return true
+    if {_w} is "hg_breeze":
+        return true
+    if {_w} is "hg_howling":
+        return true
     if {_w} is "tntrun_void":
         return true
     if {_w} is "skywars1":
+        return true
+    if {_w} is "sw_lighthouse":
+        return true
+    if {_w} is "sw_bonsai":
+        return true
+    if {_w} is "sw_seafloor":
         return true
     return false
 
@@ -41,7 +51,26 @@ function hubMenuSlot(w: text) :: number:
 function removeHubMenuItem(p: player):
     remove all clock named "&6&lMenú" from {_p}'s inventory
 
+function welcomeAdsOpen(p: player) :: boolean:
+    if metadata value "welcomeads_open" of {_p} is set:
+        return true
+    return false
+
+# AdvancedReplay viewers get playback controls in the hotbar (Teleport compass in slot 0).
+function watchingReplay(p: player) :: boolean:
+    loop integers from 0 to 8:
+        set {_item} to slot loop-integer of {_p}'s inventory
+        if {_item} is not air:
+            if name of {_item} contains "10 seconds":
+                return true
+    return false
+
 function giveHubMenuItem(p: player):
+    if welcomeAdsOpen({_p}) is true:
+        removeHubMenuItem({_p})
+        stop
+    if watchingReplay({_p}) is true:
+        stop
     set {_w} to name of world of {_p}
     if isNoMenuWorld({_w}) is true:
         removeHubMenuItem({_p})
@@ -52,16 +81,23 @@ function giveHubMenuItem(p: player):
     set {_slot} to hubMenuSlot({_w})
     removeHubMenuItem({_p})
     set {_c} to clock named "&6&lMenú" with lore "&7Clic derecho: abrir menú" and "&7Minijuegos, spawn, skin..."
-    set slot {_slot} of {_p} to {_c}
+    # Never overwrite a real item in that slot (it used to delete whatever the player held there).
+    if slot {_slot} of {_p} is air:
+        set slot {_slot} of {_p} to {_c}
+    else:
+        give {_c} to {_p}
 
 on join:
-    wait 1 second
-    giveHubMenuItem(player)
     wait 3 seconds
+    if welcomeAdsOpen(player) is true:
+        stop
     giveHubMenuItem(player)
 
 on world change:
     wait 5 ticks
+    if welcomeAdsOpen(player) is true:
+        removeHubMenuItem(player)
+        stop
     if isNoMenuWorld(name of event-world) is true:
         removeHubMenuItem(player)
         stop
@@ -71,7 +107,9 @@ on world change:
 
 every 25 seconds:
     loop all players:
-        if isNoMenuWorld(name of world of loop-player) is true:
+        if welcomeAdsOpen(loop-player) is true:
+            removeHubMenuItem(loop-player)
+        else if isNoMenuWorld(name of world of loop-player) is true:
             removeHubMenuItem(loop-player)
         else:
             giveHubMenuItem(loop-player)

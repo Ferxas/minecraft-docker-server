@@ -6,4 +6,410 @@
 # Example potion-effects: ['SPEED : 9999 : 1', 'JUMP : 9999 : 1']
 # Kit executed commands placeholders: %player%
 # Example of kit executed commands --->>> executed-commands: ['broadcast %player% has selected an OP kit']
-# For a list of enchantments, visit https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+
+Kits:
+  Pyro:
+    item: FLINT_AND_STEEL
+    permission: none
+    rarity: LEGENDARY
+    value: 5000
+    helmet: AIR
+    chestplate: 'LEATHER_CHESTPLATE : enchant:PROTECTION_FIRE:5'
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'FLINT_AND_STEEL : 1'
+    - 'LAVA_BUCKET : 2'
+    description:
+    - '&7Set everyone on fire and'
+    - '&7watch them burn while'
+    - '&7you laugh and swim in lava'
+    potion-effects: []
+    executed-commands: []
+  Hunter:
+    item: BOW
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: LEATHER_HELMET
+    chestplate: AIR
+    leggings: LEATHER_LEGGINGS
+    boots: AIR
+    items:
+    - 'BOW : 1'
+    - 'ARROW : 8'
+    - 'COOKED_BEEF : 2'
+    description:
+    - '&7Receive a normal bow and have the instant'
+    - '&7ability of knocking other players'
+    - '&7when the game starts'
+    potion-effects: []
+    executed-commands: []
+  Lumberjack:
+    item: IRON_AXE
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: IRON_HELMET
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'IRON_AXE : 1 : enchant:DIG_SPEED:3'
+    - 'LOG : 16'
+    - 'BREAD : 1'
+    description:
+    - '&7Start with an enchanted axe and'
+    - '&7lots of wood that will help you'
+    - '&7reach the middle'
+    potion-effects: []
+    executed-commands: []
+  Troll:
+    item: WEB
+    permission: none
+    rarity: LEGENDARY
+    value: 5000
+    helmet: AIR
+    chestplate: IRON_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WEB : 15'
+    - 'LAVA_BUCKET : 5'
+    description:
+    - '&7Trap players inside your'
+    - '&7webs and drown them in lava'
+    potion-effects: []
+    executed-commands: []
+  Builder:
+    item: WOOL
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: LEATHER_HELMET
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WOOD_SWORD : 1'
+    - 'WOOL:14 : 64'
+    description:
+    - '&7Begin with simple building material'
+    - '&7to build towards the middle'
+    - '&7or build creative traps'
+    potion-effects: []
+    executed-commands: []
+  Smith:
+    item: ANVIL
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: IRON_HELMET
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'ANVIL : 1'
+    - 'EXP_BOTTLE : 6'
+    - 'ENCHANTED_BOOK : 1 : enchant:PROTECTION_ENVIRONMENTAL:1'
+    - 'APPLE : 2'
+    description:
+    - '&7Start with an anvil and some exp bottles'
+    - '&7and an enchanted protection book'
+    - '&7which will allow you to enchant right'
+    - '&7from the begining of the game!'
+    potion-effects: []
+    executed-commands: []
+  Hunter+:
+    item: BOW
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: LEATHER_HELMET
+    chestplate: AIR
+    leggings: LEATHER_LEGGINGS
+    boots: AIR
+    items:
+    - 'BOW : 1 : enchant:ARROW_DAMAGE:1'
+    - 'ARROW : 16'
+    - 'BREAD : 1'
+    description:
+    - '&7Receive a strong bow and have the instant'
+    - '&7ability of knocking other players'
+    - '&7when the game starts'
+    potion-effects: []
+    executed-commands: []
+  Tactician:
+    item: WOOD_SWORD
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: AIR
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WOOD_SWORD : 1'
+    - 'SPONGE : 6'
+    - 'POTION:NIGHT_VISION:true:false : 1'
+    description:
+    - '&7Start with a set of items'
+    - '&7that will help you eliminate the others'
+    potion-effects: []
+    executed-commands: []
+  Trainer:
+    item: BONE
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: AIR
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'MONSTER_EGG:95 : 2 : name:&cWolf'
+    - 'BREAD : 1'
+    description:
+    - '&7Tame some wolfs that will protect you'
+    potion-effects: []
+    executed-commands: []
+  Miner+:
+    item: IRON_PICKAXE
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: 'IRON_HELMET : enchant:PROTECTION_EXPLOSIONS:3'
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'IRON_PICKAXE : 1 : enchant:DIG_SPEED:3 : enchant:DURABILITY:3'
+    - 'TNT : 4'
+    - 'REDSTONE_TORCH_ON : 4'
+    - 'COOKED_CHICKEN : 3'
+    description:
+    - '&7Your enchanted pickaxe will help'
+    - '&7you mine faster than any one'
+    - '&7giving you the advantage to get'
+    - '&7decent gear and trap others'
+    potion-effects: []
+    executed-commands: []
+  Fisherman:
+    item: FISHING_ROD
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: LEATHER_HELMET
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'FISHING_ROD : 1 : enchant:KNOCKBACK:1 : enchant:DURABILITY:3'
+    - 'COOKED_FISH : 10'
+    description:
+    - '&7Start with a knockback fishing rod'
+    - '&7and some of your cooked fishes'
+    potion-effects: []
+    executed-commands: []
+  Miner:
+    item: STONE_PICKAXE
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: 'IRON_HELMET : enchant:PROTECTION_EXPLOSIONS:2'
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'STONE_PICKAXE : 1 : enchant:DIG_SPEED:1 : enchant:DURABILITY:3'
+    - 'COOKED_BEEF : 2'
+    - 'TNT : 1'
+    - 'REDSTONE_TORCH_ON : 1'
+    description:
+    - '&7Your enchanted pickaxe will help'
+    - '&7you mine faster than any one'
+    - '&7giving you the advantage to get'
+    - '&7decent gear and trap others'
+    potion-effects: []
+    executed-commands: []
+  Griefer:
+    item: MONSTER_EGG
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: LEATHER_HELMET
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WOOD_SWORD : 1'
+    - 'MONSTER_EGG:50 : 3 : name:&cCreeper'
+    description:
+    - '&7Spawn creepers that will cause'
+    - '&7massive damage to the area'
+    potion-effects: []
+    executed-commands: []
+  Blaze:
+    item: MONSTER_EGG:61
+    permission: none
+    rarity: LEGENDARY
+    value: 5000
+    helmet: AIR
+    chestplate: CHAINMAIL_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WOOD_SWORD : 1'
+    - 'MONSTER_EGG:61 : 2 : name:&cBlaze'
+    description:
+    - '&7Spawn blazes that will protect'
+    - '&7you and set everyone on fire!'
+    potion-effects: []
+    executed-commands: []
+  Knight:
+    item: IRON_SWORD
+    permission: none
+    rarity: LEGENDARY
+    value: 5000
+    helmet: AIR
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'IRON_SWORD : 1 : enchant:DAMAGE_ALL:1'
+    - 'BREAD : 1'
+    description:
+    - '&7Start with a very strong'
+    - '&7enchanted iron sword, but unfortunately'
+    - '&7you will have no protection'
+    potion-effects: []
+    executed-commands: []
+  Enchanter:
+    item: ENCHANTMENT_TABLE
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: IRON_HELMET
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'ENCHANTMENT_TABLE : 1'
+    - 'EXP_BOTTLE : 10'
+    - 'GRILLED_PORK : 1'
+    description:
+    - '&7Receive an enchanting table and'
+    - '&7start enchanting to protect your self'
+    potion-effects: []
+    executed-commands: []
+  Cannoneer:
+    item: TNT
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: AIR
+    chestplate: 'CHAINMAIL_CHESTPLATE : enchant:PROTECTION_EXPLOSIONS:3'
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'TNT : 16'
+    - 'REDSTONE : 32'
+    - 'WATER_BUCKET : 1'
+    - 'WOOD_PLATE : 8'
+    description:
+    - '&7Create tnt cannons on the fly'
+    - '&7with your starter resources'
+    potion-effects: []
+    executed-commands: []
+  Snowman:
+    item: SNOW_BALL
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: AIR
+    chestplate: CHAINMAIL_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WOOD_SPADE : 1 : enchant:DIG_SPEED:2'
+    - 'PUMPKIN : 2'
+    - 'SNOW_BLOCK : 4'
+    description:
+    - '&7Build snowmen that will produce'
+    - '&7snow balls for you to farm'
+    potion-effects: []
+    executed-commands: []
+  Armorer+:
+    item: LEATHER_CHESTPLATE
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: LEATHER_HELMET
+    chestplate: LEATHER_CHESTPLATE
+    leggings: LEATHER_LEGGINGS
+    boots: LEATHER_BOOTS
+    items:
+    - 'WOOD_AXE : 1'
+    - 'BREAD : 2'
+    description:
+    - '&7Receive a full leather set'
+    - '&7that will help you stay alive'
+    - '&7in the early stages'
+    potion-effects: []
+    executed-commands: []
+  Necromancer:
+    item: MONSTER_EGG:51
+    permission: none
+    rarity: RARE
+    value: 2500
+    helmet: LEATHER_HELMET
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'MONSTER_EGG:51 : 2 : name:&cSkeleton'
+    - 'COOKED_BEEF : 3'
+    description:
+    - '&7Spawn skeletons that will'
+    - '&7protect you from others'
+    potion-effects: []
+    executed-commands: []
+  Farmer:
+    item: DIAMOND_HOE
+    permission: none
+    rarity: LEGENDARY
+    value: 5000
+    helmet: AIR
+    chestplate: 'CHAINMAIL_CHESTPLATE : enchant:PROTECTION_PROJECTILE:2'
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'DIAMOND_HOE : 1'
+    - 'WHEAT : 12'
+    - 'INK_SACK:15 : 32'
+    - 'EGG : 16'
+    - 'MONSTER_EGG:93 : 10 : name:&cChicken'
+    - 'WATER_BUCKET : 1'
+    description:
+    - '&7Start with many items that will'
+    - '&7help you produce food to survive and'
+    - '&7eggs to protect your self'
+    potion-effects: []
+    executed-commands: []
+  Armorer:
+    item: LEATHER_CHESTPLATE
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: AIR
+    chestplate: LEATHER_CHESTPLATE
+    leggings: LEATHER_LEGGINGS
+    boots: AIR
+    items:
+    - 'BREAD : 2'
+    description:
+    - '&7Receive a leather chest and leggings'
+    - '&7that will help you stay alive'
+    - '&7in the early stages'
+    potion-effects: []
+    executed-commands: []

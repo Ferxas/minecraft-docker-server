@@ -1,0 +1,27 @@
+# Respawn de seguridad: mundos que no gestiona Multiverse (p.ej. skywars1, que importa el propio
+# SkyWars) no tienen respawn propio y Paper mandaba al jugador al spawn de "world" (-468 73 54),
+# sin menú. Si alguien muere fuera de la survival y su respawn cae en "world", va a SakuraSpawn.
+# Los minijuegos que gestionan su propio respawn (espectador, etc.) cambian la ubicación antes o
+# después; solo se corrige el caso de caer en "world" viniendo de otro mundo.
+
+on death of player:
+    set {-deathworld::%uuid of victim%} to name of world of victim
+
+on respawn:
+    set {_from} to {-deathworld::%uuid of player%}
+    delete {-deathworld::%uuid of player%}
+    {_from} is set
+    {_from} is not "world", "world_nether" or "world_the_end"
+    name of world of respawn location is "world"
+    set respawn location to location(23.478, -61, -92.564, world "SakuraSpawn")
+
+on quit:
+    delete {-deathworld::%uuid of player%}
+
+# Arena de la Piñata (EventWorld): explicar cómo volver.
+on world change:
+    name of event-world is "EventWorld"
+    wait 1 second
+    player is online
+    send title "&d&lPiñata Party" with subtitle "&7Golpéala cuando aparezca · &f/menu &7para volver" to player for 4 seconds
+    send "&d&lPiñata Party &8» &7Cuando aparezca, ¡golpéala! Premios para la survival. Vuelve con &f/menu &7→ Ir al spawn." to player

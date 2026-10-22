@@ -2,3 +2,9 @@ Maps:
   free_colorfulrun:
     Spawnpoint: PartyGames, 216.5, 94, -207.5, 178.81317, 2.6553848
     Floor-Cuboid: PartyGames, 196, 93, -227, 237, 93, -186
+Tutorial-Messages:
+- '&2 --------- &aColorful Run &2--------- '
+- '- Keep moving to color as many blocks as you can'
+Display-Name: Colorful Run
+Coins-Per-Minigame-Win: 10
+Round-Duration: 45

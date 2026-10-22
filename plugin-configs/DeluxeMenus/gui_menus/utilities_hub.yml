@@ -44,13 +44,14 @@ items:
     display_name: '&a&lDisfraces'
     lore:
       - '&7Conviértete en un mob'
-      - '&8Requiere permiso de staff'
-      - '&8Comando: &f/disguise <mob>'
+      - '&7Desbloqueas un disfraz al matar ese mob'
+      - '&8Quitar disfraz: &f/unmorph'
     item_flags:
       - HIDE_ATTRIBUTES
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
-      - '[message] &aDisfraces &8» &7Pide a un admin o usa &f/disguise pig'
+      - '[close]'
+      - '[player] morph'
 
   'scoreboard':
     material: PAINTING
@@ -90,7 +91,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] cinematic play welcome %player_name%'
+      - '[player] cinematic play welcome'
 
   'close':
     material: BARRIER

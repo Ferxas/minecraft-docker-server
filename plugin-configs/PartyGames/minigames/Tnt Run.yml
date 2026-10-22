@@ -2,3 +2,8 @@ Maps:
   free_tntrun:
     Spawnpoint: PartyGames, 253.5, 56, 124.5, 4.0514035, 6.7679996
     Floor-Cuboid: PartyGames, 233, 55, 105, 274, 55, 146
+Tutorial-Messages:
+- '&2 --------- &aTnt Run &2--------- '
+- '- Keep moving! blocks behind you are constantly removed'
+Display-Name: Tnt Run
+Coins-Per-Minigame-Win: 10

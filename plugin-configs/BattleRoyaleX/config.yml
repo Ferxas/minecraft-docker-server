@@ -14,7 +14,7 @@
 # Option Ride-Invisible-Chicken is disabled for 1.16+
 # If you enable Check-For-General-Notifications, I will be able to send you in-game notifications of events such as plugin sales or other things.
 
-Load-Delay-Ticks: 100
+Load-Delay-Ticks: 10
 Check-For-Updates: false
 Check-For-General-Notifications: false
 use-UUID: false
@@ -43,8 +43,42 @@ Load-Chunks-On-World-Load-Immediately: true
 Give-All-Kits-Compass: true
 Default-Kit: Tactician
 Clear-Shopping-Station-Item-Lore-On-Purchase: false
-Broadcast-Time: [60, 30, 15, 5, 4, 3, 2, 1]
-Allowed-Commands: [battleroyale, br, battleroyalex, brx, tell, help, r, msg, menu, hub, minigames, mv, m, music, scoreboard, sit, gsit, salir, brxplay, brxleave, pgplay, pgleave, partygames, pg, sw, skywars]
+Broadcast-Time:
+- 60
+- 30
+- 15
+- 5
+- 4
+- 3
+- 2
+- 1
+Allowed-Commands:
+- battleroyale
+- br
+- battleroyalex
+- brx
+- tell
+- help
+- r
+- msg
+- menu
+- hub
+- minigames
+- mv
+- m
+- music
+- scoreboard
+- sit
+- gsit
+- salir
+- brxplay
+- brxleave
+- pgplay
+- pgleave
+- partygames
+- pg
+- sw
+- skywars
 Command-Aliases: []
 
 Downing-System:
@@ -95,26 +129,32 @@ Mystery-Box:
   Block-Type: ENDER_CHEST
   Cost: 1000
   Contents:
-    - 'Kits : 80%'
-    - 'Celebrations : 20%'
+  - 'Kits : 80%'
+  - 'Celebrations : 20%'
   Rarities:
-    Common: '60%'
-    Rare: '30%'
-    Legendary: '10%'
+    Common: 60%
+    Rare: 30%
+    Legendary: 10%
 
 Party:
   Default-Slots: 3
-  More-Slots: ['4 : battleroyalex.party.slots.4', '5 : battleroyalex.party.slots.5', '6 : battleroyalex.party.slots.6']
+  More-Slots:
+  - '4 : battleroyalex.party.slots.4'
+  - '5 : battleroyalex.party.slots.5'
+  - '6 : battleroyalex.party.slots.6'
 
 Loadouts:
   Default-Amount: 2
-  More-Loadouts: ['3 : battleroyalex.loadouts.3', '4 : battleroyalex.loadouts.4', '5 : battleroyalex.loadouts.5']
+  More-Loadouts:
+  - '3 : battleroyalex.loadouts.3'
+  - '4 : battleroyalex.loadouts.4'
+  - '5 : battleroyalex.loadouts.5'
 
 Bungee-Mode:
   enabled: false
   hub: lobby
   restart-command: restart
-  
+
 MySQL:
   enabled: false
   table: BattleRoyaleX
@@ -180,16 +220,27 @@ Hotbar-Items:
       slot: 9
 
 Executed-Commands:
-  Player-Win: []
-  Arena-Countdown: [broadcast Battle Royale X Arena %arena% is about to start in %seconds% seconds!]
+  Player-Win:
+  - eco give %player% 60
+  - tell %player% &a+60 monedas por ganar Battle Royale
+  Arena-Countdown:
+  - broadcast &4Battle Royale &8» &7La arena &f%arena% &7empieza en &f%seconds% &7segundos.
   Arena-Start: []
   Arena-End: []
 
 Killstreaks:
-  - '2 :: brx giveitem %player% GOLDEN_APPLE : 2'
-  - '4 :: brx giveitem %player% BattleRoyaleX:Carepackage : 1'
+- '2 :: brx giveitem %player% GOLDEN_APPLE : 2'
+- '4 :: brx giveitem %player% BattleRoyaleX:Carepackage : 1'
 
-Bounties: [25, 50, 100, 150, 200, 300, 400, 500]
+Bounties:
+- 25
+- 50
+- 100
+- 150
+- 200
+- 300
+- 400
+- 500
 
 Saving-Task:
   Enabled: true
@@ -218,25 +269,25 @@ Scoreboard-Title-Animation:
   - '&b&lBattle Roya&e&ll&b&le X'
   - '&b&lBattle Royal&e&le &b&lX'
   - '&b&lBattle Royale &e&lX'
-  
+
 Action-Bar-Enabled: true
 Titles-Enabled: true
- 
+
 Custom-Maps:
   Winner-Map:
     enabled: true
     texts:
-    - 'Congratulations'
+    - Congratulations
     - '   For winning!!!'
-    image: 'https://i.imgur.com/FrgIjmJ.png'
+    image: https://i.imgur.com/FrgIjmJ.png
 
 Play-Again-Message:
   enabled: true
   header: '&b&m---------&e Battle Royale X &b&m---------'
   content:
-    - ' '
-    - '         &6Click to play again!'
-    - ' '
+  - ' '
+  - '         &6Click to play again!'
+  - ' '
   footer: '&b&m--------------------------------'
 
 Carepackage:
@@ -246,17 +297,19 @@ Carepackage:
 
 Clear-Entities-On-Game-End:
   enabled: true
-  entity-type-exceptions: ['ARMOR_STAND', 'ITEM_FRAME']
+  entity-type-exceptions:
+  - ARMOR_STAND
+  - ITEM_FRAME
 
 Voting-Options:
   Time:
     enabled: true
     item: 'CLOCK : name:&bTime'
     options:
-      - '&eSunrise : 0'
-      - '&6Noon : 2000'
-      - '&dSunset : 12000'
-      - '&3Midnight : 15000'
+    - '&eSunrise : 0'
+    - '&6Noon : 2000'
+    - '&dSunset : 12000'
+    - '&3Midnight : 15000'
   Scenarios:
     enabled: true
     item: 'CHEST : name:&eScenarios'
@@ -264,12 +317,11 @@ Voting-Options:
     enabled: true
     item: 'APPLE : name:&cHealth'
     options:
-      - '&c10 Hearts : 10'
-      - '&e20 Hearts : 20'
-      - '&630 Hearts : 30'
+    - '&c10 Hearts : 10'
+    - '&e20 Hearts : 20'
+    - '&630 Hearts : 30'
 
-# Free setup — lobby global (coords sin espacios tras la coma; BRX parsea mal con espacios)
-Lobby: BattleRoyaleLobby, -167.5, 31, -84.5, 270.2597, -3.6114385
-# Hologramas desactivados: si fallan al cargar, BRX nunca registra el lobby (bug v4.5)
-# Holographic-Stats: BattleRoyaleLobby,-159.0,34,-80.0,131.36249,0.3052692
-# Holographic-Leaderboard: BattleRoyaleLobby,-159.0,33,-90.0,351.09497,19.301777
+# Free setup — lobby global y hologramas
+Lobby: BattleRoyaleLobby, -167.5, 31, -84.5, -89.73999, -3.6
+Holographic-Stats: BattleRoyaleLobby, -159.0, 34, -80.0, 131.36249, 0.3052692
+Holographic-Leaderboard: SakuraSpawn, 39.5, -54.5, -92.5, 90.0, 0.0

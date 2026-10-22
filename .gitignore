@@ -36,3 +36,13 @@ bootstrap/migrate-tmp/
 # OS
 .DS_Store
 Thumbs.db
+
+# Bots de prueba: dependencias y salidas
+tests/bot/node_modules/
+tests/bot/menus.json
+tests/bot/crawl-report.json
+
+# Jars de terceros: no se redistribuyen en git (se copian a mano a plugins/)
+plugins/*.jar
+!plugins/ClearBorder.jar
+!plugins/WelcomeAdsBridge.jar

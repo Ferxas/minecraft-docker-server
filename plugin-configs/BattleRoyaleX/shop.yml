@@ -2,7 +2,21 @@
 # Loadouts format: 'Item :: Points cost'
 # You can also add items from other plugins. Read chests.yml for further documentation on format
 
-Normal-Mode-Kits: {}
+Normal-Mode-Kits:
+  '&cKits #1':
+    '10': Griefer
+    '11': Miner
+    '12': Armorer
+    '13': Trainer
+    '14': Tactician
+    '15': Hunter
+    '16': Necromancer
+    '19': Enchanter
+    '20': Armorer+
+    '21': Hunter+
+    '22': Lumberjack
+    '23': Blaze
+    '24': Knight
 
 Loadout-Items:
   Helmets:
@@ -25,6 +39,95 @@ Loadout-Items:
   - 'CHAINMAIL_BOOTS : 1 :: 2'
   - 'IRON_BOOTS : 1 :: 3'
   - 'DIAMOND_BOOTS : 1 :: 4'
-  Main Weapon: []
-  Secondary Weapon: []
-  Items: []
+  Main Weapon:
+  - 'QualityArmory:sks : 1 :: 4'
+  - 'QualityArmory:dp27 : 1 :: 3'
+  - 'QualityArmory:instituterifle : 1 :: 4'
+  - 'QualityArmory:kar98k : 1 :: 4'
+  - 'QualityArmory:rpg : 1 :: 4'
+  - 'QualityArmory:homingrpg : 1 :: 4'
+  - 'QualityArmory:vz58 : 1 :: 3'
+  - 'QualityArmory:vera : 1 :: 3'
+  - 'QualityArmory:debuggun : 1 :: 4'
+  - 'QualityArmory:awp : 1 :: 4'
+  - 'QualityArmory:lazerrifle : 1 :: 4'
+  - 'QualityArmory:remington : 1 :: 3'
+  - 'QualityArmory:dragunov : 1 :: 4'
+  - 'QualityArmory:ppsh41 : 1 :: 3'
+  - 'QualityArmory:pkp : 1 :: 3'
+  - 'QualityArmory:ctar21 : 1 :: 3'
+  - 'QualityArmory:famas : 1 :: 3'
+  - 'QualityArmory:galil : 1 :: 3'
+  - 'QualityArmory:henryrifle : 1 :: 4'
+  - 'QualityArmory:flintlockpistol : 1 :: 4'
+  - 'QualityArmory:ak47 : 1 :: 3'
+  - 'QualityArmory:m1garand : 1 :: 4'
+  - 'QualityArmory:fatman : 1 :: 4'
+  - 'QualityArmory:rpk : 1 :: 3'
+  - 'QualityArmory:pancorjackhammer : 1 :: 2'
+  - 'QualityArmory:alienneedler : 1 :: 1'
+  - 'QualityArmory:m79 : 1 :: 4'
+  - 'QualityArmory:m4a1s : 1 :: 3'
+  - 'QualityArmory:sturmgewehr44 : 1 :: 3'
+  - 'QualityArmory:sawedoffshotgun : 1 :: 2'
+  - 'QualityArmory:asval : 1 :: 3'
+  - 'QualityArmory:fnp90 : 1 :: 2'
+  - 'QualityArmory:thatgun : 1 :: 4'
+  - 'QualityArmory:m41pulserifle : 1 :: 4'
+  - 'QualityArmory:pulserifle : 1 :: 4'
+  - 'QualityArmory:aa12 : 1 :: 2'
+  - 'QualityArmory:barrett : 1 :: 4'
+  - 'QualityArmory:mk19 : 1 :: 4'
+  - 'QualityArmory:sg553 : 1 :: 3'
+  - 'QualityArmory:m16 : 1 :: 3'
+  - 'QualityArmory:arcgun9 : 1 :: 0'
+  - 'QualityArmory:m40 : 1 :: 4'
+  - 'QualityArmory:fnfal : 1 :: 3'
+  - 'QualityArmory:musket : 1 :: 4'
+  - 'QualityArmory:unscassaultrifle : 1 :: 3'
+  - 'QualityArmory:ak47u : 1 :: 3'
+  - 'QualityArmory:minigun : 1 :: 2'
+  - 'QualityArmory:flamer : 1 :: 1'
+  - 'QualityArmory:m32a1 : 1 :: 4'
+  - 'QualityArmory:spas12 : 1 :: 2'
+  - 'QualityArmory:blaster : 1 :: 4'
+  - 'QualityArmory:auto9 : 1 :: 4'
+  - 'QualityArmory:m4a1sburst : 1 :: 3'
+  - 'QualityArmory:awpasiimov : 1 :: 4'
+  Secondary Weapon:
+  - 'QualityArmory:skorpion : 1 :: 1'
+  - 'QualityArmory:uzi : 1 :: 1'
+  - 'QualityArmory:glock : 1 :: 1'
+  - 'QualityArmory:cz75 : 1 :: 1'
+  - 'QualityArmory:enfield : 1 :: 1'
+  - 'QualityArmory:mp5k : 1 :: 1'
+  - 'QualityArmory:deagle : 1 :: 1'
+  - 'QualityArmory:makarov : 1 :: 1'
+  - 'QualityArmory:p30 : 1 :: 1'
+  - 'QualityArmory:mauser : 1 :: 1'
+  - 'QualityArmory:ump : 1 :: 1'
+  - 'QualityArmory:fnfiveseven : 1 :: 1'
+  - 'QualityArmory:sw1911 : 1 :: 1'
+  - 'QualityArmory:sten : 1 :: 1'
+  - 'QualityArmory:magnum : 1 :: 1'
+  - 'QualityArmory:mp40 : 1 :: 1'
+  - 'QualityArmory:mac10 : 1 :: 1'
+  - 'QualityArmory:p30silenced : 1 :: 1'
+  - 'QualityArmory:uzicorn : 1 :: 1'
+  Items:
+  - 'QualityArmory:molotov : 1 :: 1'
+  - 'QualityArmory:incendarygrenade : 1 :: 1'
+  - 'QualityArmory:medkit : 1 :: 1'
+  - 'QualityArmory:flashbang : 1 :: 1'
+  - 'QualityArmory:spear : 1 :: 1'
+  - 'QualityArmory:LightSaberOrange : 1 :: 1'
+  - 'QualityArmory:LightSaberBlue : 1 :: 1'
+  - 'QualityArmory:proxymine : 1 :: 1'
+  - 'QualityArmory:LightSaberWhite : 1 :: 1'
+  - 'QualityArmory:LightSaberGreen : 1 :: 1'
+  - 'QualityArmory:smokegrenade : 1 :: 1'
+  - 'QualityArmory:LightSaberRed : 1 :: 1'
+  - 'QualityArmory:grenade : 1 :: 1'
+  - 'QualityArmory:ammobag : 1 :: 1'
+  - 'QualityArmory:LightSaberPurple : 1 :: 1'
+  - 'QualityArmory:LightSaberBlack : 1 :: 1'

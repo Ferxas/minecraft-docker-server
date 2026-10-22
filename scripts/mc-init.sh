@@ -74,7 +74,9 @@ if [ -d "$BOOT/plugins" ]; then
   for jar in "$BOOT/plugins"/*.jar; do
     [ -f "$jar" ] || continue
     base=$(basename "$jar")
-    if [ ! -f "$DATA/plugins/$base" ]; then
+    if [ "$base" = "WelcomeAds-2.1.jar" ] || [ "$base" = "WelcomeAdsBridge.jar" ]; then
+      sync_file "$jar" "$DATA/plugins/$base"
+    elif [ ! -f "$DATA/plugins/$base" ]; then
       cp "$jar" "$DATA/plugins/$base"
       log "  + plugins/$base"
     fi
@@ -102,9 +104,23 @@ if [ -d "$BOOT/skript" ]; then
   done
 fi
 
+# MapBrowser screen coords (reference for mapbrowser-boot.sk / mapbrowser-restore.sh)
+if [ -f "$BOOT/plugin-configs/MapBrowser/screens.yml" ]; then
+  sync_file "$BOOT/plugin-configs/MapBrowser/screens.yml" "$DATA/plugins/MapBrowser/screens.yml"
+fi
+
 # Plugin configs managed in repo (always sync on mc-init)
 for rel in \
   Multiverse-Inventories/groups.yml \
+  PackManagerPro/config.yml \
+  WelcomeAds/container.yml \
+  WelcomeAds/config.yml \
+  WelcomeAds/inventory.yml \
+  WelcomeAds/lang.yml \
+  Oraxen/glyphs/welcomeads/welcomeads.yml \
+  Skywars/arenas/skywars1/locations.dat \
+  Skywars/arenas/skywars1/blocks.dat \
+  Skywars/arenas/skywars1/settings.yml \
   ; do
   src="$BOOT/plugin-configs/$rel"
   dest="$DATA/plugins/$rel"
@@ -112,6 +128,28 @@ for rel in \
     sync_file "$src" "$dest"
   fi
 done
+
+# Oraxen WelcomeAds textures (binary)
+if [ -d "$BOOT/plugin-configs/Oraxen/pack/textures/welcomeads" ]; then
+  mkdir -p "$DATA/plugins/Oraxen/pack/textures/welcomeads"
+  for png in "$BOOT/plugin-configs/Oraxen/pack/textures/welcomeads"/*.png; do
+    [ -f "$png" ] || continue
+    sync_file "$png" "$DATA/plugins/Oraxen/pack/textures/welcomeads/$(basename "$png")"
+  done
+fi
+
+# WelcomeAds bundled packs (Oraxen / ItemsAdder / NexO vendor trees for /welcomeads reload)
+if [ -d "$BOOT/plugin-configs/WelcomeAds/packs" ]; then
+  log "Syncing WelcomeAds/packs/ (vendor Oraxen, IA, NexO)..."
+  mkdir -p "$DATA/plugins/WelcomeAds/packs"
+  (cd "$BOOT/plugin-configs/WelcomeAds/packs" && find . -type f) | while read -r rel; do
+    rel="${rel#./}"
+    src="$BOOT/plugin-configs/WelcomeAds/packs/$rel"
+    dest="$DATA/plugins/WelcomeAds/packs/$rel"
+    mkdir -p "$(dirname "$dest")"
+    sync_file "$src" "$dest"
+  done
+fi
 
 # Worlds from repo (folder name with spaces -> underscores in /data)
 if [ -d "$BOOT/worlds" ]; then

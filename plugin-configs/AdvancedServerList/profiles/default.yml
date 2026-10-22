@@ -35,12 +35,12 @@ condition: ''
 profiles:
   # Frame 2 líneas: tapa ▓░▒█ arriba, base █▒░▓ abajo (mismos lados = cubo cerrado).
   - motd:
-      - '<obfuscated><gradient:#ff6b9d:#a855f7>▓░▒█</gradient></obfuscated> <bold><gradient:#ff6b9d:#a78bfa>« El más </gradient></bold><gradient:#fbbf24:#ef4444:#a855f7><italic><rainbow:2>hetero</rainbow:2></italic></gradient><bold><gradient:#a78bfa:#ff6b9d> MC »</gradient></bold> <obfuscated><gradient:#a855f7:#ff6b9d>▓░▒█</gradient></obfuscated>'
-      - '<obfuscated><gradient:#a855f7:#ff6b9d>█▒░▓</gradient></obfuscated> <gradient:#6b7280:#9ca3af>🕒 <white>${date current}</white> • </gradient><gradient:#22d3ee:#22c55e>${server playersOnline} online</gradient> <obfuscated><gradient:#ff6b9d:#a855f7>█▒░▓</gradient></obfuscated>'
+      - '<obfuscated><gradient:#ff6b9d:#a855f7>▒█   ▒█</gradient></obfuscated> <bold><gradient:#ff6b9d:#a78bfa>« El más </gradient></bold><gradient:#fbbf24:#ef4444:#a855f7><italic><rainbow:2>hetero</rainbow:2></italic></gradient><bold><gradient:#a78bfa:#ff6b9d> MC »</gradient></bold> <obfuscated><gradient:#a855f7:#ff6b9d>▓░   ▓░</gradient></obfuscated>'
+      - '<obfuscated><gradient:#a855f7:#ff6b9d>░▓   ░▓</gradient></obfuscated> <gradient:#6b7280:#9ca3af>🕒 <white>${date current}</white> • </gradient><gradient:#22d3ee:#22c55e>${server playersOnline} online</gradient> <obfuscated><gradient:#ff6b9d:#a855f7>░▓   ░▓</gradient></obfuscated>'
 
   - motd:
-      - '<obfuscated><gradient:#a855f7:#22d3ee>▓░▒█</gradient></obfuscated> <bold><gradient:#ff6b9d:#a78bfa:#22d3ee>« El más </gradient></bold><gradient:#fbbf24:#ef4444:#a855f7><italic><rainbow:2>hetero</rainbow:2></italic></gradient><bold><gradient:#22d3ee:#ff6b9d> MC »</gradient></bold> <obfuscated><gradient:#22d3ee:#a855f7>▓░▒█</gradient></obfuscated>'
-      - '<obfuscated><gradient:#22d3ee:#a855f7>█▒░▓</gradient></obfuscated> <color:#6b7280>🕒 <white>${date current}</white> • </color><rainbow:2>${server playersOnline} online</rainbow> <obfuscated><gradient:#a855f7:#22d3ee>█▒░▓</gradient></obfuscated>'
+      - '<obfuscated><gradient:#a855f7:#22d3ee>▒█   ▒█</gradient></obfuscated> <bold><gradient:#ff6b9d:#a78bfa:#22d3ee>« El más </gradient></bold><gradient:#fbbf24:#ef4444:#a855f7><italic><rainbow:2>hetero</rainbow:2></italic></gradient><bold><gradient:#22d3ee:#ff6b9d> MC »</gradient></bold> <obfuscated><gradient:#22d3ee:#a855f7>▓░   ▓░</gradient></obfuscated>'
+      - '<obfuscated><gradient:#22d3ee:#a855f7>░▓   ░▓</gradient></obfuscated> <color:#6b7280>🕒 <white>${date current}</white> • </color><rainbow:2>${server playersOnline} online</rainbow> <obfuscated><gradient:#a855f7:#22d3ee>█▒   █▒</gradient></obfuscated>'
 
 #
 # Set the "Message of the day" to display.
@@ -57,8 +57,8 @@ profiles:
 # Read more: https://asl.andre601.ch/profiles/options/motd
 #
 motd:
-  - '<obfuscated><gradient:#ff6b9d:#a855f7>▒█</gradient></obfuscated> <bold><gradient:#ff6b9d:#a78bfa>« El más </gradient></bold><gradient:#fbbf24:#ef4444:#a855f7><italic><rainbow:2>hetero</rainbow:2></italic></gradient><bold><gradient:#a78bfa:#ff6b9d> MC »</gradient></bold> <obfuscated><gradient:#a855f7:#ff6b9d>▓░</gradient></obfuscated>'
-  - '<obfuscated><gradient:#a855f7:#ff6b9d>░▓</gradient></obfuscated> <gradient:#6b7280:#9ca3af>🕒 <white>${date current}</white> • </gradient><gradient:#22d3ee:#22c55e>${server playersOnline} online</gradient> <obfuscated><gradient:#ff6b9d:#a855f7>░▓</gradient></obfuscated>'
+  - '<obfuscated><gradient:#ff6b9d:#a855f7>▓░▒█</gradient></obfuscated> <bold><gradient:#ff6b9d:#a78bfa>« El más </gradient></bold><gradient:#fbbf24:#ef4444:#a855f7><italic><rainbow:2>hetero</rainbow:2></italic></gradient><bold><gradient:#a78bfa:#ff6b9d> MC »</gradient></bold> <obfuscated><gradient:#a855f7:#ff6b9d>▓░▒█</gradient></obfuscated>'
+  - '<obfuscated><gradient:#a855f7:#ff6b9d>█▒░▓</gradient></obfuscated> <gradient:#6b7280:#9ca3af>🕒 <white>${date current}</white> • </gradient><gradient:#22d3ee:#22c55e>${server playersOnline} online</gradient> <obfuscated><gradient:#ff6b9d:#a855f7>█▒░▓</gradient></obfuscated>'
 
 #
 # Set the Favicon (image on the left of a server entry) to display.

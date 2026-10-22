@@ -1,0 +1,10 @@
+# Formato de chat: título comprado en la Tienda (prefijo de LuckPerms vía Vault) + nombre.
+# Tab y el nombre sobre la cabeza ya los muestra TAB (%luckperms-prefix%).
+
+on chat:
+    set {_p} to prefix of player
+    if {_p} is set:
+        if {_p} is not "":
+            set chat format to "%colored {_p}%&f[player]&7: &f[message]"
+            stop
+    set chat format to "&f[player]&7: &f[message]"

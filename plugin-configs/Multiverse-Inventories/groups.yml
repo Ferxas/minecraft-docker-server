@@ -8,6 +8,7 @@ groups:
     - world
     - world_nether
     - world_the_end
+    - EventWorld
     shares:
     - all
   battleroyalex:

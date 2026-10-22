@@ -1,0 +1,13 @@
+# /welcomeadspage and /welcomeadsopen are provided by plugins/WelcomeAdsBridge.jar (reload mc after jar update).
+# inventory.yml click actions use: [player]welcomeadspage welcome-2
+
+# Bedrock (Geyser/Floodgate): Bedrock no tiene el pack de Oraxen, así que las páginas de bienvenida se
+# veían con títulos ilegibles (glifos) y la animación mandaba cientos de paquetes por segundo.
+# Los jugadores Bedrock se saltan WelcomeAds y reciben el reloj del menú directamente.
+on inventory open:
+    "%uuid of player%" starts with "00000000-0000-0000"
+    name of event-inventory contains "ꐢ"
+    cancel event
+    wait 5 ticks
+    if player is online:
+        giveHubMenuItem(player)

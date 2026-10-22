@@ -7,3 +7,15 @@ Maps:
       '3': PartyGames, 114.5, 106, -75.5, 305.56802, 16.842176
       '4': PartyGames, 166.5, 102, -116.5, 44.90492, 12.337841
       '5': PartyGames, 119.5, 120, -125.5, -25.401585, 26.634172
+Tutorial-Messages:
+- '&2 --------- &aOne In The Chamber &2--------- '
+- '- If you shoot someone with your bow'
+- you get an instant kill!
+- '- Killing players returns missed arrows'
+Display-Name: One In The Chamber
+Coins-Per-Minigame-Win: 10
+Round-Duration: 90
+Player-Items:
+- 'WOOD_SWORD : 1'
+- 'BOW : 1'
+- 'ARROW : 1'

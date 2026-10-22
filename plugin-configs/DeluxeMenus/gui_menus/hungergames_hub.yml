@@ -33,15 +33,27 @@ items:
     slot: 13
     display_name: '&a&lUnirse a partida'
     lore:
-      - '&7Entrar directo a la arena'
-      - '&7Espera en los pods de HGPlay'
+      - '&7Te mete en la arena libre'
+      - '&7con más jugadores esperando'
     item_flags:
       - HIDE_ATTRIBUTES
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[player] hg join HGPlay'
+      - '[player] hgplay'
       - '[message] &a→ &cHunger Games &7| &fEsperando jugadores...'
+
+  'pick':
+    material: FILLED_MAP
+    slot: 22
+    display_name: '&e&lElegir mapa'
+    lore:
+      - '&7Clásico, Breeze o Howling Mountains'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] hungergames_pick'
 
   'stats':
     material: BOOK
@@ -72,7 +84,8 @@ items:
       - 1-10
       - 12
       - 14
-      - 16-25
+      - 16-21
+      - 23-25
     display_name: ' '
     item_flags:
       - HIDE_ATTRIBUTES

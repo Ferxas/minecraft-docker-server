@@ -18,7 +18,7 @@
 # Increasing Chest-Checks too much might decrease the performance.
 # Example of MySQL query-url-properties: 'useSSL=true', 'verifyServerCertificate=false&useSSL=true'
 
-Use-FastAsyncWorldEdit-When-Possible: true
+Use-FastAsyncWorldEdit-When-Possible: false
 Load-Delay-Ticks: 10
 Empty-Chunk-Generator: false
 
@@ -61,8 +61,39 @@ Leave-Countdown-Seconds: 5
 Update-Leaderboard-Every-Minutes: 15
 Default-Kit: NONE
 Date-Format: dd/MM/yyyy
-Broadcast-Time: [60, 30, 15, 5, 4, 3, 2, 1]
-Allowed-Commands: [sw, skywars, tell, help, r, msg, menu, hub, minigames, mv, m, music, scoreboard, sit, gsit, salir, pgplay, pgleave, partygames, pg]
+Broadcast-Time:
+- 60
+- 30
+- 15
+- 5
+- 4
+- 3
+- 2
+- 1
+Allowed-Commands:
+- sw
+- skywars
+- swleave
+- swhublobby
+- swhubplay
+- tell
+- help
+- r
+- msg
+- menu
+- hub
+- minigames
+- mv
+- m
+- music
+- scoreboard
+- sit
+- gsit
+- salir
+- pgplay
+- pgleave
+- partygames
+- pg
 
 Saying-GG-Rewards:
   enabled: true
@@ -74,9 +105,9 @@ ELO:
   Change-Factor: 40
 
 Block-Behind-Join-Signs:
-  WAITING: 'STAINED_GLASS:5'
-  STARTING: 'STAINED_GLASS:4'
-  UNAVAILABLE: 'STAINED_GLASS:14'
+  WAITING: STAINED_GLASS:5
+  STARTING: STAINED_GLASS:4
+  UNAVAILABLE: STAINED_GLASS:14
 
 Mystery-Box:
   Block-Type: ENDER_CHEST
@@ -93,7 +124,10 @@ Mystery-Box:
 
 Party:
   Default-Slots: 3
-  Custom-Slots: ['4 : skywars.party.slots.4', '5 : skywars.party.slots.5', '6 : skywars.party.slots.6']
+  Custom-Slots:
+  - '4 : skywars.party.slots.4'
+  - '5 : skywars.party.slots.5'
+  - '6 : skywars.party.slots.6'
 
 Hotbar-Items:
   Lobby-Items:
@@ -151,12 +185,12 @@ Hotbar-Items:
 Chest-Checks:
   Slot-Overwrite: 3
   Item-Duplicate: 3
-  
+
 Bungee-Mode:
   enabled: false
   hub: lobby
   restart-command: restart
-  
+
 MySQL:
   enabled: false
   table: Skywars
@@ -180,36 +214,73 @@ Ranks:
   Max-Rank: 30
   Commands:
   - '30 : broadcast %player% has reached the highest rank!'
-  
+
 Executed-Commands:
-  Player-Win: []
-  Arena-Countdown: [broadcast Arena %arena% is about to start in %seconds% seconds!]
-  Arena-Start: [time set 1000 %world%]
-  
+  Player-Win:
+  - eco give %player% 50
+  - tell %player% &a+50 monedas por ganar SkyWars
+  Arena-Countdown:
+  - broadcast &bSkyWars &8» &7La arena &f%arena% &7empieza en &f%seconds% &7segundos.
+  Arena-Start:
+  - time set 1000 %world%
+
 Killstreaks:
-  - '2 : give %player% beef 3'
-  - '5 : give %player% golden_apple 2'
-  - '7 : give %player% diamond 5'
-  
-Bounties: [25, 50, 100, 150, 200, 300, 400, 500]
-  
+- '2 : give %player% beef 3'
+- '5 : give %player% golden_apple 2'
+- '7 : give %player% diamond 5'
+
+Bounties:
+- 25
+- 50
+- 100
+- 150
+- 200
+- 300
+- 400
+- 500
+
 Saving-Task:
   Enabled: true
   Save-Every-Minutes: 10
-  
+
 Team-Coloring:
   default: '&a'
   randomizer-enabled: true
-  randomizer-colors: ['&2', '&3', '&5', '&6', '&7', '&8', '&9', '&a', '&b', '&c', '&d', '&e']
-  
+  randomizer-colors:
+  - '&2'
+  - '&3'
+  - '&5'
+  - '&6'
+  - '&7'
+  - '&8'
+  - '&9'
+  - '&a'
+  - '&b'
+  - '&c'
+  - '&d'
+  - '&e'
+
 Scoreboard-Title-Animation:
   enabled: false
   interval: 8
-  frames: ['&b&lSKYWARS', '&e&lSKYWARS', '&b&lSKYWARS', '&a&lSKYWARS', '&b&lSKYWARS', '&c&lSKYWARS', '&e&lS&b&lKYWARS', '&b&lS&e&lK&b&lYWARS', '&b&lSK&e&lY&b&lWARS', '&b&lSKY&e&lW&b&lARS', '&b&lSKYW&e&lA&b&lRS', '&b&lSKYWA&e&lR&b&lS', '&b&lSKYWAR&e&lS']
-  
+  frames:
+  - '&b&lSKYWARS'
+  - '&e&lSKYWARS'
+  - '&b&lSKYWARS'
+  - '&a&lSKYWARS'
+  - '&b&lSKYWARS'
+  - '&c&lSKYWARS'
+  - '&e&lS&b&lKYWARS'
+  - '&b&lS&e&lK&b&lYWARS'
+  - '&b&lSK&e&lY&b&lWARS'
+  - '&b&lSKY&e&lW&b&lARS'
+  - '&b&lSKYW&e&lA&b&lRS'
+  - '&b&lSKYWA&e&lR&b&lS'
+  - '&b&lSKYWAR&e&lS'
+
 Action-Bar-Enabled: true
 Titles-Enabled: true
-  
+
 Voting-Options:
   Time:
     enabled: true
@@ -232,15 +303,15 @@ Voting-Options:
     - '&c10 Hearts : 10'
     - '&e20 Hearts : 20'
     - '&630 Hearts : 30'
- 
+
 Custom-Maps:
   Winner-Map:
     enabled: true
     texts:
-    - 'Congratulations'
+    - Congratulations
     - '   For winning!!!'
-    image: 'https://i.imgur.com/FrgIjmJ.png'
-    
+    image: https://i.imgur.com/FrgIjmJ.png
+
 Play-Again-Message:
   enabled: true
   header: '&b&m---------&e Skywars &b&m---------'
@@ -249,7 +320,7 @@ Play-Again-Message:
   - '         &6Click to play again!'
   - ' '
   footer: '&b&m---------------------------'
- 
+
 Active-Boosters: []
 
 Sounds:
@@ -295,3 +366,5 @@ Sounds:
 
 # Lobby de espera (mundo lobbySW) — mismo spawn que SkyWarsReloaded
 Lobby: lobbySW, -220.67322652913725, 62.0, -86.96611379403554, -175.94868, 56.699688
+# Ranking en el hub (SakuraSpawn, camino este frente al spawn)
+Holographic-Leaderboard: SakuraSpawn, 37.5, -55.5, -98.5, 90.0, 0.0

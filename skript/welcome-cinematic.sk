@@ -1,6 +1,5 @@
-# Welcome: spawn en el cartel (F3) + cinemática Ferxas "welcome".
-# Play SIEMPRE como jugador: /cscinematic play welcome
-# HungerGames mete a HGLobby en PlayerJoinEvent → forzamos SakuraSpawn varias veces.
+# Spawn SakuraSpawn al join (HungerGames mete a HGLobby).
+# Bienvenida visual: WelcomeAds + Oraxen (no CSCinematic automático).
 
 options:
     spawn-world: SakuraSpawn
@@ -26,47 +25,11 @@ function forceSakuraSpawn(p: player):
         stop
     goSpawn({_p})
 
-function playWelcomeCinematic(p: player):
-    if {_p} is not set:
-        stop
-    if {_p} is not online:
-        stop
-    # HG / Multiverse pueden pelear el join: reintentos
-    forceSakuraSpawn({_p})
-    wait 10 ticks
-    forceSakuraSpawn({_p})
-    wait 20 ticks
-    if {_p} is not online:
-        stop
-    forceSakuraSpawn({_p})
-    # Chunks / vista del cartel antes de spectator
-    wait 40 ticks
-    if {_p} is not online:
-        stop
-    if {_p}'s world's name is not "{@spawn-world}":
-        forceSakuraSpawn({_p})
-        wait 20 ticks
-    if {_p} is not online:
-        stop
-    if {_p}'s world's name is not "{@spawn-world}":
-        send "[welcome-cine] abort: still not in {@spawn-world} for %name of {_p}%" to console
-        stop
-    make {_p} execute command "cscinematic play welcome"
-    send "[welcome-cine] player-play welcome for %name of {_p}% at spawn" to console
-    # welcome.yml total-duration ~8.8s
-    wait 12 seconds
-    if {_p} is online:
-        forceSakuraSpawn({_p})
-        send "[welcome-cine] restored spawn for %name of {_p}%" to console
-
 on join:
-    set {welcome.cinematic.pending::%uuid of player%} to true
-    # Dejar que HG haga su tp a lobby, luego lo corregimos
     wait 5 ticks
-    if {welcome.cinematic.pending::%uuid of player%} is not true:
+    if player is not online:
         stop
-    delete {welcome.cinematic.pending::%uuid of player%}
-    playWelcomeCinematic(player)
-
-on quit:
-    delete {welcome.cinematic.pending::%uuid of player%}
+    forceSakuraSpawn(player)
+    wait 15 ticks
+    if player is online:
+        forceSakuraSpawn(player)

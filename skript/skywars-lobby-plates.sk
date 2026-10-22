@@ -1,0 +1,29 @@
+# lobbySW — placas del mapa → mejor arena disponible (sw autojoin) (signs.yml vacío = 0 join signs nativos).
+
+function isSkyWarsLobbyWorld(w: text) :: boolean:
+    if {_w} is "lobbySW":
+        return true
+    if {_w} is "LobbySW":
+        return true
+    return false
+
+function skywarsPlateJoin(p: player):
+    if isSkyWarsLobbyWorld(name of world of {_p}) is false:
+        stop
+    if metadata value "sw_hub_syncing" of {_p} is set:
+        stop
+    if metadata value "sw_plate_cd" of {_p} is set:
+        stop
+    set metadata value "sw_plate_cd" of {_p} to true
+    execute {_p} command "sw autojoin"
+    wait 2 seconds
+    delete metadata value "sw_plate_cd" of {_p}
+
+on step on stone pressure plate:
+    skywarsPlateJoin(player)
+
+on step on heavy weighted pressure plate:
+    skywarsPlateJoin(player)
+
+on step on light weighted pressure plate:
+    skywarsPlateJoin(player)

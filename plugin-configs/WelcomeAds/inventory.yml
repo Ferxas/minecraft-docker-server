@@ -1,0 +1,88 @@
+inventory:
+  'welcome1':
+    force: true
+    title: "%oraxen_welcomeads_page_1%"
+    background:
+      text: "&0%oraxen_welcomeads_shift_l_1536%&e%oraxen_welcomeads_background%&0%oraxen_welcomeads_shift_l_1014%"
+      fadein: 0
+      stay: 0
+      fadeout: 10
+    items:
+      '1':
+        material: "EMERALD"
+        slot: 48
+        name: "&a&lConlospibes"
+        lore:
+        - "&r"
+        - "&7Hola, &a%player_name%"
+        - "&fGracias por entrar al servidor."
+        flags:
+        - "HIDE_ENCHANTS"
+        - "HIDE_ADDITIONAL_TOOLTIP"
+        enchantments:
+        - "SHARPNESS:1"
+        commands:
+        - "[player]welcomeadspage welcome-2"
+      '2':
+        material: "POTION"
+        slot: 50
+        name: "&eSiguiente"
+        lore:
+        - "&7Clic para ver más"
+        commands:
+        - "[player]welcomeadspage welcome-2"
+        flags:
+        - "HIDE_DYE"
+        - "HIDE_ENCHANTS"
+        - "HIDE_ADDITIONAL_TOOLTIP"
+        enchantments:
+        - "UNBREAKING:1"
+        dyes:
+        - "0:255:0"
+  'welcome2':
+    force: false
+    title: "%oraxen_welcomeads_page_2%"
+    background:
+      text: "&0%oraxen_welcomeads_shift_l_1536%&e%oraxen_welcomeads_background%&0%oraxen_welcomeads_shift_l_1014%"
+      fadein: 0
+      stay: 0
+      fadeout: 10
+    items:
+      '1':
+        material: "EMERALD_BLOCK"
+        modeldata: 0
+        slot: 49
+        name: "&fReglas rápidas"
+        lore:
+        - "&r"
+        - "&71.&f Sin trampas / cheats."
+        - "&72.&f Respeto entre jugadores."
+        - "&73.&f Diviértete en minijuegos y hub."
+        - "&r"
+        commands:
+        - "[player]welcomeadspage welcome-3"
+        flags:
+        - "HIDE_ADDITIONAL_TOOLTIP"
+  'welcome3':
+    force: false
+    title: "%oraxen_welcomeads_page_3%"
+    background:
+      text: "&0%oraxen_welcomeads_shift_l_1536%&e%oraxen_welcomeads_background%&0%oraxen_welcomeads_shift_l_1014%"
+      fadein: 0
+      stay: 0
+      fadeout: 10
+    items:
+      '1':
+        material: "DIAMOND_BLOCK"
+        modeldata: 0
+        slot: 50
+        name: "&a¡Listo!"
+        lore:
+        - "&r"
+        - "&7Usa el menú del lobby para minijuegos."
+        - "&7Cierra esta ventana para jugar."
+        - "&r"
+        commands:
+        - "[close]"
+        flags:
+        - "HIDE_ADDITIONAL_TOOLTIP"

@@ -1,0 +1,24 @@
+Cuboid: sw_bonsai, -87, 74, -87, 87, 97, 87
+Chests: '[2:82:-78:Default, 1:82:-72:Default, -25:82:-55:Default, -19:82:-54:Default,
+  19:82:-52:Default, 25:82:-51:Default, 0:82:-47:Default, -51:82:-25:Default, 55:82:-25:Default,
+  -52:82:-19:Default, 54:82:-19:Default, -78:82:-2:Default, -72:82:-1:Default, -47:82:0:Default,
+  47:82:0:Default, 72:82:1:Default, 78:82:2:Default, -54:82:19:Default, 52:82:19:Default,
+  -55:82:25:Default, 51:82:25:Default, 0:82:47:Default, -25:82:51:Default, -19:82:52:Default,
+  19:82:54:Default, 25:82:55:Default, -1:82:72:Default, -2:82:78:Default, -5:84:-78:Default,
+  25:84:-58:Default, -25:84:-48:Default, -58:84:-25:Default, 48:84:-25:Default, 0:84:-13:Default,
+  78:84:-5:Default, -13:84:0:Default, 13:84:0:Default, -78:84:5:Default, 0:84:13:Default,
+  -48:84:25:Default, 58:84:25:Default, 25:84:48:Default, -25:84:58:Default, 5:84:78:Default]'
+Spectators-Spawnpoint: sw_bonsai, 0.5, 95.0, 0.5, 0.0, 30.0
+Spawnpoints:
+  '1': sw_bonsai, -51.5, 86.5, 19.5, 180.0, 0.0
+  '2': sw_bonsai, -71.5, 86.5, 1.5, 270.0, 0.0
+  '3': sw_bonsai, -53.5, 86.5, -18.5, 0.0, 0.0
+  '4': sw_bonsai, -18.5, 86.5, -51.5, 270.0, 0.0
+  '5': sw_bonsai, -0.5, 86.5, -71.5, 0.0, 0.0
+  '6': sw_bonsai, 19.5, 86.5, -53.5, 90.0, 0.0
+  '7': sw_bonsai, 52.5, 86.5, -18.5, 0.0, 0.0
+  '8': sw_bonsai, 72.5, 86.5, -0.5, 90.0, 0.0
+  '9': sw_bonsai, 54.5, 86.5, 19.5, 180.0, 0.0
+  '10': sw_bonsai, 19.5, 86.5, 52.5, 90.0, 0.0
+  '11': sw_bonsai, 1.5, 86.5, 72.5, 180.0, 0.0
+  '12': sw_bonsai, -18.5, 86.5, 54.5, 270.0, 0.0

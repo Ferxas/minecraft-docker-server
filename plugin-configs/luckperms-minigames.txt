@@ -82,6 +82,9 @@ lp group default permission set cs.use true
 lp group default permission set replay.command.list true
 lp group default permission set replay.command.play true
 lp group default permission set replay.command.leave true
+lp group default permission set replay.command true
+lp group default permission set replay.command.jump true
+lp group default permission set replay.command.info true
 
 # ArcadeGames — /start /leave /rejoin
 lp group default permission set arcade.start true
@@ -102,3 +105,16 @@ lp group default permission set battleroyalex.unblockcmds true
 lp group default permission set battleroyalex.globalchat true
 
 lp group default reload
+
+# Selectores de mapas (2026-10-22)
+lp group default permission set deluxemenus.menu.skywars_pick true
+lp group default permission set deluxemenus.menu.hungergames_pick true
+lp group default permission set deluxemenus.menu.shop_hub true
+
+# Economía (monedas de minijuegos)
+lp group default permission set essentials.balance true
+lp group default permission set essentials.balancetop true
+lp group default permission set essentials.pay true
+
+# Piñata Party (EventWorld, menú Eventos)
+lp group default permission set multiverse.access.EventWorld true

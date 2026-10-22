@@ -26,3 +26,41 @@ Maps:
       '22': PartyGames, -19.5, 95, -169.5, -45.887825, -2.436455
       '23': PartyGames, -23.5, 95, -163.5, -61.94671, -2.2406218
       '24': PartyGames, -26.5, 95, -157.5, -71.34701, -8.115814
+Tutorial-Messages:
+- '&2 --------- &aSurvival Games &2--------- '
+- '- Get to the middle and loot the chests'
+- to eliminate your enemies!
+Display-Name: Survival Games
+Coins-Per-Minigame-Win: 10
+Round-Duration: 120
+Chest-Items:
+- 'STONE_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'WOOD_SWORD : 1'
+- 'MUSHROOM_SOUP : 1'
+- 'BOW : 1 : enchant:ARROW_DAMAGE:1 : name:&bHave Fun'
+- 'LEATHER_HELMET : 1'
+- 'LEATHER_CHESTPLATE : 1'
+- 'LEATHER_LEGGINGS : 1'
+- 'IRON_HELMET : 1'
+- 'IRON_CHESTPLATE : 1'
+- 'IRON_LEGGINGS : 1'
+- 'ARROW : 20'
+- 'FISHING_ROD : 1'
+- 'GOLD_HELMET : 1'
+- 'GOLD_CHESTPLATE : 1'
+- 'BONE : 1'
+- 'GOLDEN_APPLE : 1'
+- 'ARROW : 20'
+- 'APPLE : 2'
+- 'APPLE : 2'
+- 'APPLE : 2'

@@ -12,4 +12,227 @@
 # POTION/SPLASH_POTION/LINGERING_POTION:POTION_TYPE:EXTENDED:UPGRADED
 # Example of the form -> 'SPLASH_POTION:INSTANT_DAMAGE:false:true : 1'
 # List of potion types: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html
-# You can also add items from other plugins. Read chests.yml for further documentation on format
+
+Kits:
+  Hunter:
+    item: BOW
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: LEATHER_HELMET
+    chestplate: AIR
+    leggings: LEATHER_LEGGINGS
+    boots: AIR
+    items:
+    - 'BOW : 1'
+    - 'ARROW : 8'
+    - 'GOLDEN_APPLE : 1'
+    description:
+    - '&7Receive a normal bow and have the'
+    - '&7ability of shooting other players'
+    potion-effects: []
+    executed-commands: []
+  Lumberjack:
+    item: IRON_AXE
+    permission: none
+    rarity: RARE
+    value: 2000
+    helmet: IRON_HELMET
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'IRON_AXE : 1 : enchant:DIG_SPEED:3'
+    - 'LOG : 16'
+    description:
+    - '&7Start with an enchanted axe and'
+    - '&7lots of wood that will help you'
+    potion-effects: []
+    executed-commands: []
+  Hunter+:
+    item: BOW
+    permission: none
+    rarity: RARE
+    value: 2000
+    helmet: LEATHER_HELMET
+    chestplate: AIR
+    leggings: LEATHER_LEGGINGS
+    boots: AIR
+    items:
+    - 'BOW : 1 : enchant:ARROW_DAMAGE:1'
+    - 'ARROW : 16'
+    - 'GOLDEN_APPLE : 1'
+    description:
+    - '&7Receive a strong bow and have the instant'
+    - '&7ability of shooting other players'
+    potion-effects: []
+    executed-commands: []
+  Tactician:
+    item: IRON_SWORD
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: AIR
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'IRON_SWORD : 1'
+    - 'POTION:NIGHT_VISION:true:false : 1'
+    description:
+    - '&7Start with a set of items'
+    - '&7that will help you eliminate the others'
+    potion-effects: []
+    executed-commands: []
+  Trainer:
+    item: BONE
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: AIR
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'MONSTER_EGG:95 : 2 : name:&cWolf'
+    - 'GOLDEN_APPLE : 1'
+    description:
+    - '&7Tame some wolfs that will protect you'
+    potion-effects: []
+    executed-commands: []
+  Miner:
+    item: STONE_PICKAXE
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: 'IRON_HELMET : enchant:PROTECTION_EXPLOSIONS:2'
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'STONE_PICKAXE : 1 : enchant:DIG_SPEED:1 : enchant:DURABILITY:3'
+    - 'TNT : 1'
+    description:
+    - '&7Your enchanted pickaxe will help'
+    - '&7you mine faster than any one'
+    potion-effects: []
+    executed-commands: []
+  Griefer:
+    item: MONSTER_EGG
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: LEATHER_HELMET
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WOOD_SWORD : 1'
+    - 'MONSTER_EGG:50 : 3 : name:&cCreeper'
+    description:
+    - '&7Spawn friendly creepers'
+    potion-effects: []
+    executed-commands: []
+  Blaze:
+    item: MONSTER_EGG:61
+    permission: none
+    rarity: LEGENDARY
+    value: 3000
+    helmet: AIR
+    chestplate: CHAINMAIL_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'WOOD_SWORD : 1'
+    - 'MONSTER_EGG:61 : 2 : name:&cBlaze'
+    - 'GOLDEN_APPLE : 2'
+    description:
+    - '&7Spawn blazes that will protect'
+    - '&7you and set everyone on fire!'
+    potion-effects: []
+    executed-commands: []
+  Knight:
+    item: IRON_SWORD
+    permission: none
+    rarity: LEGENDARY
+    value: 3000
+    helmet: AIR
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'IRON_SWORD : 1 : enchant:DAMAGE_ALL:1'
+    - 'GOLDEN_APPLE : 2'
+    description:
+    - '&7Start with a very strong'
+    - '&7enchanted iron sword, but unfortunately'
+    - '&7you will have no protection'
+    potion-effects: []
+    executed-commands: []
+  Enchanter:
+    item: ENCHANTMENT_TABLE
+    permission: none
+    rarity: RARE
+    value: 2000
+    helmet: IRON_HELMET
+    chestplate: AIR
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'ENCHANTMENT_TABLE : 1'
+    - 'EXP_BOTTLE : 10'
+    - 'GOLDEN_APPLE : 1'
+    description:
+    - '&7Receive an enchanting table and'
+    - '&7start enchanting to protect your self'
+    potion-effects: []
+    executed-commands: []
+  Armorer+:
+    item: IRON_CHESTPLATE
+    permission: none
+    rarity: RARE
+    value: 2000
+    helmet: IRON_HELMET
+    chestplate: LEATHER_CHESTPLATE
+    leggings: IRON_LEGGINGS
+    boots: LEATHER_BOOTS
+    items:
+    - 'STONE_AXE : 1'
+    - 'GOLDEN_APPLE : 1'
+    description:
+    - '&7Receive a full armor set'
+    - '&7that will help you stay alive'
+    potion-effects: []
+    executed-commands: []
+  Necromancer:
+    item: MONSTER_EGG:51
+    permission: none
+    rarity: RARE
+    value: 2000
+    helmet: LEATHER_HELMET
+    chestplate: LEATHER_CHESTPLATE
+    leggings: AIR
+    boots: AIR
+    items:
+    - 'MONSTER_EGG:51 : 2 : name:&cSkeleton'
+    - 'GOLDEN_APPLE : 1'
+    description:
+    - '&7Spawn skeletons that will'
+    - '&7protect you from others'
+    potion-effects: []
+    executed-commands: []
+  Armorer:
+    item: LEATHER_CHESTPLATE
+    permission: none
+    rarity: COMMON
+    value: 1000
+    helmet: AIR
+    chestplate: LEATHER_CHESTPLATE
+    leggings: IRON_LEGGINGS
+    boots: AIR
+    items:
+    - 'GOLDEN_APPLE : 1'
+    description:
+    - '&7Receive a leather chest and iron leggings'
+    potion-effects: []
+    executed-commands: []

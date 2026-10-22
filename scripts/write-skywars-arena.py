@@ -4,8 +4,7 @@ from pathlib import Path
 
 ARENA = Path("/data/plugins/Skywars/arenas/skywars1")
 
-locations = """Cuboid: |
-  skywars1,-160,85,-190,10,140,10
+locations = """Cuboid: "skywars1, -160, 85, -190, 10, 140, 10"
 Chests: '[]'
 Spectators-Spawnpoint: skywars1, -86.5, 123.0, -99.5, 0.0, 0.0
 Spawnpoints:

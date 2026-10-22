@@ -7,3 +7,11 @@ Maps:
       '2': PartyGames, -214.5, 116, 110.5, 173.7321, 2.6553586
       '3': PartyGames, -219.5, 116, 107.5, 83.44984, 0.5011187
       '4': PartyGames, -218.5, 119, 111.5, -12.315919, -0.08640143
+Tutorial-Messages:
+- '&2 --------- &aPunch The Bat &2--------- '
+- '- Kill as many bats as you can!'
+- '- You can double jump!'
+Display-Name: Punch The Bat
+Coins-Per-Minigame-Win: 10
+Round-Duration: 30
+Allow-Double-Jump: true

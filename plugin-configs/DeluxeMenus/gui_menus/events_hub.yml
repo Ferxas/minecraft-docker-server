@@ -18,16 +18,20 @@ items:
     slot: 13
     display_name: '&d&lPiñata Party'
     lore:
-      - '&7Evento especial en mapa dedicado'
-      - '&7(no ocurre en SakuraSpawn)'
+      - '&7Golpea la piñata con todos'
+      - '&7y llévate premios para la survival.'
       - ''
-      - '&8Cuando un admin lo active,'
-      - '&8te avisaremos en el chat'
+      - '&7Sale sola cada hora (aviso en el chat).'
+      - '&7Próxima: &f%xpinata_timer%'
+      - ''
+      - '&eClic para ir a la arena'
     item_flags:
       - HIDE_ATTRIBUTES
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
-      - '[message] &dPiñata Party &8» &7Este evento se hace en un mapa aparte. Pregunta a staff cuándo es la próxima.'
+      - '[close]'
+      - '[console] mv tp %player_name% EventWorld'
+      - '[message] &d→ Arena de la Piñata'
 
   'close':
     material: BARRIER

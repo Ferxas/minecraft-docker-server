@@ -1,3 +1,14 @@
 Maps:
   free_hotpotato:
     Spawnpoint: PartyGames, -164.5, 130, 194.5, 89.32513, 7.3556204
+Tutorial-Messages:
+- '&2 --------- &aHot Potato &2--------- '
+- '- Avoid being hit by the person holding the tnt'
+- '- If you are the person holding the TNT, pass it to someone else before it explodes!'
+Display-Name: Hot Potato
+Coins-Per-Minigame-Win: 10
+Potion-Effects:
+- 'SPEED : 99999 : 1'
+Tnt-Fuse: 20
+Allow-PVP: true
+Unite-All-On-Death: true

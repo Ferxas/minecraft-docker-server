@@ -1,0 +1,200 @@
+npcs:
+  973b83eb-3762-4be9-b63f-16df4eef13a4:
+    name: cl_skywars
+    creator: 8773f853-160f-3f2f-a802-b3a11a197cdf
+    displayName: <aqua><b>SkyWars</b></aqua> <gray>· clic para jugar
+    type: PLAYER
+    location:
+      world: SakuraSpawn
+      x: 25.5
+      y: -61.0
+      z: -98.5
+      yaw: -90.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: false
+    glowingColor: white
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 0.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    actions:
+      ANY_CLICK:
+        '1':
+          action: play_sound
+          value: ui.button.click
+        '2':
+          action: console_command
+          value: dm open skywars_hub {player}
+  81382eb3-eb7e-482c-9954-703d2bc16a3c:
+    name: cl_tntrun
+    creator: 8773f853-160f-3f2f-a802-b3a11a197cdf
+    displayName: <gold><b>TNTRun</b></gold> <gray>· clic para jugar
+    type: PLAYER
+    location:
+      world: SakuraSpawn
+      x: 29.0
+      y: -61.0
+      z: -89.0
+      yaw: -90.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: false
+    glowingColor: white
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 0.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    actions:
+      ANY_CLICK:
+        '1':
+          action: play_sound
+          value: ui.button.click
+        '2':
+          action: console_command
+          value: dm open tntrun_lobby {player}
+  9549ceb9-62e2-47f9-9c29-8efb0099ea9f:
+    name: cl_hungergames
+    creator: 8773f853-160f-3f2f-a802-b3a11a197cdf
+    displayName: <red><b>Hunger Games</b></red> <gray>· clic para jugar
+    type: PLAYER
+    location:
+      world: SakuraSpawn
+      x: 27.5
+      y: -61.0
+      z: -97.5
+      yaw: -90.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: false
+    glowingColor: white
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 0.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    actions:
+      ANY_CLICK:
+        '1':
+          action: play_sound
+          value: ui.button.click
+        '2':
+          action: console_command
+          value: dm open hungergames_hub {player}
+  2c30a57b-eb41-41fe-9ffc-aeb5e7dc5b6e:
+    name: cl_eventos
+    creator: 8773f853-160f-3f2f-a802-b3a11a197cdf
+    displayName: <yellow><b>Eventos</b></yellow> <gray>· piñata y más
+    type: PLAYER
+    location:
+      world: SakuraSpawn
+      x: 25.5
+      y: -61.0
+      z: -86.5
+      yaw: -90.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: false
+    glowingColor: white
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 0.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    actions:
+      ANY_CLICK:
+        '1':
+          action: play_sound
+          value: ui.button.click
+        '2':
+          action: console_command
+          value: dm open events_hub {player}
+  dc1130c2-5842-429b-9db1-ba0fe4b2e2a0:
+    name: cl_brx
+    creator: 8773f853-160f-3f2f-a802-b3a11a197cdf
+    displayName: <dark_red><b>Battle Royale</b></dark_red> <gray>· clic para jugar
+    type: PLAYER
+    location:
+      world: SakuraSpawn
+      x: 27.5
+      y: -61.0
+      z: -87.5
+      yaw: -90.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: false
+    glowingColor: white
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 0.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    actions:
+      ANY_CLICK:
+        '1':
+          action: play_sound
+          value: ui.button.click
+        '2':
+          action: console_command
+          value: dm open battleroyale_hub {player}
+  d4d8ebdf-d495-41ee-8b6a-a58e5f5b4446:
+    name: cl_partygames
+    creator: 8773f853-160f-3f2f-a802-b3a11a197cdf
+    displayName: <light_purple><b>Party Games</b></light_purple> <gray>· clic para
+      jugar
+    type: PLAYER
+    location:
+      world: SakuraSpawn
+      x: 29.0
+      y: -61.0
+      z: -96.0
+      yaw: -90.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: false
+    glowingColor: white
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 0.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    actions:
+      ANY_CLICK:
+        '1':
+          action: play_sound
+          value: ui.button.click
+        '2':
+          action: console_command
+          value: dm open partygames_hub {player}

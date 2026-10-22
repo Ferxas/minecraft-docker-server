@@ -1,0 +1,158 @@
+# SkyWars hub: MV tp no registra lobby del plugin. Siempre spawn fijo en lobbySW (misma coords que Skywars/config.yml Lobby).
+
+options:
+    sw-lobby-world: lobbySW
+    sw-lobby-x: -220.67322652913725
+    sw-lobby-y: 62
+    sw-lobby-z: -86.96611379403554
+    sw-lobby-yaw: -175.94868
+    sw-lobby-pitch: 56.699688
+
+function isSkyWarsLobbyWorldName(w: text) :: boolean:
+    if {_w} is "lobbySW":
+        return true
+    if {_w} is "LobbySW":
+        return true
+    return false
+
+function isSkyWarsPluginWorld(w: text) :: boolean:
+    if isSkyWarsLobbyWorldName({_w}) is true:
+        return true
+    if {_w} is "skywars1":
+        return true
+    if {_w} is "sw_lighthouse":
+        return true
+    if {_w} is "sw_bonsai":
+        return true
+    if {_w} is "sw_seafloor":
+        return true
+    return false
+
+function isHubReturnWorld(w: text) :: boolean:
+    if {_w} is "SakuraSpawn":
+        return true
+    if {_w} is "Runnerslobby":
+        return true
+    if {_w} is "HGLobby":
+        return true
+    return false
+
+function skywarsLobbySpawnLoc() :: location:
+    set {_loc} to location at {@sw-lobby-x}, {@sw-lobby-y}, {@sw-lobby-z} in world "{@sw-lobby-world}"
+    set yaw of {_loc} to {@sw-lobby-yaw}
+    set pitch of {_loc} to {@sw-lobby-pitch}
+    return {_loc}
+
+function skywarsTeleportLobbySpawn(p: player):
+    if {_p} is not online:
+        stop
+    if isSkyWarsLobbyWorldName(name of world of {_p}) is false:
+        stop
+    teleport {_p} to skywarsLobbySpawnLoc()
+
+function skywarsOnArriveLobby(p: player):
+    if {_p} is not online:
+        stop
+    if isSkyWarsLobbyWorldName(name of world of {_p}) is false:
+        stop
+    if metadata value "sw_lobby_join_cd" of {_p} is set:
+        stop
+    set metadata value "sw_hub_syncing" of {_p} to true
+    set metadata value "sw_lobby_join_cd" of {_p} to true
+    skywarsTeleportLobbySpawn({_p})
+    wait 6 ticks
+    if {_p} is not online:
+        delete metadata value "sw_hub_syncing" of {_p}
+        delete metadata value "sw_lobby_join_cd" of {_p}
+        stop
+    # After a match the plugin already puts players in its lobby (with its hotbar);
+    # joining again only printed "You are already in the game!".
+    if hasSkyWarsHotbar({_p}) is false:
+        execute {_p} command "sw join"
+    wait 15 ticks
+    delete metadata value "sw_hub_syncing" of {_p}
+    wait 2 seconds
+    delete metadata value "sw_lobby_join_cd" of {_p}
+
+function skywarsMaybeAutojoin(p: player):
+    if metadata value "sw_autojoin_pending" of {_p} is not set:
+        stop
+    delete metadata value "sw_autojoin_pending" of {_p}
+    wait 12 ticks
+    if {_p} is not online:
+        stop
+    set metadata value "sw_hub_syncing" of {_p} to true
+    skywarsTeleportLobbySpawn({_p})
+    wait 4 ticks
+    if {-sw.target::%uuid of {_p}%} is set:
+        execute {_p} command "sw join %{-sw.target::%uuid of {_p}%}%"
+        delete {-sw.target::%uuid of {_p}%}
+    else:
+        execute {_p} command "sw autojoin"
+    wait 10 ticks
+    delete metadata value "sw_hub_syncing" of {_p}
+
+command /swhublobby:
+    trigger:
+        delete metadata value "sw_autojoin_pending" of player
+        if hasSkyWarsHotbar(player) is true:
+            execute player command "sw leave"
+        if isSkyWarsLobbyWorldName(name of world of player) is true:
+            skywarsOnArriveLobby(player)
+            stop
+        execute console command "mv tp %name of player% {@sw-lobby-world}"
+
+# Menú "Elegir mapa": igual que Jugar ahora pero a una arena concreta.
+command /swarena <text>:
+    executable by: players
+    trigger:
+        if arg-1 is not "skywars1", "sw_lighthouse", "sw_bonsai" or "sw_seafloor":
+            send "&cEse mapa no existe." to player
+            stop
+        set {-sw.target::%uuid of player%} to arg-1
+        execute player command "swhubplay"
+
+command /swhubplay:
+    trigger:
+        set metadata value "sw_autojoin_pending" of player to true
+        if hasSkyWarsHotbar(player) is true:
+            execute player command "sw leave"
+        if isSkyWarsLobbyWorldName(name of world of player) is true:
+            skywarsOnArriveLobby(player)
+            skywarsMaybeAutojoin(player)
+            stop
+        execute console command "mv tp %name of player% {@sw-lobby-world}"
+
+on world change:
+    set {_from} to past event-world
+    set {_to} to event-world
+    set {_fromName} to name of {_from}
+    set {_toName} to name of {_to}
+    if isHubReturnWorld({_toName}) is true:
+        if isSkyWarsPluginWorld({_fromName}) is true:
+            wait 3 ticks
+            if player is online:
+                if hasSkyWarsHotbar(player) is true:
+                    execute player command "sw leave"
+            wait 8 ticks
+            if player is online:
+                if metadata value "sw_returning" of player is not set:
+                    skywarsFinishHubReturn(player)
+        stop
+    if isSkyWarsLobbyWorldName({_toName}) is false:
+        stop
+    if metadata value "sw_returning" of player is set:
+        stop
+    wait 8 ticks
+    if player is not online:
+        stop
+    if isSkyWarsLobbyWorldName(name of world of player) is false:
+        stop
+    skywarsOnArriveLobby(player)
+    skywarsMaybeAutojoin(player)
+
+on join:
+    wait 15 ticks
+    if isSkyWarsLobbyWorldName(name of world of player) is false:
+        stop
+    skywarsOnArriveLobby(player)

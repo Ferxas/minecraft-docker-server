@@ -24,7 +24,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% lobbySW'
+      - '[player] swhublobby'
       - '[message] &a→ Lobby &bSkyWars'
 
   'play':
@@ -40,8 +40,20 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[player] sw join'
+      - '[player] swhubplay'
       - '[message] &aBuscando partida SkyWars...'
+
+  'pick':
+    material: FILLED_MAP
+    slot: 15
+    display_name: '&e&lElegir mapa'
+    lore:
+      - '&7Forest, Lighthouse, Bonsai o Seafloor'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] skywars_pick'
 
   'close':
     material: BARRIER

@@ -24,7 +24,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[player] tr join tntrun_1'
+      - '[player] tntrun_reloaded:tntrun join tntrun_1'
       - '[message] &a→ Arena 1'
 
   'arena_minestar':
@@ -38,7 +38,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[player] tr join minestar_tnt_run'
+      - '[player] tntrun_reloaded:tntrun join minestar_tnt_run'
       - '[message] &a→ Minestar'
 
   'arena_random':
@@ -52,7 +52,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[player] tr join'
+      - '[player] tntrun_reloaded:tntrun autojoin'
       - '[message] &aBuscando sala TNTRun...'
 
   'close':

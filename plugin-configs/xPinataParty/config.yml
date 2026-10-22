@@ -1,10 +1,10 @@
-# xPinataParty — reservado para mapa de eventos (NO SakuraSpawn)
-# Cuando crees el mundo EventWorld, actualiza spawn-location abajo.
+# xPinataParty — evento en EventWorld (arena circular, centro 0,64,0). Menú: Eventos -> Piñata Party.
+# EventWorld comparte inventario con la survival (Multiverse-Inventories, grupo default): los premios sirven allí.
 
 pinata:
   entity: "LLAMA"
   health: 100
-  spawn-location: "EventWorld,0,100,0"
+  spawn-location: "EventWorld,0.5,66,0.5"
   effects:
     fireworks: true
     particles: "HEART"
@@ -59,19 +59,19 @@ bossbar:
 hologram:
   enabled: true
   text:
-    - "&6&lxPinata Party!"
+    - "&6&l¡Piñata Party!"
     - "&e¡Golpéala para premios!"
     - "&bTop: &f%player%"
     - "&aVida: &f%health%&7/&f%maxhealth%"
 
 auto-pinata:
-  enabled: false
-  interval: 600
+  enabled: true
+  interval: 3600
   placeholder: "%xpinata_timer%"
   announcements:
-    start: "&6[&exPinata&6] &a¡Piñata en %location%!"
-    progress: "&6[&exPinata&6] &eVida: %health%%"
-    end: "&6[&exPinata&6] &cDestruida por %player%!"
+    start: "&6[&ePiñata&6] &a¡Apareció la piñata! Ve con &f/menu &a→ Eventos → Piñata Party"
+    progress: "&6[&ePiñata&6] &eVida: %health%%"
+    end: "&6[&ePiñata&6] &c¡Destruida por %player%!"
 
 protection:
   anti-killaura: true

@@ -32,3 +32,15 @@ Maps:
       '11': PartyGames, -151, 74, -118, -71, 75, -118
       '12': PartyGames, -151, 74, -152, -71, 75, -152
     Winning-Cuboid: PartyGames, -151, 70, -210, -70, 87, -197
+Tutorial-Messages:
+- '&2 --------- &aMinecart Racing &2--------- '
+- '- Shoot wool that has your color to'
+- '- Accelerate your cart and win the race!'
+Display-Name: Minecart Racing
+Coins-Per-Minigame-Win: 10
+Player-Items:
+- 'BOW : 1'
+- 'ARROW : 64'
+Round-Duration: 45
+Cart-Max-Speed: 0.95
+Cart-Speed-Modifier-Per-Hit: 1.4

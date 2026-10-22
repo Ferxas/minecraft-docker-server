@@ -1,0 +1,95 @@
+menu_title: '&c&lHunger Games &7| Mapas'
+open_command: []
+size: 27
+
+items:
+  'back':
+    material: ARROW
+    slot: 0
+    display_name: '&7Volver'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] hungergames_hub'
+
+  'classic':
+    material: GOLDEN_APPLE
+    slot: 11
+    display_name: '&6&lClásico'
+    lore:
+      - '&7La arena de siempre'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] hg join HGPlay'
+
+  'breeze':
+    material: SAND
+    slot: 13
+    display_name: '&e&lBreeze'
+    lore:
+      - '&7Hasta 24 jugadores'
+      - '&7Costa y desierto'
+      - '&8Mapa de NetherGames (CC BY 4.0)'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] hg join hg_breeze'
+
+  'howling':
+    material: SNOW_BLOCK
+    slot: 15
+    display_name: '&f&lHowling Mountains'
+    lore:
+      - '&7Hasta 24 jugadores'
+      - '&7Montañas nevadas'
+      - '&8Mapa de NetherGames (CC BY 4.0)'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+      - '[player] hg join hg_howling'
+
+  'close':
+    material: BARRIER
+    slot: 26
+    display_name: '&cCerrar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: RED_STAINED_GLASS_PANE
+    hide_tooltip: true
+    slots:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 12
+      - 14
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+    display_name: ' '

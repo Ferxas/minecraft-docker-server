@@ -1,0 +1,19 @@
+name: WelcomeAdsBridge
+main: welcomeadsbridge.WelcomeAdsBridge
+version: 1.0.1
+api-version: '1.21'
+author: ferxas
+description: Opens WelcomeAds screens without broken /welcomeads open <container> <name> lookups.
+depend:
+  - WelcomeAds
+commands:
+  welcomeadspage:
+    description: Open a WelcomeAds container for yourself
+    usage: /welcomeadspage <container>
+    permission: welcomeads.use
+  welcomeadsopen:
+    description: Open WelcomeAds for an online player (avoids broken /welcomeads open lookup)
+    usage: /welcomeadsopen <container> <player>
+    permission: welcomeads.open
+# welcomeads.use is declared by WelcomeAds itself (default: true); redeclaring it
+# here only produced a "permission already registered" warning on startup.

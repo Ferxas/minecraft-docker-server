@@ -24,6 +24,132 @@ chest-locations:
   pitch: 0.0
   yaw: 0.0
 - world: HGPlay
+  x: 10.0
+  y: -50.0
+  z: -70.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -13.0
+  y: -55.0
+  z: -111.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -13.0
+  y: -55.0
+  z: -112.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -12.0
+  y: -55.0
+  z: -112.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -12.0
+  y: -55.0
+  z: -111.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -39.0
+  y: -49.0
+  z: 16.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: 47.0
+  y: -37.0
+  z: 92.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -17.0
+  y: -54.0
+  z: -115.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: 0.0
+  y: -47.0
+  z: -41.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -101.0
+  y: -50.0
+  z: 48.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -100.0
+  y: -50.0
+  z: 48.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -91.0
+  y: -48.0
+  z: -43.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -5.0
+  y: -45.0
+  z: 61.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -43.0
+  y: -49.0
+  z: 8.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -34.0
+  y: -44.0
+  z: 9.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -43.0
+  y: -37.0
+  z: 9.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -43.0
+  y: -49.0
+  z: 7.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -7.0
+  y: -54.0
+  z: -115.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -8.0
+  y: -54.0
+  z: -115.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: 16.0
+  y: -44.0
+  z: 122.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -110.0
+  y: -47.0
+  z: 7.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
   x: -18.0
   y: -49.0
   z: 3.0
@@ -42,6 +168,12 @@ chest-locations:
   pitch: 0.0
   yaw: 0.0
 - world: HGPlay
+  x: -6.0
+  y: -42.0
+  z: 110.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
   x: -13.0
   y: -49.0
   z: 19.0
@@ -51,6 +183,42 @@ chest-locations:
   x: -4.0
   y: -49.0
   z: 16.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -102.0
+  y: -49.0
+  z: 42.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -103.0
+  y: -49.0
+  z: 43.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -102.0
+  y: -49.0
+  z: 43.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -101.0
+  y: -50.0
+  z: 47.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: -25.0
+  y: -46.0
+  z: 119.0
+  pitch: 0.0
+  yaw: 0.0
+- world: HGPlay
+  x: 24.0
+  y: -47.0
+  z: -80.0
   pitch: 0.0
   yaw: 0.0
 barrel-locations: []

@@ -2,7 +2,8 @@
 # Con Shapeless: true, los slots AIR se ignoran al registrar ingredientes.
 Regenerate-Default-Recipes: false
 
-Clear-Default-Recipes-For: ['TIPPED_ARROW']
+Clear-Default-Recipes-For:
+- TIPPED_ARROW
 
 Recipes:
   '1':
@@ -11,51 +12,51 @@ Recipes:
     Max-Crafts: 1
     Rank-Requirement: 0
     Recipe:
-      - 'AIR : BONE : AIR'
-      - 'AIR : IRON_SWORD : AIR'
-      - 'AIR : ROTTEN_FLESH : AIR'
+    - 'AIR : BONE : AIR'
+    - 'AIR : IRON_SWORD : AIR'
+    - 'AIR : ROTTEN_FLESH : AIR'
   '2':
     Result: 'GOLDEN_APPLE : 1'
     Shapeless: true
     Max-Crafts: 3
     Rank-Requirement: 0
     Recipe:
-      - 'APPLE : GOLD_INGOT : GOLD_INGOT'
-      - 'GOLD_INGOT : GOLD_INGOT : GOLD_INGOT'
-      - 'GOLD_INGOT : GOLD_INGOT : GOLD_INGOT'
+    - 'APPLE : GOLD_INGOT : GOLD_INGOT'
+    - 'GOLD_INGOT : GOLD_INGOT : GOLD_INGOT'
+    - 'GOLD_INGOT : GOLD_INGOT : GOLD_INGOT'
   '3':
     Result: 'ARROW : 8'
     Shapeless: true
     Max-Crafts: 5
     Rank-Requirement: 0
     Recipe:
-      - 'FLINT : STICK : FEATHER'
-      - 'AIR : AIR : AIR'
-      - 'AIR : AIR : AIR'
+    - 'FLINT : STICK : FEATHER'
+    - 'AIR : AIR : AIR'
+    - 'AIR : AIR : AIR'
   '4':
     Result: 'QualityArmory:9mm : 16'
     Shapeless: true
     Max-Crafts: 10
     Rank-Requirement: 0
     Recipe:
-      - 'IRON_NUGGET : IRON_NUGGET : IRON_NUGGET'
-      - 'IRON_NUGGET : GUNPOWDER : GUNPOWDER'
-      - 'AIR : AIR : AIR'
+    - 'IRON_NUGGET : IRON_NUGGET : IRON_NUGGET'
+    - 'IRON_NUGGET : GUNPOWDER : GUNPOWDER'
+    - 'AIR : AIR : AIR'
   '5':
     Result: 'QualityArmory:556 : 12'
     Shapeless: true
     Max-Crafts: 10
     Rank-Requirement: 0
     Recipe:
-      - 'IRON_INGOT : GUNPOWDER : GUNPOWDER'
-      - 'GUNPOWDER : AIR : AIR'
-      - 'AIR : AIR : AIR'
+    - 'IRON_INGOT : GUNPOWDER : GUNPOWDER'
+    - 'GUNPOWDER : AIR : AIR'
+    - 'AIR : AIR : AIR'
   '6':
     Result: 'QualityArmory:shell : 4'
     Shapeless: true
     Max-Crafts: 8
     Rank-Requirement: 0
     Recipe:
-      - 'IRON_NUGGET : IRON_NUGGET : IRON_NUGGET'
-      - 'GUNPOWDER : AIR : AIR'
-      - 'AIR : AIR : AIR'
+    - 'IRON_NUGGET : IRON_NUGGET : IRON_NUGGET'
+    - 'GUNPOWDER : AIR : AIR'
+    - 'AIR : AIR : AIR'

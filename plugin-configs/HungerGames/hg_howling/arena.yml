@@ -1,0 +1,10 @@
+region:
+  world: hg_howling
+  pos1:
+    x: 315.0
+    y: 0.0
+    z: 563.0
+  pos2:
+    x: 635.0
+    y: 255.0
+    z: 883.0

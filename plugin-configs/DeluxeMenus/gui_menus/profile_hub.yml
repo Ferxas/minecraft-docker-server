@@ -11,7 +11,7 @@ items:
       - HIDE_ATTRIBUTES
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
-      - '[openguimenu] main_hub'
+      - '[openguimenu] utilities_hub'
 
   'skin_browser':
     material: PLAYER_HEAD

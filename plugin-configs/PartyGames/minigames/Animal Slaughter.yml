@@ -11,3 +11,14 @@ Maps:
       '6': PartyGames, 15.5, 100, -41.5, 116.41925, 18.12676
       '7': PartyGames, 13.5, 100, -53.5, 179.67548, 16.755878
       '8': PartyGames, 13.5, 100, -66.5, 221.58545, 20.08516
+Tutorial-Messages:
+- '&2 --------- &aAnimal Slaughter &2--------- '
+- '- Kill animals to earn points!'
+- '- Killing some animals deducts points!'
+Display-Name: Animal Slaughter
+Coins-Per-Minigame-Win: 10
+Round-Duration: 45
+Spawned-Animals: 20
+Animals-Drop-Items: true
+Player-Items:
+- 'STONE_SWORD : 1'

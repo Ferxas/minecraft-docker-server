@@ -98,6 +98,8 @@ function pgLobby(p: player):
     teleport {_p} to {_l}
     wait 3 ticks
     givePgVisitorKit({_p})
+    # The join signs need an empty hand; slot 0 is the clock, so select an empty slot.
+    set hotbar slot of {_p} to 2
     send "" to {_p}
     send "&d&lParty Games" to {_p}
     send "&7Camina hacia los &fcarteles &7y haz &fclic derecho &7(mano vacía) para entrar." to {_p}
@@ -118,6 +120,30 @@ command /pgplay:
     executable by: players
     trigger:
         pgLobby(player)
+
+# Menú "Elegir sala": lobby + delante del cartel elegido (carteles en x=48, mirando al este).
+command /pgsign <text>:
+    executable by: players
+    trigger:
+        set {_z} to 52.5
+        if arg-1 is "1":
+            set {_z} to 50.5
+        else if arg-1 is "2":
+            set {_z} to 51.5
+        else if arg-1 is "3":
+            set {_z} to 52.5
+        else if arg-1 is "4":
+            set {_z} to 53.5
+        else if arg-1 is "5":
+            set {_z} to 54.5
+        else if arg-1 is "autojoin":
+            set {_z} to 48.5
+        pgLobby(player)
+        wait 10 ticks
+        player is online
+        arg-1 is not "lobby"
+        teleport player to location(46.5, 115, {_z}, world "PartyGames", -90, 0)
+        set hotbar slot of player to 2
 
 command /pgleave:
     executable by: players
@@ -169,11 +195,8 @@ on right click with red bed:
     cancel event
     pgExitToSpawn(player)
 
-on right click with clock:
-    name of event-item contains "Menú"
-    name of player's world is "PartyGames"
-    cancel event
-    execute player command "menu"
+# The "Menú" clock is handled globally in lobby-minigames-item.sk (a second handler here opened
+# the menu twice).
 
 on quit:
     delete {pg.active::%uuid of player%}

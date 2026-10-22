@@ -3,7 +3,6 @@ Chests:
     min-items: 3
     max-items: 6
     items:
-    # Utilidad vanilla
     - 'WOOD : 16 :: 15%'
     - 'STONE : 16 :: 15%'
     - 'WEB : 4 :: 15%'
@@ -12,7 +11,6 @@ Chests:
     - 'SPLASH_POTION:REGEN:false:false : 1 :: 15%'
     - 'SPLASH_POTION:SPEED:false:false : 1 :: 15%'
     - 'SPLASH_POTION:INSTANT_HEAL:false:false : 1 :: 15%'
-    # Armadura vanilla
     - 'LEATHER_HELMET : 1 :: 15%'
     - 'LEATHER_CHESTPLATE : 1 :: 15%'
     - 'LEATHER_LEGGINGS : 1 :: 15%'
@@ -21,7 +19,6 @@ Chests:
     - 'CHAINMAIL_CHESTPLATE : 1 :: 12%'
     - 'IRON_HELMET : 1 :: 10%'
     - 'IRON_LEGGINGS : 1 :: 10%'
-    # Pistolas / SMG (comunes)
     - 'QualityArmory:glock : 1 :: 18%'
     - 'QualityArmory:cz75 : 1 :: 18%'
     - 'QualityArmory:makarov : 1 :: 16%'
@@ -32,19 +29,16 @@ Chests:
     - 'QualityArmory:mp5k : 1 :: 14%'
     - 'QualityArmory:mac10 : 1 :: 14%'
     - 'QualityArmory:skorpion : 1 :: 12%'
-    # Rifles / escopetas (poco frecuentes)
     - 'QualityArmory:ak47u : 1 :: 10%'
     - 'QualityArmory:m4a1s : 1 :: 10%'
     - 'QualityArmory:galil : 1 :: 10%'
     - 'QualityArmory:remington : 1 :: 12%'
     - 'QualityArmory:sawedoffshotgun : 1 :: 12%'
     - 'QualityArmory:spas12 : 1 :: 8%'
-    # Munición
     - 'QualityArmory:9mm : 24 :: 30%'
     - 'QualityArmory:556 : 20 :: 22%'
     - 'QualityArmory:762 : 20 :: 22%'
     - 'QualityArmory:shell : 8 :: 20%'
-    # Consumibles QA
     - 'QualityArmory:medkit : 1 :: 15%'
     - 'QualityArmory:flashbang : 1 :: 10%'
     - 'QualityArmory:smokegrenade : 1 :: 10%'
@@ -58,7 +52,6 @@ Chests:
     - 'DIAMOND_CHESTPLATE : 1 :: 20%'
     - 'DIAMOND_LEGGINGS : 1 :: 20%'
     - 'DIAMOND_BOOTS : 1 :: 20%'
-    # Armas medias / fuertes
     - 'QualityArmory:ak47 : 1 :: 18%'
     - 'QualityArmory:m4a1s : 1 :: 18%'
     - 'QualityArmory:fnfal : 1 :: 15%'
@@ -69,7 +62,6 @@ Chests:
     - 'QualityArmory:awp : 1 :: 6%'
     - 'QualityArmory:rpg : 1 :: 4%'
     - 'QualityArmory:minigun : 1 :: 3%'
-    # Munición generosa
     - 'QualityArmory:9mm : 48 :: 25%'
     - 'QualityArmory:556 : 40 :: 25%'
     - 'QualityArmory:762 : 40 :: 25%'

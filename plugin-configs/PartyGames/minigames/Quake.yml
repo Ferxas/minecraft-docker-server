@@ -7,3 +7,12 @@ Maps:
       '3': PartyGames, 200.5, 103, 45.5, -2.5464709, 0.5011252
       '4': PartyGames, 205.5, 103, 73.5, -181.15256, 8.530566
       '5': PartyGames, 212.5, 108, 39.5, 87.298096, 4.4179196
+Tutorial-Messages:
+- '&2 --------- &aQuake &2--------- '
+- '- Use your gun to get as many kills as possible!'
+Display-Name: Quake
+Coins-Per-Minigame-Win: 10
+Round-Duration: 45
+Speed-Level: 5
+Gun-Item: 'IRON_HOE : name:&b&lGun'
+Shoot-Cooldown: 1.0

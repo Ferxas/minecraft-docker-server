@@ -1,0 +1,14 @@
+name: ClearBorder
+main: clearborder.ClearBorder
+version: 1.1.0
+api-version: '1.21'
+author: ferxas
+description: Resync client worldborder after Multiverse/Paper cross-world join desync (Paper#13876).
+commands:
+  clearborder:
+    description: Force-resync world border packets for a player
+    usage: /clearborder [player]
+    permission: clearborder.use
+permissions:
+  clearborder.use:
+    default: op

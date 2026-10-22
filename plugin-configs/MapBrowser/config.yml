@@ -1,0 +1,30 @@
+# --------------------------------------------------- #
+#             MapBrowser Configuration                #
+# --------------------------------------------------- #
+# Docs: https://github.com/Steve3184/MapBrowser
+# Requires MapEngine (pianoman911 / Hangar).
+
+jcef:
+  # Leave blank = plugins/MapBrowser/jcef-bundle (auto-download on first boot)
+  custom-install-path: ""
+  # Custom builds with codecs (h264). If download fails, set to "" for default JCEF.
+  mirror: "https://github.com/Steve3184/mb_jcefbuild/releases/download/v1/"
+  skip-download: false
+
+browser:
+  enable-sound: false
+  user-data-dir: "userdata"
+  remote-debugging:
+    enabled: false
+    port: 9222
+  user-agent: ""
+  chrome-log-output: "file"
+  # Docker/Linux headless OSR: disable GPU process (was dying with
+  # gl=none/angle=none → blank maps after successful /mb create).
+  custom-chrome-args:
+    - "--disable-gpu"
+    - "--disable-gpu-compositing"
+    - "--disable-gpu-vsync"
+    - "--no-sandbox"
+    - "--disable-dev-shm-usage"
+    - "--disable-features=VizDisplayCompositor"

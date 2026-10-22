@@ -1,0 +1,36 @@
+# PackManagerPro replaces the client's packs in map worlds (Backrooms, Bunker, KROTHOLE).
+# Leaving one of those, the player would keep the map pack and lose Oraxen's (WelcomeAds glyphs,
+# custom items), so Oraxen's pack is re-sent. Keep the list in sync with PackManagerPro/config.yml.
+
+options:
+  mappacks: "TheBackrooms-map", "Bunker_of_the_infected" and "KROTHOLE_Nouvelle_Ere"
+
+on world change:
+  set {_world} to name of player's world
+  if {-mappack::%player's uuid%} is set:
+    {_world} is not {@mappacks}
+    delete {-mappack::%player's uuid%}
+    wait 1 second
+    player is online
+    execute console command "oraxen pack send %player%"
+  else if {_world} is {@mappacks}:
+    set {-mappack::%player's uuid%} to true
+
+# No re-send on join: Oraxen already dispatches its pack (send_on_join) and the client starts
+# every session without server packs. A second send made WelcomeAds (loadtype: onresourcepack)
+# reopen on top of whatever menu the player had just opened.
+on join:
+    delete {-mappack::%player's uuid%}
+
+on resource pack request accepted:
+  send "[PackStatus] %player% accepted" to console
+on resource pack request successfully loaded:
+  send "[PackStatus] %player% successfully loaded" to console
+on resource pack request declined:
+  send "[PackStatus] %player% declined" to console
+on resource pack request failed reload:
+  send "[PackStatus] %player% failed reload" to console
+on resource pack request invalid url:
+  send "[PackStatus] %player% invalid url" to console
+on resource pack request discarded:
+  send "[PackStatus] %player% discarded" to console

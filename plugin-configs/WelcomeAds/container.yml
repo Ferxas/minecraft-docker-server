@@ -1,0 +1,22 @@
+container:
+  welcome-1:
+    permission: "default"
+    delay: 0
+    loop: false
+    inventory:
+      - "welcome1"
+      - "welcome2"
+      - "welcome3"
+  welcome-2:
+    permission: "default"
+    delay: 100
+    loop: false
+    inventory:
+      - "welcome2"
+  welcome-3:
+    permission: "default"
+    delay: 100
+    loop: false
+    inventory:
+      - "welcome3"
+#f1f318509108f3e16dbf2918dc28cfd1

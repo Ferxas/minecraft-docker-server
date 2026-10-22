@@ -1,7 +1,232 @@
 Styling:
-  Locked-Material: 'COAL_BLOCK'
+  Locked-Material: COAL_BLOCK
   Locked-Lore: '&cLocked'
-  Unlocked-Material: 'DIAMOND_BLOCK'
+  Unlocked-Material: DIAMOND_BLOCK
   Unlocked-Lore: '&aUnlocked'
   Name: '&b%description%'
   Prize: '&6Prize: &e%prizeDescription%'
+Achievements:
+  games_played:
+    '1':
+      description: Play 1 game(s)!
+      prize-description: Earn 10 coins!
+      executed-command: brx coins add %player% 10
+    '5':
+      description: Play 5 game(s)!
+      prize-description: Earn 50 coins!
+      executed-command: brx coins add %player% 50
+    '10':
+      description: Play 10 game(s)!
+      prize-description: Earn 100 coins!
+      executed-command: brx coins add %player% 100
+    '20':
+      description: Play 20 game(s)!
+      prize-description: Earn 200 coins!
+      executed-command: brx coins add %player% 200
+    '50':
+      description: Play 50 game(s)!
+      prize-description: Earn 500 coins!
+      executed-command: brx coins add %player% 500
+    '100':
+      description: Play 100 game(s)!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '200':
+      description: Play 200 game(s)!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000
+    '300':
+      description: Play 300 game(s)!
+      prize-description: Earn 3000 coins!
+      executed-command: brx coins add %player% 3000
+    '400':
+      description: Play 400 game(s)!
+      prize-description: Earn 4000 coins!
+      executed-command: brx coins add %player% 4000
+    '500':
+      description: Play 500 game(s)!
+      prize-description: Earn 5000 coins!
+      executed-command: brx coins add %player% 5000
+    '750':
+      description: Play 750 game(s)!
+      prize-description: Earn 7500 coins!
+      executed-command: brx coins add %player% 7500
+    '1000':
+      description: Play 1000 game(s)!
+      prize-description: Earn 10000 coins!
+      executed-command: brx coins add %player% 10000
+  normal_wins:
+    '1':
+      description: Win 1 normal game(s)!
+      prize-description: Earn 100 coins!
+      executed-command: brx coins add %player% 100
+    '5':
+      description: Win 5 normal game(s)!
+      prize-description: Earn 500 coins!
+      executed-command: brx coins add %player% 500
+    '10':
+      description: Win 10 normal game(s)!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '20':
+      description: Win 20 normal game(s)!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000
+    '50':
+      description: Win 50 normal game(s)!
+      prize-description: Earn 5000 coins!
+      executed-command: brx coins add %player% 5000
+    '100':
+      description: Win 100 normal game(s)!
+      prize-description: Earn 10000 coins!
+      executed-command: brx coins add %player% 10000
+  plunder_wins:
+    '1':
+      description: Win 1 plunder game(s)!
+      prize-description: Earn 100 coins!
+      executed-command: brx coins add %player% 100
+    '5':
+      description: Win 5 plunder game(s)!
+      prize-description: Earn 500 coins!
+      executed-command: brx coins add %player% 500
+    '10':
+      description: Win 10 plunder game(s)!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '20':
+      description: Win 20 plunder game(s)!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000
+    '50':
+      description: Win 50 plunder game(s)!
+      prize-description: Earn 5000 coins!
+      executed-command: brx coins add %player% 5000
+    '100':
+      description: Win 100 plunder game(s)!
+      prize-description: Earn 10000 coins!
+      executed-command: brx coins add %player% 10000
+  kills:
+    '10':
+      description: Get 10 kills!
+      prize-description: Earn 100 coins!
+      executed-command: brx coins add %player% 100
+    '30':
+      description: Get 30 kills!
+      prize-description: Earn 300 coins!
+      executed-command: brx coins add %player% 300
+    '50':
+      description: Get 50 kills!
+      prize-description: Earn 500 coins!
+      executed-command: brx coins add %player% 500
+    '100':
+      description: Get 100 kills!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '150':
+      description: Get 150 kills!
+      prize-description: Earn 1500 coins!
+      executed-command: brx coins add %player% 1500
+    '200':
+      description: Get 200 kills!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000
+    '500':
+      description: Get 500 kills!
+      prize-description: Earn 5000 coins!
+      executed-command: brx coins add %player% 5000
+    '1000':
+      description: Get 1000 kills!
+      prize-description: Earn 10000 coins!
+      executed-command: brx coins add %player% 10000
+  projectiles_hit:
+    '25':
+      description: Hit 25 projectile!
+      prize-description: Earn 50 coins!
+      executed-command: brx coins add %player% 50
+    '50':
+      description: Hit 50 projectile!
+      prize-description: Earn 100 coins!
+      executed-command: brx coins add %player% 100
+    '100':
+      description: Hit 100 projectile!
+      prize-description: Earn 200 coins!
+      executed-command: brx coins add %player% 200
+    '250':
+      description: Hit 250 projectile!
+      prize-description: Earn 500 coins!
+      executed-command: brx coins add %player% 500
+    '500':
+      description: Hit 500 projectile!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '1000':
+      description: Hit 1000 projectile!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000
+  player_rank:
+    '5':
+      description: Reach rank 5!
+      prize-description: Earn 500 coins!
+      executed-command: brx coins add %player% 500
+    '10':
+      description: Reach rank 10!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '15':
+      description: Reach rank 15!
+      prize-description: Earn 1500 coins!
+      executed-command: brx coins add %player% 1500
+    '20':
+      description: Reach rank 20!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000
+    '25':
+      description: Reach rank 25!
+      prize-description: Earn 2500 coins!
+      executed-command: brx coins add %player% 2500
+    '30':
+      description: Reach rank 30!
+      prize-description: Earn 3000 coins!
+      executed-command: brx coins add %player% 3000
+  blocks_placed:
+    '50':
+      description: Place 50 block(s)!
+      prize-description: Earn 50 coins!
+      executed-command: brx coins add %player% 50
+    '200':
+      description: Place 200 block(s)!
+      prize-description: Earn 200 coins!
+      executed-command: brx coins add %player% 200
+    '400':
+      description: Place 400 block(s)!
+      prize-description: Earn 400 coins!
+      executed-command: brx coins add %player% 400
+    '1000':
+      description: Place 1000 block(s)!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '2000':
+      description: Place 2000 block(s)!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000
+  blocks_broken:
+    '50':
+      description: Break 50 block(s)!
+      prize-description: Earn 50 coins!
+      executed-command: brx coins add %player% 50
+    '200':
+      description: Break 200 block(s)!
+      prize-description: Earn 200 coins!
+      executed-command: brx coins add %player% 200
+    '400':
+      description: Break 400 block(s)!
+      prize-description: Earn 400 coins!
+      executed-command: brx coins add %player% 400
+    '1000':
+      description: Break 1000 block(s)!
+      prize-description: Earn 1000 coins!
+      executed-command: brx coins add %player% 1000
+    '2000':
+      description: Break 2000 block(s)!
+      prize-description: Earn 2000 coins!
+      executed-command: brx coins add %player% 2000

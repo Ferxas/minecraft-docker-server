@@ -1,0 +1,24 @@
+Cuboid: sw_seafloor, -51, 37, -51, 51, 72, 51
+Chests: '[-18:55:-41:Default, -16:55:-41:Default, 15:55:-41:Default, 17:55:-41:Default,
+  -1:55:-39:Default, 1:55:-39:Default, 0:55:-25:Default, 41:55:-18:Default, -41:55:-17:Default,
+  41:55:-16:Default, -41:55:-15:Default, 0:55:-6:Default, -39:55:-1:Default, 39:55:-1:Default,
+  -25:55:0:Default, -6:55:0:Default, 6:55:0:Default, 25:55:0:Default, -39:55:1:Default,
+  39:55:1:Default, 0:55:6:Default, 41:55:15:Default, -41:55:16:Default, 41:55:17:Default,
+  -41:55:18:Default, 0:55:25:Default, -1:55:39:Default, 1:55:39:Default, -17:55:41:Default,
+  -15:55:41:Default, 16:55:41:Default, 18:55:41:Default, -17:60:-41:Default, 16:60:-41:Default,
+  0:60:-39:Default, 41:60:-17:Default, -41:60:-16:Default, -39:60:0:Default, 39:60:0:Default,
+  41:60:16:Default, -41:60:17:Default, 0:60:39:Default, -16:60:41:Default, 17:60:41:Default]'
+Spectators-Spawnpoint: sw_seafloor, 0.5, 70.0, 0.5, 0.0, 30.0
+Spawnpoints:
+  '1': sw_seafloor, -40.5, 63.0, 0.5, 270.0, 0.0
+  '2': sw_seafloor, -42.5, 63.0, 17.5, 270.0, 0.0
+  '3': sw_seafloor, -15.5, 63.0, 43.5, 180.0, 0.0
+  '4': sw_seafloor, 0.5, 63.0, 41.5, 180.0, 0.0
+  '5': sw_seafloor, 17.5, 63.0, 43.5, 180.0, 0.0
+  '6': sw_seafloor, 43.5, 63.0, 16.5, 90.0, 0.0
+  '7': sw_seafloor, 41.5, 63.0, 0.5, 90.0, 0.0
+  '8': sw_seafloor, 43.5, 63.0, -16.5, 90.0, 0.0
+  '9': sw_seafloor, 16.5, 63.0, -42.5, 0.0, 0.0
+  '10': sw_seafloor, 0.5, 63.0, -40.5, 0.0, 0.0
+  '11': sw_seafloor, -16.5, 63.0, -42.5, 0.0, 0.0
+  '12': sw_seafloor, -42.5, 63.0, -15.5, 270.0, 0.0

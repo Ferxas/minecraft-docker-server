@@ -1,0 +1,25 @@
+Cuboid: sw_lighthouse, -89, 35, -90, 90, 87, 89
+Chests: '[2:56:-77:Default, 0:56:-75:Default, -23:56:-56:Default, -21:56:-54:Default,
+  21:56:-54:Default, 23:56:-52:Default, -52:56:-23:Default, 56:56:-23:Default, -54:56:-21:Default,
+  54:56:-21:Default, -77:56:-2:Default, -75:56:0:Default, 75:56:0:Default, 77:56:2:Default,
+  -54:56:21:Default, 54:56:21:Default, -56:56:23:Default, 52:56:23:Default, -23:56:52:Default,
+  -21:56:54:Default, 21:56:54:Default, 23:56:56:Default, 0:56:75:Default, -2:56:77:Default,
+  -13:59:-14:Default, 13:59:-12:Default, -14:59:13:Default, 13:59:14:Default, -1:60:-74:Default,
+  0:60:-57:Default, -1:60:-55:Default, 20:60:-55:Default, -20:60:-53:Default, -55:60:-20:Default,
+  53:60:-20:Default, 55:60:-1:Default, 74:60:-1:Default, -57:60:0:Default, 57:60:0:Default,
+  -74:60:1:Default, -55:60:1:Default, -53:60:20:Default, 55:60:20:Default, 20:60:53:Default,
+  -20:60:55:Default, 1:60:55:Default, 0:60:57:Default, 1:60:74:Default]'
+Spectators-Spawnpoint: sw_lighthouse, 0.5, 85.0, 0.5, 0.0, 30.0
+Spawnpoints:
+  '1': sw_lighthouse, 5.5, 64.0, 71.5, 180.0, 0.0
+  '2': sw_lighthouse, 17.5, 64.0, 49.5, 90.0, 0.0
+  '3': sw_lighthouse, 59.5, 64.0, 17.5, 180.0, 0.0
+  '4': sw_lighthouse, 71.5, 64.0, -4.5, 90.0, 0.0
+  '5': sw_lighthouse, 49.5, 64.0, -16.5, 0.0, 0.0
+  '6': sw_lighthouse, 17.5, 64.0, -58.5, 90.0, 0.0
+  '7': sw_lighthouse, -4.5, 64.0, -70.5, 0.0, 0.0
+  '8': sw_lighthouse, -16.5, 64.0, -48.5, 270.0, 0.0
+  '9': sw_lighthouse, -58.5, 64.0, -16.5, 0.0, 0.0
+  '10': sw_lighthouse, -70.5, 64.0, 5.5, 270.0, 0.0
+  '11': sw_lighthouse, -48.5, 64.0, 17.5, 180.0, 0.0
+  '12': sw_lighthouse, -16.5, 64.0, 59.5, 270.0, 0.0

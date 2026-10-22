@@ -68,7 +68,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[player] brx leave'
+      - '[player] brxleave'
 
   'close':
     material: BARRIER

@@ -1,17 +1,19 @@
-# ExtraGreetings — solo se quitó el diamante del primer join (join.firstTime.commands)
+# ExtraGreetings Configuration
+# For more information, visit: https://github.com/bloodred17/ExtraGreetings
+
 
 settings:
   enableJoin: true
   enableQuit: true
   cooldownSeconds: 60
   debug: false
+  # Delay in seconds before showing greetings (to avoid teleportation spam)
   joinDelay: 1
-
 join:
   firstTime:
     title: "<gradient:#FF55FF:#55FFFF>Welcome</gradient>"
-    subtitle: "<italic>%player% has joined for the first time!</italic>"
-    actionbar: "<rainbow>Enjoy your stay!</rainbow>"
+    subtitle: <italic>%player% has joined for the first time!</italic>
+    actionbar: <rainbow>Enjoy your stay!</rainbow>
     bossbar:
       enable: true
       text: "Welcome, %player%!"
@@ -20,7 +22,7 @@ join:
       duration: 10
     particles:
       enable: true
-      effect: "HEART"
+      effect: HEART
       count: 50
       offset:
         x: 0.5
@@ -29,17 +31,17 @@ join:
       speed: 0.1
     sound:
       enable: true
-      effect: "ENTITY_PLAYER_LEVELUP"
+      effect: ENTITY_PLAYER_LEVELUP
       volume: 1.0
       pitch: 1.0
-    message: "<bold><gold>[+]</bold> <white>%player%</white> joined the server for the first time!"
+    message: <bold><gold>[+]</bold> <white>%player%</white> joined the server for the first time!
+    # Run commands when player joins for the first time
     commands:
       - "broadcast &aWelcome our new player %player%!"
-
   recurring:
-    title: "<yellow>¡Bienvenido de vuelta!</yellow>"
-    subtitle: "<gray>¡Disfrta de tu estadía aquí!</gray>"
-    actionbar: "<green>Qué bonito tenerte de vuelta ^^</green>"
+    title: <yellow>¡Bienvenido de vuelta!</yellow>
+    subtitle: <gray>¡Disfruta de tu estadía aquí!</gray>
+    actionbar: <green>Qué bonito tenerte de vuelta ^^</green>
     bossbar:
       enable: false
       text: "Welcome back, %player%!"
@@ -48,7 +50,7 @@ join:
       duration: 5
     particles:
       enable: false
-      effect: "VILLAGER_HAPPY"
+      effect: HAPPY_VILLAGER
       count: 20
       offset:
         x: 0.3
@@ -57,17 +59,18 @@ join:
       speed: 0.1
     sound:
       enable: true
-      effect: "ENTITY_EXPERIENCE_ORB_PICKUP"
+      effect: ENTITY_EXPERIENCE_ORB_PICKUP
       volume: 0.8
       pitch: 1.2
-    message: "<gray>[+]</gray> <white>%player%</white> returned!"
+    message: <gray>[+]</gray> <white>%player%</white> returned!
+    # Run commands when player joins (not first time)
     commands: []
-
+  # VIP join configuration (requires extragreetings.vip permission)
   vip:
     enable: true
     title: "<gradient:#FFD700:#FFA500>VIP</gradient> <gold>Welcome!</gold>"
-    subtitle: "<yellow>%player% the VIP has joined!</yellow>"
-    actionbar: "<rainbow>VIP perks activated!</rainbow>"
+    subtitle: <yellow>%player% the VIP has joined!</yellow>
+    actionbar: <rainbow>VIP perks activated!</rainbow>
     bossbar:
       enable: true
       text: "VIP %player% is here!"
@@ -76,7 +79,7 @@ join:
       duration: 15
     particles:
       enable: true
-      effect: "FLAME"
+      effect: FLAME
       count: 100
       offset:
         x: 1.0
@@ -85,19 +88,18 @@ join:
       speed: 0.2
     sound:
       enable: true
-      effect: "ENTITY_ENDER_DRAGON_GROWL"
+      effect: ENTITY_ENDER_DRAGON_GROWL
       volume: 1.0
       pitch: 1.5
-    message: "<bold><gold>[VIP]</gold></bold> <yellow>%player%</yellow> has joined the server!"
+    message: <bold><gold>[VIP]</gold></bold> <yellow>%player%</yellow> has joined the server!
     commands:
       - "effect give %player% minecraft:glowing 30 0 true"
-
 quit:
   vip:
-    message: "<bold><gold>[VIP]</gold></bold> <yellow>%player%</yellow> has left the server!"
+    message: <bold><gold>[VIP]</gold></bold> <yellow>%player%</yellow> has left the server!
     particles:
       enable: true
-      effect: "DRAGON_BREATH"
+      effect: DRAGON_BREATH
       count: 30
       offset:
         x: 0.5
@@ -106,17 +108,17 @@ quit:
       speed: 0.15
     sound:
       enable: true
-      effect: "ENTITY_ENDER_DRAGON_FLAP"
+      effect: ENTITY_ENDER_DRAGON_FLAP
       volume: 1.0
       pitch: 1.2
     commands:
       - "say VIP %player% has left the server!"
-
+  # Regular quit greeting
   regular:
-    message: "<gray>[-]</gray> <white>%player%</white> left the server."
+    message: <gray>[-]</gray> <white>%player%</white> left the server.
     particles:
       enable: true
-      effect: "SMOKE_NORMAL"
+      effect: SMOKE
       count: 20
       offset:
         x: 0.0
@@ -125,14 +127,172 @@ quit:
       speed: 0.1
     sound:
       enable: true
-      effect: "ENTITY_HORSE_SADDLE"
+      effect: ENTITY_HORSE_SADDLE
       volume: 0.8
       pitch: 1.0
     commands: []
 
-customPermissions: {}
+# Custom permission-based greetings
+# Add your own permissions here with custom messages
+customPermissions:
+  example:
+    # Priority determines which greeting is used if a player has multiple permissions
+    # Higher priority = higher precedence (will override lower priority)
 
+    one:
+      priority: 10
+      join:
+        firstTime:
+          title: "<gradient:#FF0000:#00FF00>Special Welcome</gradient>"
+          subtitle: <italic>%player% joined with example.one permission!</italic>
+          actionbar: <gold>You have special powers!</gold>
+          bossbar:
+            enable: true
+            text: "Welcome, Special One %player%!"
+            color: RED
+            style: SOLID
+            duration: 8
+          particles:
+            enable: true
+            effect: FIREWORK
+            count: 75
+            offset:
+              x: 1.0
+              y: 1.5
+              z: 1.0
+            speed: 0.2
+          sound:
+            enable: true
+            effect: ENTITY_FIREWORK_ROCKET_LAUNCH
+            volume: 1.0
+            pitch: 1.0
+          message: <bold><red>[SPECIAL]</red></bold> <white>%player%</white> joined with example.one powers!
+          commands:
+            - "give %player% gold_ingot 5"
+            - "effect give %player% minecraft:speed 60 1 true"
+        recurring:
+          title: <red>Welcome back, Special One!</red>
+          subtitle: <gray>Your powers await!</gray>
+          actionbar: <gold>Special abilities ready!</gold>
+          bossbar:
+            enable: false
+          particles:
+            enable: true
+            effect: CRIT
+            count: 30
+            offset:
+              x: 0.5
+              y: 1.0
+              z: 0.5
+            speed: 0.1
+          sound:
+            enable: true
+            effect: ENTITY_EXPERIENCE_ORB_PICKUP
+            volume: 1.0
+            pitch: 1.5
+          message: <red>[SPECIAL]</red> <white>%player%</white> has returned!
+          commands:
+            - "effect give %player% minecraft:speed 30 0 true"
+      quit:
+        message: <bold><red>[SPECIAL]</red></bold> <white>%player%</white> has left the server!
+        particles:
+          enable: true
+          effect: LAVA
+          count: 25
+          offset:
+            x: 0.5
+            y: 1.0
+            z: 0.5
+          speed: 0.1
+        sound:
+          enable: true
+          effect: ENTITY_BLAZE_DEATH
+          volume: 1.0
+          pitch: 1.0
+        commands:
+          - "say Special player %player% has departed!"
+    two:
+      priority: 5
+      join:
+        firstTime:
+          title: "<gradient:#0000FF:#FFFF00>Elite Member</gradient>"
+          subtitle: <italic>%player% joined as an Elite!</italic>
+          actionbar: <blue>Elite status activated!</blue>
+          bossbar:
+            enable: true
+            text: "Elite %player% has arrived!"
+            color: BLUE
+            style: NOTCHED_6
+            duration: 12
+          particles:
+            enable: true
+            effect: ENCHANT
+            count: 50
+            offset:
+              x: 0.8
+              y: 1.2
+              z: 0.8
+            speed: 0.15
+          sound:
+            enable: true
+            effect: BLOCK_ENCHANTMENT_TABLE_USE
+            volume: 1.0
+            pitch: 1.2
+          message: <bold><blue>[ELITE]</blue></bold> <white>%player%</white> joined as an elite member!
+          commands:
+            - "give %player% diamond 3"
+            - "effect give %player% minecraft:jump_boost 120 1 true"
+        recurring:
+          title: <blue>Welcome back, Elite!</blue>
+          subtitle: <gray>Your elite status continues!</gray>
+          actionbar: <aqua>Elite perks active!</aqua>
+          bossbar:
+            enable: false
+          particles:
+            enable: true
+            effect: PORTAL
+            count: 20
+            offset:
+              x: 0.3
+              y: 0.8
+              z: 0.3
+            speed: 0.1
+          sound:
+            enable: true
+            effect: ENTITY_PLAYER_LEVELUP
+            volume: 0.8
+            pitch: 1.0
+          message: <blue>[ELITE]</blue> <white>%player%</white> has returned!
+          commands:
+            - "effect give %player% minecraft:jump_boost 60 0 true"
+      quit:
+        message: <bold><blue>[ELITE]</blue></bold> <white>%player%</white> has left the server!
+        particles:
+          enable: true
+          effect: SPLASH
+          count: 35
+          offset:
+            x: 0.6
+            y: 1.0
+            z: 0.6
+          speed: 0.12
+        sound:
+          enable: true
+          effect: ENTITY_PLAYER_SPLASH
+          volume: 1.0
+          pitch: 1.1
+        commands:
+          - "say Elite member %player% has disconnected!"
+
+# Custom placeholders
 placeholders:
+  # %online_players% - Number of online players
+  # %max_players% - Maximum players
+  # %server_name% - Server name
+  # %player_displayname% - Player display name
+  # %player_uuid% - Player UUID
+  # %current_time% - Current server time
+  # %server_uptime% - Server uptime
   online_players: "%server_online%"
   max_players: "%server_max_players%"
   server_name: "%server_name%"

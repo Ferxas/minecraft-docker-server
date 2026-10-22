@@ -43,6 +43,19 @@ items:
       - '[close]'
       - '[player] pgplay'
 
+  'pick':
+    material: OAK_SIGN
+    slot: 13
+    display_name: '&e&lElegir sala'
+    lore:
+      - '&7Te lleva delante del cartel'
+      - '&7de la sala que elijas'
+    item_flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ADDITIONAL_TOOLTIP
+    click_commands:
+      - '[openguimenu] partygames_pick'
+
   'leave':
     material: BARRIER
     slot: 14
@@ -72,6 +85,5 @@ items:
     slots:
       - 1-3
       - 5-11
-      - 13
       - 15-25
     display_name: ' '

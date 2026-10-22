@@ -11,3 +11,12 @@ Maps:
     Winning-Cuboid: PartyGames, -305, 114, 284, -298, 119, 293
     Barrier-Cuboid: PartyGames, -305, 115, 267, -298, 119, 267
     Losing-Cuboid: PartyGames, -333, 109, 137, -240, 109, 319
+Tutorial-Messages:
+- '&2 --------- &aHorse Race &2--------- '
+- '- Get to the end of the racing course as fast as possible!'
+Display-Name: Horse Race
+Coins-Per-Minigame-Win: 10
+Round-Duration: 90
+Player-Items:
+- 'BOW : 1'
+- 'ARROW : 64'

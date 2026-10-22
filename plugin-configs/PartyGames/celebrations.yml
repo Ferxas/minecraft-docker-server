@@ -7,7 +7,7 @@ Celebrations:
     rarity: COMMON
   Party-Spitter:
     enabled: true
-    item: 'WOOL:14'
+    item: WOOL:14
     value: 3000
     permission: none
     rarity: RARE

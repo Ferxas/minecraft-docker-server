@@ -1,0 +1,67 @@
+min-chest-content: 3
+max-chest-content: 6
+min-barrel-content: 4
+max-barrel-content: 7
+min-trapped-chest-content: 4
+max-trapped-chest-content: 7
+num-supply-drops: 1
+min-supply-drop-content: 2
+max-supply-drop-content: 6
+players-per-team: 1
+game-time: 900
+countdown: 20
+grace-period: 30
+supplydrop:
+  interval: 120
+chestrefill:
+  interval: 180
+auto-start:
+  enabled: true
+  players: 2
+  delay: 15
+min-players: 2
+voting: false
+display-scoreboard: true
+display-bossbar: true
+break-blocks:
+  enabled: false
+  drop: true
+  allowed-blocks:
+  - GRASS_BLOCK
+  - DIRT
+border:
+  size: 300
+  start-time: 600
+  end-time: 840
+  final-size: 40
+  center-x: 475
+  center-z: 723
+custom-commands:
+  enabled: true
+  start:
+    global:
+    - hgarena busy hg_howling
+    foreach-player:
+    - hgleave remove {winner}
+  end:
+    global:
+    - hgarena waiting hg_howling
+    foreach-winner:
+    - eco give {winner} 75
+    - tell {winner} &a+75 monedas por ganar Hunger Games
+bedrock-buff:
+  enabled: false
+  # Effects applied to bedrock players
+  effects:
+  - DAMAGE_RESISTANCE
+  - SPEED
+killer-effects:
+- effect: DAMAGE_RESISTANCE
+  duration: 300
+  level: 0
+- effect: REGENERATION
+  duration: 600
+  level: 0
+- effect: ABSORPTION
+  duration: 300
+  level: 0

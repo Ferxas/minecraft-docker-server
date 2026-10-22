@@ -38,8 +38,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% PartyGames'
-      - '[console] tp %player_name% 48.5 116 50.5 90 0'
+      - '[player] pgsign 1'
       - '[message] &a→ &dArena 1 &7| &fClic derecho en el cartel (mano vacía)'
 
   'arena_2':
@@ -53,8 +52,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% PartyGames'
-      - '[console] tp %player_name% 48.5 116 51.5 90 0'
+      - '[player] pgsign 2'
       - '[message] &a→ &dArena 2 &7| &fClic derecho en el cartel (mano vacía)'
 
   'arena_3':
@@ -68,8 +66,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% PartyGames'
-      - '[console] tp %player_name% 48.5 116 52.5 90 0'
+      - '[player] pgsign 3'
       - '[message] &a→ &dArena 3 &7| &fClic derecho en el cartel (mano vacía)'
 
   'arena_4':
@@ -83,8 +80,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% PartyGames'
-      - '[console] tp %player_name% 48.5 116 53.5 90 0'
+      - '[player] pgsign 4'
       - '[message] &a→ &dArena 4 &7| &fClic derecho en el cartel (mano vacía)'
 
   'arena_5':
@@ -98,8 +94,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% PartyGames'
-      - '[console] tp %player_name% 48.5 116 54.5 90 0'
+      - '[player] pgsign 5'
       - '[message] &a→ &dArena 5 &7| &fClic derecho en el cartel (mano vacía)'
 
   'autojoin':
@@ -114,8 +109,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% PartyGames'
-      - '[console] tp %player_name% 48.5 116 52.5 90 0'
+      - '[player] pgsign autojoin'
       - '[message] &e→ Busca el cartel &fautojoin &7(mano vacía)'
 
   'lobby':
@@ -129,8 +123,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] mv tp %player_name% PartyGames'
-      - '[console] tp %player_name% 48.5 116 52.5 90 0'
+      - '[player] pgsign lobby'
       - '[message] &a→ &dParty Games &7| &fCarteles'
 
   'leave':
@@ -144,8 +137,7 @@ items:
       - HIDE_ADDITIONAL_TOOLTIP
     click_commands:
       - '[close]'
-      - '[console] execute %player_name% run partygames leave'
-      - '[message] &c→ Saliendo...'
+      - '[player] pgleave'
 
   'close':
     material: BARRIER

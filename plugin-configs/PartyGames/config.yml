@@ -50,18 +50,46 @@ Use-Gamemode-3-For-Spectators: true
 Enable-Lobby-Flight: false
 Update-Leaderboard-Every-Minutes: 15
 Selling-Returned-Value: 33%
-Broadcast-Time: [60, 30, 15, 5, 4, 3, 2, 1]
-Allowed-Commands: [pg, partygames, tell, help, r, msg, menu, hub, m, minigames, salir, pgplay, pgleave, sit, gsit, music, scoreboard]
+Broadcast-Time:
+- 60
+- 30
+- 15
+- 5
+- 4
+- 3
+- 2
+- 1
+Allowed-Commands:
+- pg
+- partygames
+- tell
+- help
+- r
+- msg
+- menu
+- hub
+- m
+- minigames
+- salir
+- pgplay
+- pgleave
+- sit
+- gsit
+- music
+- scoreboard
 Disable-Player-Trails-In-Minigames: false
 
 Block-Behind-Join-Signs:
-  WAITING: 'STAINED_GLASS:5'
-  STARTING: 'STAINED_GLASS:4'
-  UNAVAILABLE: 'STAINED_GLASS:14'
+  WAITING: STAINED_GLASS:5
+  STARTING: STAINED_GLASS:4
+  UNAVAILABLE: STAINED_GLASS:14
 
 Party:
   Default-Slots: 3
-  Custom-Slots: ['4 : partygames.party.slots.4', '5 : partygames.party.slots.5', '6 : partygames.party.slots.6']
+  Custom-Slots:
+  - '4 : partygames.party.slots.4'
+  - '5 : partygames.party.slots.5'
+  - '6 : partygames.party.slots.6'
 
 Hotbar-Items:
   Lobby:
@@ -109,12 +137,12 @@ Hotbar-Items:
     Quit:
       enabled: true
       slot: 9
-  
+
 Bungee-Mode:
   enabled: false
   hub: lobby
   restart-command: restart
-  
+
 MySQL:
   enabled: false
   table: PartyGames
@@ -132,23 +160,30 @@ Ranks:
   Max-Rank: 25
   Commands:
   - '25 : broadcast %player% has reached the highest rank!'
-  
-Prestige-Commands: ['broadcast %player% has achieved prestige %prestige%!']
-  
+
+Prestige-Commands:
+- broadcast %player% has achieved prestige %prestige%!
+
 Executed-Commands:
-  Arena-Countdown: [broadcast Arena %arena% is about to start in %seconds% seconds!]
+  Arena-Countdown:
+  - broadcast &dParty Games &8» &7La arena &f%arena% &7empieza en &f%seconds% &7segundos.
   Arena-Start: []
   Arena-Stop: []
-  Player-Win: []
-  Player-Win-Minigame: []
+  Player-Win:
+  - eco give %player% 50
+  - tell %player% &a+50 monedas por ganar Party Games
+  Player-Win-Minigame:
+  - eco give %player% 5
   Minigame-Start: []
   Minigame-Finish: []
-  
+
 Saving-Task:
   Enabled: true
   Save-Every-Minutes: 10
 
-Coin-Modifiers: ['2 : partygames.vip', '3 : partygames.ultravip']
+Coin-Modifiers:
+- '2 : partygames.vip'
+- '3 : partygames.ultravip'
 
 Trails:
   size: 2
@@ -161,20 +196,36 @@ Scoreboards:
     animation:
       enabled: false
       interval: 8
-      frames: ['&b&lPartyGames', '&e&lPartyGames', '&b&lPartyGames', '&a&lPartyGames', '&b&lPartyGames', '&c&lPartyGames', '&e&lP&b&lartyGames', '&b&lP&e&la&b&lrtyGames', '&b&lPa&e&lr&b&ltyGames', '&b&lPar&e&lt&b&lyGames', '&b&lPart&e&ly&b&lGames', '&b&lParty&e&lG&b&lames', '&b&lPartyG&e&la&b&lmes', '&b&lPartyGa&e&lm&b&les', '&b&lPartyGam&e&le&b&ls', '&b&lPartyGame&e&ls']
+      frames:
+      - '&b&lPartyGames'
+      - '&e&lPartyGames'
+      - '&b&lPartyGames'
+      - '&a&lPartyGames'
+      - '&b&lPartyGames'
+      - '&c&lPartyGames'
+      - '&e&lP&b&lartyGames'
+      - '&b&lP&e&la&b&lrtyGames'
+      - '&b&lPa&e&lr&b&ltyGames'
+      - '&b&lPar&e&lt&b&lyGames'
+      - '&b&lPart&e&ly&b&lGames'
+      - '&b&lParty&e&lG&b&lames'
+      - '&b&lPartyG&e&la&b&lmes'
+      - '&b&lPartyGa&e&lm&b&les'
+      - '&b&lPartyGam&e&le&b&ls'
+      - '&b&lPartyGame&e&ls'
   Arena:
     enabled: true
-    
+
 Titles:
   enabled: true
-  
+
 Custom-Maps:
   Winner-Map:
     enabled: true
     texts:
-    - 'Congratulations'
+    - Congratulations
     - '   On winning!!!'
-    image: 'https://i.imgur.com/FrgIjmJ.png'
+    image: https://i.imgur.com/FrgIjmJ.png
   Loser-Map:
     enabled: true
     texts:
@@ -190,10 +241,10 @@ Play-Again-Message:
   - '          &6Click to play again!'
   - ' '
   footer: '&b&m-----------------------------'
-  
+
 Active-Boosters: []
 
 # Free setup — lobby y hologramas
 Holographic-Stats: PartyGames, 37.0, 119, 59.0, 201.1372, -6.613731E-5
-Holographic-Leaderboard: PartyGames, 42.0, 118, 59.0, 135.28857, 6.462666
+Holographic-Leaderboard: SakuraSpawn, 37.5, -57.5, -86.5, 90.0, 0.0
 Lobby: PartyGames, 37.5, 116, 52.5, 269.6825, 3.3292317

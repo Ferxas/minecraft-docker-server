@@ -8,6 +8,7 @@ lp group default permission set skywars.vote.health true
 lp group default permission set skywars.vote.time true
 lp group default permission set skywars.vote.chests true
 lp group default permission set skywars.vote.events true
+lp group default permission set skywars.globalchat true
 
 # Multiverse — mundo lobby (nombre real en MV: lobbySW)
 lp group default permission set multiverse.access.lobbySW true

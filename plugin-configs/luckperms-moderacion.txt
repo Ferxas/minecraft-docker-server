@@ -1,0 +1,40 @@
+# Grupo moderador (2026-10-22) — ejecutar en consola del servidor
+# Dar el rango: lp user <nick> parent add moderador
+lp creategroup moderador
+lp group moderador parent add default
+lp group moderador meta setprefix 50 "&9[Mod] &r"
+lp group admin parent add moderador
+
+# Anticheat (GrimAC): alertas al entrar, verbose, perfil y logs
+lp group moderador permission set grim.alerts true
+lp group moderador permission set grim.alerts.enable-on-join true
+lp group moderador permission set grim.verbose true
+lp group moderador permission set grim.profile true
+lp group moderador permission set grim.log true
+
+# Sanciones (EssentialsX)
+lp group moderador permission set essentials.kick true
+lp group moderador permission set essentials.mute true
+lp group moderador permission set essentials.tempban true
+lp group moderador permission set essentials.ban true
+lp group moderador permission set essentials.unban true
+lp group moderador permission set essentials.jail true
+lp group moderador permission set essentials.togglejail true
+lp group moderador permission set essentials.warn true
+lp group moderador permission set essentials.seen true
+lp group moderador permission set essentials.vanish true
+lp group moderador permission set essentials.tp true
+lp group moderador permission set essentials.tphere true
+lp group moderador permission set essentials.invsee true
+lp group moderador permission set essentials.socialspy true
+lp group moderador permission set essentials.clearinventory.others true
+
+# Registros de bloques (CoreProtect)
+lp group moderador permission set coreprotect.lookup true
+lp group moderador permission set coreprotect.inspect true
+lp group moderador permission set coreprotect.rollback true
+lp group moderador permission set coreprotect.restore true
+lp group moderador permission set coreprotect.near true
+
+# Exento del filtro de chat (skript/chat-filter.sk)
+lp group moderador permission set conlospibes.chat.bypass true

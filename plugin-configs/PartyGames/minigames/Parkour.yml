@@ -4,3 +4,9 @@ Maps:
     Barrier-Cuboid: PartyGames, -4, 104, 285, 2, 105, 285
     Losing-Cuboid: PartyGames, -7, 100, 211, 5, 102, 295
     Winning-Cuboid: PartyGames, -2, 121, 223, 0, 123, 225
+Tutorial-Messages:
+- '&2 --------- &aParkour &2--------- '
+- '- Get to the end of the parkour course as fast as possible!'
+Display-Name: Parkour
+Coins-Per-Minigame-Win: 10
+Round-Duration: 60

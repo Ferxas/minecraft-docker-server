@@ -1,1 +1,101 @@
-# Format: 'Slot: Item'
+Shops:
+  '&cKits #1':
+    '10': Griefer
+    '11': Miner
+    '12': Armorer
+    '13': Trainer
+    '14': Builder
+    '15': Tactician
+    '16': Hunter
+    '19': Snowman
+    '20': Smith
+    '21': Necromancer
+    '22': Enchanter
+    '23': Cannoneer
+    '24': Armorer+
+    '25': Miner+
+    '28': Hunter+
+    '29': Lumberjack
+    '30': Fisherman
+    '31': Troll
+    '32': Pyro
+    '33': Blaze
+    '34': Knight
+    '37': Farmer
+  '&9Cages #1':
+    '10': Brown Cage
+    '11': Grass Cage
+    '12': Orange Cage
+    '13': Purple Cage
+    '14': Lime Cage
+    '15': Yellow Cage
+    '16': Gray Cage
+    '19': Magenta Cage
+    '20': Dirt Cage
+    '21': White Cage
+    '22': Oak_wood Cage
+    '23': Stone Cage
+    '24': Cyan Cage
+    '25': Sandstone Cage
+    '28': Red Cage
+    '29': Cobblestone Cage
+    '30': Green Cage
+    '31': Black Cage
+    '32': Pink Cage
+    '33': Snow Cage
+    '34': Oak_log Cage
+    '37': Sponge Cage
+    '38': Blue Cage
+    '39': Yellow+ Cage
+    '40': Pink+ Cage
+    '41': Furnace Cage
+    '42': Bookshelf Cage
+    '43': Green+ Cage
+  '&9Cages #2':
+    '10': White+ Cage
+    '11': Ice Cage
+    '12': Brown+ Cage
+    '13': Cyan+ Cage
+    '14': Lime+ Cage
+    '15': Purple+ Cage
+    '16': Obsidian Cage
+    '19': Black+ Cage
+    '20': Gray+ Cage
+    '21': Pumpkin Cage
+    '22': Crafting_table Cage
+    '23': Orange+ Cage
+    '24': Blue+ Cage
+    '25': Magenta+ Cage
+    '28': Red+ Cage
+    '29': Tnt Cage
+    '30': Diamond Cage
+    '31': Emerald Cage
+    '32': Glowstone Cage
+    '33': Redstone Cage
+  '&eTrails #1':
+    '10': Dirt Trail
+    '11': Sandstone Trail
+    '12': Snow Trail
+    '13': Oak_log Trail
+    '14': Cobblestone Trail
+    '15': Grass Trail
+    '16': Stone Trail
+    '19': Oak_wood Trail
+    '20': Sponge Trail
+    '21': Obsidian Trail
+    '22': Furnace Trail
+    '23': Pumpkin Trail
+    '24': Crafting_table Trail
+    '25': Ice Trail
+    '28': Bookshelf Trail
+    '29': Redstone Trail
+    '30': Tnt Trail
+    '31': Glowstone Trail
+    '32': Emerald Trail
+    '33': Diamond Trail
+  '&4Celebrations #1':
+    '10': Rocket
+    '11': Falling-Anvils
+    '12': Zeus
+    '13': Party-Spitter
+    '14': Ghast

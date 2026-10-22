@@ -1,6 +1,15 @@
 # All effects: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html
 # The default blacklisted trails are bad looking or even break the server!! Beware!! You shouldn't remove them unless you know what you are doing
 
-Generate-Default-Commands-Shop: true
-
-Commands-Shop: {}
+Generate-Default-Commands-Shop: false
+Colored-Names:
+  GREEN: 500
+  AQUA: 1000
+  RED: 2000
+  GOLD: 3000
+Commands-Shop:
+  Waste:
+    Price: 1000
+    Item: 'CHEST : name:&e&lWaste : lore:&6Costs &e&l10000 &6coins'
+    Commands:
+    - broadcast %player% just wasted 10000 coins!

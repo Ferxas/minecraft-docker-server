@@ -1,4 +1,6 @@
 # Alternancia por mundo (PackManagerPro): fuera de Backrooms = pack servidor (f2b7ea…);
+# AVISO 2026-09-23: download.mc-packs.net/pack/f2b7ea… → 404 (pack expirado).
+# Oraxen envía su pack al join (dispatch.send_on_join: true), no forzado (mandatory: false).
 # en TheBackrooms-map = pack fusionado (servidor + resources del mapa).
 #
 # Puedes usar solo mc-packs.net: mismo sitio, dos ZIP distintos = dos URLs distintas (normal).
@@ -25,31 +27,19 @@ global-application:
   force-pack: false
   prompt-message: ''
 
+# SOLO mundos con pack-url real. PackManagerPro 1.2.3 llama setResourcePack(pack-url) sin comprobar
+# si está vacío, y en Paper eso BORRA los packs del cliente → se perdía el pack de Oraxen (WelcomeAds,
+# glyphs) en SakuraSpawn/lobbies. El resto de mundos usa el pack de Oraxen (send_on_join); al salir de
+# estos mapas, skript/oraxen-pack-return.sk reenvía el pack de Oraxen.
 per-world-application:
+  world:
+    pack-url: ''
+    force-pack: false
+    prompt-message: ''
   example_world:
     pack-url: ''
     force-pack: false
     prompt-message: ''
-  lobbySW:
-    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
-    force-pack: true
-    prompt-message: '&ePack del servidor (texturas Ferxas).'
-  world:
-    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
-    force-pack: true
-    prompt-message: '&ePack del servidor (texturas Ferxas).'
-  world_nether:
-    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
-    force-pack: true
-    prompt-message: '&ePack del servidor (texturas Ferxas).'
-  world_the_end:
-    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
-    force-pack: true
-    prompt-message: '&ePack del servidor (texturas Ferxas).'
-  skywars1:
-    pack-url: https://download.mc-packs.net/pack/f2b7ea3a45465ee72e93494e383604047543deed.zip
-    force-pack: true
-    prompt-message: '&ePack del servidor (texturas Ferxas).'
   TheBackrooms-map:
     pack-url: https://download.mc-packs.net/pack/54917103f853f55f15a0df6670ee343199053760.zip
     force-pack: true

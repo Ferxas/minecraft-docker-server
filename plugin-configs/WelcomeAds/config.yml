@@ -1,0 +1,18 @@
+# WelcomeAds + Oraxen (vendor layout: plugin-configs/WelcomeAds/packs/Oraxen/)
+# Placeholders: %oraxen_welcomeads_*% — glyphs in plugin-configs/Oraxen/glyphs/welcomeads/
+
+joinpage: "welcome-1"
+
+# Abrir tras cargar el pack de Oraxen (recomendado con send_on_join).
+loadtype: "onresourcepack"
+
+persession: true
+# Oculta ítems del jugador; la etiqueta vanilla "Inventory" en la fila inferior del cofre no se puede quitar sin otro tipo de GUI.
+hide-player-inventory: true
+permission: "welcomeads.reload"
+
+global-background:
+  text: "&0%oraxen_welcomeads_shift_l_1536%&e%oraxen_welcomeads_background%&0%oraxen_welcomeads_shift_l_1014%"
+  fadein: 0
+  stay: 0
+  fadeout: 10

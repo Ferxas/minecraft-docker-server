@@ -7,6 +7,10 @@ options:
 function isHgArenaWorld(w: text) :: boolean:
     if {_w} is "HGPlay":
         return true
+    if {_w} is "hg_breeze":
+        return true
+    if {_w} is "hg_howling":
+        return true
     return false
 
 function isHgArenaBusy(w: text) :: boolean:
@@ -56,6 +60,23 @@ function hgLeaveArena(p: player):
         send "&a→ Has dejado de espectar la partida." to {_p}
     else:
         send "&a→ Has salido de la cola de espera." to {_p}
+
+# "Unirse a partida": la arena libre (no en curso) con más jugadores esperando; empate -> HGPlay.
+command /hgplay:
+    executable by: players
+    trigger:
+        set {_best} to "HGPlay"
+        set {_bestn} to -1
+        loop "HGPlay", "hg_breeze" and "hg_howling":
+            if isHgArenaBusy(loop-value) is false:
+                set {_n} to number of all players in world loop-value
+                if {_n} > {_bestn}:
+                    set {_best} to loop-value
+                    set {_bestn} to {_n}
+        if {_bestn} is -1:
+            send "&cTodas las arenas de Hunger Games están en partida. Prueba en un momento." to player
+            stop
+        execute player command "hg join %{_best}%"
 
 command /salir:
     trigger:
@@ -107,10 +128,11 @@ on world change:
             giveHgLeaveItem(player)
 
 on death of player:
-    if name of victim's world is not "HGPlay":
+    set {_w} to name of victim's world
+    if isHgArenaWorld({_w}) is false:
         stop
     wait 40 ticks
-    if isHgArenaBusy("HGPlay") is false:
+    if isHgArenaBusy({_w}) is false:
         stop
     if gamemode of victim is spectator:
         showHgSpectatorLeaveHint(victim)

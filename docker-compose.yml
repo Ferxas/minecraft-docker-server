@@ -28,8 +28,10 @@ services:
       # Named volume (WSL2 ext4) — required on Windows. Bind-mounting ./mysql-data
       # onto NTFS forces lower_case_table_names=2 and crashes DBs initialized with 0.
       - mc-mysql-data:/var/lib/mysql
+    # Only DiscordSRV uses MySQL (via the internal "mysql" hostname). Bind to
+    # loopback so the weak default credentials are not reachable from the LAN.
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
       interval: 10s
@@ -38,7 +40,10 @@ services:
       start_period: 30s
 
   minecraft:
-    image: itzg/minecraft-server:latest
+    build:
+      context: ./docker/mc-jcef
+      dockerfile: Dockerfile
+    image: mc-paper-jcef:1.21.11
     container_name: mc
     restart: unless-stopped
     depends_on:
@@ -60,10 +65,38 @@ services:
       TYPE: "PAPER"
       VERSION: "1.21.11"
       MEMORY: 8G
+      # Tuned G1 GC flags (shorter GC pauses / fewer lag spikes on an 8G heap)
+      USE_AIKAR_FLAGS: "true"
       UID: "1000"
       GID: "1000"
+      # Help JCEF find libjawt.so from Temurin
+      LD_LIBRARY_PATH: "/opt/java/openjdk/lib:/opt/java/openjdk/lib/server"
+      # JogAmp/JCEF need an X11 display even for off-screen rendering
+      DISPLAY: ":99"
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      GALLIUM_DRIVER: "llvmpipe"
+      vblank_mode: "0"
+      # Interpose broken Mesa glXQueryDrawable (null dri2 under Xvfb/dummy edge cases)
+      LD_PRELOAD: "/usr/local/lib/libglx_query_shim.so"
+      # JOGL OSR on JDK 16+ needs these; also keep NoSetSwapInterval* as soft preference
+      JVM_OPTS: >-
+        -Djogl.quirks.force=NoSetSwapInterval,NoSetSwapIntervalPostRetarget
+        --add-exports=java.base/java.lang=ALL-UNNAMED
+        --add-exports=java.desktop/sun.awt=ALL-UNNAMED
+        --add-exports=java.desktop/sun.java2d=ALL-UNNAMED
     volumes:
       - ./server-data:/data
+    # Flush and freeze world saves while volume-backup archives /data, so region
+    # files are never captured half-written.
+    labels:
+      docker-volume-backup.archive-pre: /bin/sh -c "rcon-cli 'save-all flush' && rcon-cli save-off"
+      docker-volume-backup.archive-post: rcon-cli save-on
+    # Chromium/JCEF (MapBrowser) needs shared memory; default Docker 64MB is too small.
+    shm_size: "1gb"
+    # Native JogAmp crashes were dumping 12GB cores into /data — never again
+    ulimits:
+      core: 0
+
     stdin_open: true
     tty: true
     # Heavy plugin stack; Paper may take 10–15+ min before status ping succeeds.
@@ -84,7 +117,13 @@ services:
     environment:
       BACKUP_CRON_EXPRESSION: "0 3 * * *"
       BACKUP_RETENTION_DAYS: "7"
-      BACKUP_FILENAME: mc-backup-latest.tar.gz
+      # Timestamped names so retention actually keeps 7 days (a fixed name
+      # overwrote the single archive every night).
+      BACKUP_FILENAME: mc-backup-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_PRUNING_PREFIX: mc-backup-
+      # Skip regenerable / redundant data: AutoBackup zips, logs, caches, BlueMap
+      # renders, and spark's temp files (which vanish mid-archive and abort the run).
+      BACKUP_EXCLUDE_REGEXP: ^/backup/minecraft-data/(backups|logs|cache|crash-reports|bluemap|plugins/spark)(/|$)
       TZ: America/Bogota
     volumes:
       - ./server-data:/backup/minecraft-data:ro

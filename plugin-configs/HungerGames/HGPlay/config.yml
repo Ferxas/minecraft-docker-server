@@ -17,7 +17,7 @@ chestrefill:
   interval: 180
 auto-start:
   enabled: true
-  players: 4
+  players: 2
   delay: 15
 min-players: 2
 voting: false
@@ -27,8 +27,8 @@ break-blocks:
   enabled: false
   drop: true
   allowed-blocks:
-    - GRASS_BLOCK
-    - DIRT
+  - GRASS_BLOCK
+  - DIRT
 border:
   size: 410
   start-time: 600
@@ -40,11 +40,28 @@ custom-commands:
   enabled: true
   start:
     global:
-      - "mv modify HGPlay set pvp false"
-      - "hgarena busy HGPlay"
+    - hgarena busy HGPlay
     foreach-player:
-      - "hgleave remove {winner}"
+    - hgleave remove {winner}
   end:
     global:
-      - "hgarena waiting HGPlay"
-    foreach-winner: []
+    - hgarena waiting HGPlay
+    foreach-winner:
+    - eco give {winner} 75
+    - tell {winner} &a+75 monedas por ganar Hunger Games
+bedrock-buff:
+  enabled: false
+  # Effects applied to bedrock players
+  effects:
+  - DAMAGE_RESISTANCE
+  - SPEED
+killer-effects:
+- effect: DAMAGE_RESISTANCE
+  duration: 300
+  level: 0
+- effect: REGENERATION
+  duration: 600
+  level: 0
+- effect: ABSORPTION
+  duration: 300
+  level: 0

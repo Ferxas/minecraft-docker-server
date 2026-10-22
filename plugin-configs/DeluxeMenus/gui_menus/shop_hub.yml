@@ -1,0 +1,275 @@
+menu_title: '&6&lTienda &7| Títulos'
+open_command:
+  - tienda
+  - shop
+register_command: true
+size: 36
+
+items:
+  'back':
+    material: ARROW
+    slot: 27
+    display_name: '&7Volver'
+    click_commands:
+      - '[openguimenu] main_hub'
+
+  'balance':
+    material: SUNFLOWER
+    slot: 4
+    display_name: '&e&lTus monedas: &f%vault_eco_balance_formatted%'
+    lore:
+      - '&7Ganas monedas al ganar minijuegos:'
+      - '&8▸ &fSkyWars &a+50  &fParty Games &a+50 &7(+5 por ronda)'
+      - '&8▸ &fBattle Royale &a+60  &fHunger Games &a+75'
+      - '&8▸ &fTNTRun &a+40'
+    item_flags:
+      - HIDE_ATTRIBUTES
+
+  'pibe_owned':
+    material: NAME_TAG
+    slot: 10
+    priority: 1
+    view_requirement:
+      requirements:
+        owns:
+          type: has permission
+          permission: conlospibes.title.pibe
+    display_name: '&e[Pibe] &7(tuyo)'
+    lore:
+      - '&aYa tienes este título'
+      - '&7Clic para equiparlo'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_commands:
+      - '[console] lp user %player_name% meta setprefix 5 "&e[Pibe] "'
+      - '[message] &a✔ Título equipado: &e[Pibe]'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'pibe_buy':
+    material: NAME_TAG
+    slot: 10
+    priority: 2
+    display_name: '&e[Pibe]'
+    lore:
+      - '&7Precio: &e300 monedas'
+      - '&7Se ve en el chat, en Tab y sobre tu cabeza'
+      - ''
+      - '&eClic para comprar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_requirement:
+      requirements:
+        money:
+          type: has money
+          amount: 300
+      deny_commands:
+        - '[message] &cNecesitas &e300 monedas&c. Tienes &e%vault_eco_balance_formatted%&c.'
+        - '[sound] ENTITY_VILLAGER_NO'
+    click_commands:
+      - '[takemoney] 300'
+      - '[console] lp user %player_name% permission set conlospibes.title.pibe true'
+      - '[console] lp user %player_name% meta setprefix 5 "&e[Pibe] "'
+      - '[message] &a✔ Compraste el título &e[Pibe]&a. ¡Ya está equipado!'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'crack_owned':
+    material: DIAMOND
+    slot: 12
+    priority: 1
+    view_requirement:
+      requirements:
+        owns:
+          type: has permission
+          permission: conlospibes.title.crack
+    display_name: '&b[Crack] &7(tuyo)'
+    lore:
+      - '&aYa tienes este título'
+      - '&7Clic para equiparlo'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_commands:
+      - '[console] lp user %player_name% meta setprefix 5 "&b[Crack] "'
+      - '[message] &a✔ Título equipado: &b[Crack]'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'crack_buy':
+    material: DIAMOND
+    slot: 12
+    priority: 2
+    display_name: '&b[Crack]'
+    lore:
+      - '&7Precio: &e1000 monedas'
+      - '&7Se ve en el chat, en Tab y sobre tu cabeza'
+      - ''
+      - '&eClic para comprar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_requirement:
+      requirements:
+        money:
+          type: has money
+          amount: 1000
+      deny_commands:
+        - '[message] &cNecesitas &e1000 monedas&c. Tienes &e%vault_eco_balance_formatted%&c.'
+        - '[sound] ENTITY_VILLAGER_NO'
+    click_commands:
+      - '[takemoney] 1000'
+      - '[console] lp user %player_name% permission set conlospibes.title.crack true'
+      - '[console] lp user %player_name% meta setprefix 5 "&b[Crack] "'
+      - '[message] &a✔ Compraste el título &b[Crack]&a. ¡Ya está equipado!'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'leyenda_owned':
+    material: NETHER_STAR
+    slot: 14
+    priority: 1
+    view_requirement:
+      requirements:
+        owns:
+          type: has permission
+          permission: conlospibes.title.leyenda
+    display_name: '&d[Leyenda] &7(tuyo)'
+    lore:
+      - '&aYa tienes este título'
+      - '&7Clic para equiparlo'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_commands:
+      - '[console] lp user %player_name% meta setprefix 5 "&d[Leyenda] "'
+      - '[message] &a✔ Título equipado: &d[Leyenda]'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'leyenda_buy':
+    material: NETHER_STAR
+    slot: 14
+    priority: 2
+    display_name: '&d[Leyenda]'
+    lore:
+      - '&7Precio: &e3000 monedas'
+      - '&7Se ve en el chat, en Tab y sobre tu cabeza'
+      - ''
+      - '&eClic para comprar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_requirement:
+      requirements:
+        money:
+          type: has money
+          amount: 3000
+      deny_commands:
+        - '[message] &cNecesitas &e3000 monedas&c. Tienes &e%vault_eco_balance_formatted%&c.'
+        - '[sound] ENTITY_VILLAGER_NO'
+    click_commands:
+      - '[takemoney] 3000'
+      - '[console] lp user %player_name% permission set conlospibes.title.leyenda true'
+      - '[console] lp user %player_name% meta setprefix 5 "&d[Leyenda] "'
+      - '[message] &a✔ Compraste el título &d[Leyenda]&a. ¡Ya está equipado!'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'rey_owned':
+    material: GOLDEN_HELMET
+    slot: 16
+    priority: 1
+    view_requirement:
+      requirements:
+        owns:
+          type: has permission
+          permission: conlospibes.title.rey
+    display_name: '&6&l[Rey] &7(tuyo)'
+    lore:
+      - '&aYa tienes este título'
+      - '&7Clic para equiparlo'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_commands:
+      - '[console] lp user %player_name% meta setprefix 5 "&6&l[Rey] "'
+      - '[message] &a✔ Título equipado: &6&l[Rey]'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'rey_buy':
+    material: GOLDEN_HELMET
+    slot: 16
+    priority: 2
+    display_name: '&6&l[Rey]'
+    lore:
+      - '&7Precio: &e6000 monedas'
+      - '&7Se ve en el chat, en Tab y sobre tu cabeza'
+      - ''
+      - '&eClic para comprar'
+    item_flags:
+      - HIDE_ATTRIBUTES
+    click_requirement:
+      requirements:
+        money:
+          type: has money
+          amount: 6000
+      deny_commands:
+        - '[message] &cNecesitas &e6000 monedas&c. Tienes &e%vault_eco_balance_formatted%&c.'
+        - '[sound] ENTITY_VILLAGER_NO'
+    click_commands:
+      - '[takemoney] 6000'
+      - '[console] lp user %player_name% permission set conlospibes.title.rey true'
+      - '[console] lp user %player_name% meta setprefix 5 "&6&l[Rey] "'
+      - '[message] &a✔ Compraste el título &6&l[Rey]&a. ¡Ya está equipado!'
+      - '[sound] ENTITY_PLAYER_LEVELUP'
+      - '[close]'
+
+  'remove':
+    material: BARRIER
+    slot: 31
+    display_name: '&cQuitar título'
+    lore:
+      - '&7Sigues siendo dueño de tus títulos'
+    click_commands:
+      - '[console] lp user %player_name% meta removeprefix 5'
+      - '[message] &7Título quitado.'
+      - '[close]'
+
+  'close':
+    material: BARRIER
+    slot: 35
+    display_name: '&cCerrar'
+    click_commands:
+      - '[close]'
+
+  'glass':
+    material: YELLOW_STAINED_GLASS_PANE
+    hide_tooltip: true
+    slots:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 11
+      - 13
+      - 15
+      - 17
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+      - 26
+      - 28
+      - 29
+      - 30
+      - 32
+      - 33
+      - 34
+    display_name: ' '
+

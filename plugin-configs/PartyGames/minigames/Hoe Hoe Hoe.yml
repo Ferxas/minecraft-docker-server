@@ -2,3 +2,10 @@ Maps:
   free_hoehoehoe:
     Spawnpoint: PartyGames, -65.5, 101, 246.5, -90.468285, 2.044788
     Floor-Cuboid: PartyGames, -86, 100, 228, -54, 100, 263
+Tutorial-Messages:
+- '&2 --------- &aHoe Hoe Hoe &2--------- '
+- '- Claim as many land as you can!'
+- You can only claim land next your own color
+Display-Name: Hoe Hoe Hoe
+Coins-Per-Minigame-Win: 10
+Round-Duration: 30

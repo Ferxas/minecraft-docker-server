@@ -46,3 +46,4 @@ tests/bot/crawl-report.json
 plugins/*.jar
 !plugins/ClearBorder.jar
 !plugins/WelcomeAdsBridge.jar
+!plugins/LegacyWarmup.jar

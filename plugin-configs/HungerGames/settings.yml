@@ -18,7 +18,7 @@ reset-world: false
 custom-teams: false
 database:
   enabled: true
-  url: jdbc:mysql://mysql:3306/hungergames
+  url: jdbc:mysql://mysql:3306/hungergames?autoReconnect=true
   user: discordsrv
   password: discordsrvpass
   interval: 60

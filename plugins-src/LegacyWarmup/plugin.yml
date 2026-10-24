@@ -1,0 +1,6 @@
+name: LegacyWarmup
+main: legacywarmup.LegacyWarmup
+version: 1.0.0
+api-version: '1.21'
+author: ferxas
+description: Initializes Paper's legacy material tables off the main thread at startup so the first legacy call (QualityArmory guns) doesn't freeze the server.

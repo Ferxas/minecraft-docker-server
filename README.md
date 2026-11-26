@@ -99,6 +99,20 @@ También puedes ejecutar solo la limpieza:
 | `plugin-configs/` | Configs de referencia (bootstrap idempotente) |
 | `skript/` | Scripts Skript |
 | `scripts/` | Utilidades (export, publish, package) |
+| `plugins/` | Jars propios que `mc-init` copia al servidor (ClearBorder, LegacyWarmup, WelcomeAdsBridge, MapBrowser) |
+| `plugins-src/` | Código de esos plugins propios |
+| `docker/mc-jcef/` | Imagen de Paper con Chromium (para las pantallas web de MapBrowser) |
+
+## Pantallas web (MapBrowser)
+
+El servidor usa un **fork propio de MapBrowser** (`plugins-src/MapBrowser`, versión `1.0-beta3-es1`):
+las pantallas se guardan solas y vuelven tras reiniciar, se crean mirando a una pared (`/mb crear youtube.com`)
+y cualquier jugador las usa con el ratón (clic izq. pulsar, clic der. bajar, Shift+der. subir, Shift+izq. menú)
+o escribiendo en el chat con `/mb escribir`. El jar ya compilado está en `plugins/MapBrowser-1.0-beta3-all.jar`
+y `mc-init` lo instala siempre, así que una instalación nueva no necesita compilar nada.
+
+- Uso y comandos: [`plugin-configs/MapBrowser/SETUP.md`](plugin-configs/MapBrowser/SETUP.md)
+- Compilar / actualizar el fork: [`plugins-src/MapBrowser/UPSTREAM.md`](plugins-src/MapBrowser/UPSTREAM.md)
 
 ## Mantenimiento
 

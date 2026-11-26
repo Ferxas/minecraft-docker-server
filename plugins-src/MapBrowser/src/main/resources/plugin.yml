@@ -1,0 +1,68 @@
+name: MapBrowser
+version: '1.0-beta3-es1'
+main: top.steve3184.mapbrowser.MapBrowser
+api-version: '1.20'
+prefix: MapBrowser
+authors: [ Steve3184, Ferxas ]
+description: Chromium Browser on maps (fork del servidor con controles cómodos y pantallas persistentes)
+depend: [ MapEngine ]
+commands:
+  mapbrowser:
+    description: Pantallas web en mapas.
+    aliases: [mb, web]
+    permission: mapbrowser.command.base
+    permission-message: No tienes permiso para usar las pantallas web.
+permissions:
+  mapbrowser.command.*:
+    description: Todo lo de administrador.
+    default: op
+    children:
+      mapbrowser.command.base: true
+      mapbrowser.use: true
+      mapbrowser.navigate: true
+      mapbrowser.admin: true
+      mapbrowser.command.create: true
+      mapbrowser.command.list: true
+      mapbrowser.command.remove: true
+      mapbrowser.command.modify: true
+      mapbrowser.command.input: true
+      mapbrowser.command.keys: true
+      mapbrowser.command.executejs: true
+      mapbrowser.command.near: true
+
+  mapbrowser.command.base:
+    description: Usar /mb (ayuda).
+    default: true
+  mapbrowser.use:
+    description: Usar las pantallas (clic, scroll, menú, favoritos, atrás/adelante, escribir).
+    default: true
+  mapbrowser.navigate:
+    description: Abrir cualquier web con /mb ir.
+    default: op
+  mapbrowser.admin:
+    description: Sin límite de tamaño y /mb config.
+    default: op
+  mapbrowser.command.create:
+    description: Crear pantallas.
+    default: op
+  mapbrowser.command.list:
+    description: Listar pantallas.
+    default: op
+  mapbrowser.command.remove:
+    description: Quitar pantallas.
+    default: op
+  mapbrowser.command.modify:
+    description: Cambiar tamaño, mover, escala, fijar inicio.
+    default: op
+  mapbrowser.command.input:
+    description: /mb input.
+    default: op
+  mapbrowser.command.keys:
+    description: /mb keys.
+    default: op
+  mapbrowser.command.executejs:
+    description: Ejecutar JavaScript en una pantalla.
+    default: op
+  mapbrowser.command.near:
+    description: Ver la pantalla más cercana.
+    default: op

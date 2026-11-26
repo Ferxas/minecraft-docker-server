@@ -28,3 +28,48 @@ browser:
     - "--no-sandbox"
     - "--disable-dev-shm-usage"
     - "--disable-features=VizDisplayCompositor"
+
+# --------------------------------------------------- #
+#        Comodidad (fork del servidor, en español)    #
+# --------------------------------------------------- #
+
+# Distancia (bloques) a la que los jugadores ven las pantallas y pueden usarlas con /mb.
+view-distance: 32
+# Muestra los controles en la barra de acción al acercarse a una pantalla (una vez cada 10 min).
+show-hints: true
+
+# Valores de /mb crear (mirando a una pared).
+defaults:
+  url: "https://www.google.com"
+  width: 3
+  height: 2
+  # Tamaño máximo para quien no tenga mapbrowser.admin. Con renderizado por software, más de 4x3 va lento.
+  max-width: 6
+  max-height: 4
+
+controls:
+  # Píxeles que baja/sube cada clic derecho / Shift+clic derecho.
+  scroll-pixels: 300
+  # En /mb escribir, cada mensaje del chat pulsa Enter al final (empieza el mensaje con + para no pulsarlo).
+  chat-presses-enter: true
+  # Segundos sin escribir hasta salir solo del modo escribir.
+  typing-timeout-seconds: 120
+
+# Fila de favoritos del menú (Shift + clic izquierdo en la pantalla). Máximo 9.
+# icon = material de Minecraft. name admite colores con &.
+favorites:
+  - name: "&cYouTube"
+    icon: RED_WOOL
+    url: "https://www.youtube.com"
+  - name: "&fGoogle"
+    icon: COMPASS
+    url: "https://www.google.com"
+  - name: "&fWikipedia"
+    icon: BOOK
+    url: "https://es.wikipedia.org"
+  - name: "&bMapa del servidor"
+    icon: FILLED_MAP
+    url: "http://localhost:8100"
+  - name: "&eTiempo"
+    icon: SUNFLOWER
+    url: "https://wttr.in/?lang=es"

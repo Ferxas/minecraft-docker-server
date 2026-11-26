@@ -1,0 +1,4144 @@
+diff --git a/build.gradle b/build.gradle
+index 6a76257..2ad2bd2 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -6,7 +6,7 @@ plugins {
+ }
+ 
+ group = 'top.steve3184.mapbrowser'
+-version = '1.0-beta3'
++version = '1.0-beta3-es1'
+ 
+ repositories {
+     mavenCentral()
+diff --git a/src/main/java/org/cef/browser/MapBrowserInstance.java b/src/main/java/org/cef/browser/MapBrowserInstance.java
+index dccc4ca..0e7488c 100644
+--- a/src/main/java/org/cef/browser/MapBrowserInstance.java
++++ b/src/main/java/org/cef/browser/MapBrowserInstance.java
+@@ -1,465 +1,503 @@
+-package org.cef.browser;
+-
+-import org.cef.CefBrowserSettings;
+-import org.cef.CefClient;
+-import javax.swing.*;
+-import java.awt.*;
+-import java.awt.event.KeyEvent;
+-import java.awt.event.MouseEvent;
+-import java.lang.reflect.Field;
+-import java.nio.ByteBuffer;
+-import java.util.concurrent.ExecutorService;
+-import java.util.concurrent.Executors;
+-import java.util.concurrent.locks.ReentrantLock;
+-
+-/**
+- * A specialized off-screen CEF browser instance tailored for rendering onto Minecraft maps.
+- * It captures browser frames as pixel data and forwards input events from the game.
+- * It also manages a nested browser instance for showing developer tools.
+- */
+-public class MapBrowserInstance extends CefBrowserOsr {
+-    // Lock to ensure thread-safe access to the pixel buffer.
+-    private final ReentrantLock bufferLock = new ReentrantLock();
+-    // Raw pixel data from CEF in BGRA format.
+-    private byte[] rawPixelData;
+-    private int pixelWidth;
+-    private int pixelHeight;
+-    // Flag to indicate if a new frame has been painted since the last update.
+-    private boolean hasNewFrame = false;
+-
+-    // --- DevTools Fields ---
+-    // Lock for thread-safe operations on the DevTools instance.
+-    private final Object devToolsLock = new Object();
+-    // The nested browser instance for the developer tools.
+-    private MapBrowserInstance devToolsBrowser = null;
+-    // Flag indicating if the developer tools are currently open and should be rendered.
+-    private boolean isDevToolsOpen = false;
+-    private final ExecutorService clickExecutor = Executors.newSingleThreadExecutor();
+-
+-    /**
+-     * Defines the types of virtual events that can be sent to the browser.
+-     */
+-    public enum InputEventType {
+-        MOUSE_MOVE,
+-        MOUSE_LEFT_CLICK,
+-        MOUSE_MIDDLE_CLICK,
+-        MOUSE_RIGHT_CLICK,
+-        TOUCH_CLICK,
+-        TOUCH_MOVE,
+-        TOUCH_PRESS,
+-        TOUCH_RELEASE
+-    }
+-
+-
+-    /**
+-     * Public constructor for a main browser instance.
+-     * @param client The CefClient instance.
+-     * @param url The initial URL to load.
+-     */
+-    public MapBrowserInstance(CefClient client, String url) {
+-        super(client, url, false, null, new CefBrowserSettings()); // `isTransparent` is false.
+-    }
+-
+-    /**
+-     * Private constructor used exclusively for creating a DevTools browser instance.
+-     * It uses reflection to set internal fields required for linking to a parent browser.
+-     */
+-    private MapBrowserInstance(CefClient client, String url, boolean transparent, CefRequestContext context, CefBrowser_N parent, Point inspectAt) {
+-        super(client, url, transparent, context, new CefBrowserSettings());
+-        // Use reflection to set private fields in the parent CefBrowser_N class.
+-        try {
+-            Field parentField = CefBrowser_N.class.getDeclaredField("parent_");
+-            parentField.setAccessible(true);
+-            parentField.set(this, parent);
+-
+-            Field inspectAtField = CefBrowser_N.class.getDeclaredField("inspectAt_");
+-            inspectAtField.setAccessible(true);
+-            inspectAtField.set(this, inspectAt);
+-        } catch (Exception e) {
+-            // This should not happen in a normal environment.
+-            throw new RuntimeException("Failed to initialize DevTools via reflection", e);
+-        }
+-    }
+-
+-    /**
+-     * Overridden to return our custom browser type for DevTools.
+-     */
+-    @Override
+-    protected MapBrowserInstance createDevToolsBrowser(CefClient client, String url, CefRequestContext context, CefBrowser_N parent, Point inspectAt) {
+-        return new MapBrowserInstance(client, url, false, context, parent, inspectAt);
+-    }
+-
+-    /**
+-     * Called by JCEF when a new frame is ready to be painted.
+-     * This method copies the raw pixel data from the CEF buffer into a local byte array.
+-     */
+-    @Override
+-    public void onPaint(CefBrowser browser, boolean popup, Rectangle[] dirtyRects, ByteBuffer buffer, int width, int height) {
+-        bufferLock.lock();
+-        try {
+-            // Re-initialize buffer if the browser size has changed.
+-            if (width != this.pixelWidth || height != this.pixelHeight) {
+-                this.pixelWidth = width;
+-                this.pixelHeight = height;
+-                this.rawPixelData = new byte[width * height * 4];
+-            }
+-            // Copy pixel data from the direct ByteBuffer to our heap byte array.
+-            buffer.get(this.rawPixelData);
+-            this.hasNewFrame = true;
+-        } finally {
+-            bufferLock.unlock();
+-        }
+-    }
+-    /**
+-     * Retrieves the latest frame as an ARGB pixel array, if available.
+-     * This method converts the raw BGRA data to the ARGB format used by Minecraft maps.
+-     * If DevTools is open, it returns the pixel data from the DevTools browser instead.
+-     * @return An integer array of ARGB pixels, or null if there is no new frame.
+-     */
+-    public int[] getAndUpdatePixelData() {
+-        // If DevTools is active, delegate the call to it.
+-        synchronized (devToolsLock) {
+-            if (isDevToolsOpen && devToolsBrowser != null) {
+-                return devToolsBrowser.getAndUpdatePixelData();
+-            }
+-        }
+-
+-        // Return null if no new frame has been painted.
+-        if (!hasNewFrame) {
+-            return null;
+-        }
+-
+-        int[] argbPixels;
+-        bufferLock.lock();
+-        try {
+-            // Double-check the flag after acquiring the lock.
+-            if (!hasNewFrame) return null;
+-
+-            // Convert raw BGRA data to ARGB integers.
+-            argbPixels = new int[pixelWidth * pixelHeight];
+-            for (int i = 0; i < argbPixels.length; i++) {
+-                int bufferIndex = i * 4;
+-                int b = rawPixelData[bufferIndex] & 0xFF;
+-                int g = rawPixelData[bufferIndex + 1] & 0xFF;
+-                int r = rawPixelData[bufferIndex + 2] & 0xFF;
+-                int a = rawPixelData[bufferIndex + 3] & 0xFF;
+-                argbPixels[i] = (a << 24) | (r << 16) | (g << 8) | b;
+-            }
+-            this.hasNewFrame = false; // Mark the frame as consumed.
+-        } finally {
+-            bufferLock.unlock();
+-        }
+-        return argbPixels;
+-    }
+-
+-    /**
+-     * Resizes the off-screen browser.
+-     * Uses reflection to access and modify the private size field in the superclass.
+-     * @param width The new width in pixels.
+-     * @param height The new height in pixels.
+-     */
+-    public void resize(int width, int height) {
+-        try {
+-            // Reflection is needed as the size field is private in CefBrowserOsr.
+-            Field field = this.getClass().getSuperclass().getDeclaredField("browser_rect_");
+-            field.setAccessible(true);
+-            Rectangle rect = (Rectangle) field.get(this);
+-            rect.setBounds(0, 0, width, height);
+-            // Notify the native browser that it was resized.
+-            wasResized(width, height);
+-        } catch (Exception e) {
+-            throw new RuntimeException("Failed to resize browser via reflection", e);
+-        }
+-    }
+-
+-    public int getPixelWidth() {
+-        return pixelWidth;
+-    }
+-
+-    public int getPixelHeight() {
+-        return pixelHeight;
+-    }
+-
+-    /**
+-     * Opens or closes the developer tools for this browser instance.
+-     * @param open True to open DevTools, false to close them.
+-     */
+-    public void setDevTools(boolean open) {
+-        synchronized (devToolsLock) {
+-            if (open == isDevToolsOpen) return; // No change needed.
+-
+-            this.isDevToolsOpen = open;
+-            if (open) {
+-                // Create and initialize the DevTools browser if it doesn't exist.
+-                if (devToolsBrowser == null) {
+-                    devToolsBrowser = createDevToolsBrowser(this.getClient(), this.getUrl(), this.getRequestContext(), this, (Point)null);
+-                    // Initialization must happen on the AWT event dispatch thread.
+-                    SwingUtilities.invokeLater(() -> {
+-                        devToolsBrowser.createImmediately();
+-                        devToolsBrowser.resize(this.pixelWidth, this.pixelHeight);
+-                    });
+-                }
+-            } else {
+-                // Close and dispose of the DevTools browser.
+-                if (devToolsBrowser != null) {
+-                    devToolsBrowser.close(true);
+-                    devToolsBrowser = null;
+-                }
+-            }
+-        }
+-    }
+-
+-    public boolean isDevToolsOpen() {
+-        return isDevToolsOpen;
+-    }
+-
+-    /**
+-     * Sends a complete string of text to the browser by simulating key type events.
+-     * Delegates to DevTools if open.
+-     * @param text The text to input.
+-     */
+-    public void inputText(String text) {
+-        synchronized (devToolsLock) {
+-            if (isDevToolsOpen && devToolsBrowser != null) {
+-                devToolsBrowser.inputText(text);
+-                return;
+-            }
+-        }
+-
+-        // Simulate a KEY_TYPED event for each character.
+-        for (char c : text.toCharArray()) {
+-            KeyEvent keyEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, KeyEvent.VK_UNDEFINED, c);
+-            sendKeyEvent(keyEvent);
+-        }
+-    }
+-
+-    /**
+-     * Sends a specific key action (press, release, or click) to the browser.
+-     * Delegates to DevTools if open.
+-     * @param keyCode The java.awt.event.KeyEvent constant for the key.
+-     * @param action The action to perform: "pressDown", "pressUp", or "click".
+-     */
+-    public void handleKeyAction(int keyCode, String action) {
+-        synchronized (devToolsLock) {
+-            if (isDevToolsOpen && devToolsBrowser != null) {
+-                devToolsBrowser.handleKeyAction(keyCode, action);
+-                return;
+-            }
+-        }
+-
+-        switch (action.toLowerCase()) {
+-            case "pressdown" -> {
+-                KeyEvent pressEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
+-                sendKeyEvent(pressEvent);
+-            }
+-            case "pressup" -> {
+-                KeyEvent releaseEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
+-                sendKeyEvent(releaseEvent);
+-            }
+-            case "click" -> {
+-                // Simulate a quick press and release.
+-                KeyEvent pressEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
+-                sendKeyEvent(pressEvent);
+-                KeyEvent releaseEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_RELEASED, System.currentTimeMillis() + 20, 0, keyCode, KeyEvent.CHAR_UNDEFINED);
+-                sendKeyEvent(releaseEvent);
+-            }
+-        }
+-    }
+-
+-    /**
+-     * Sends a mouse click (press and release) event to the browser at specific coordinates.
+-     * Delegates to DevTools if open.
+-     * @param x The x-coordinate of the click.
+-     * @param y The y-coordinate of the click.
+-     * @param awtButtonType The MouseEvent button type (e.g., MouseEvent.BUTTON1).
+-     */
+-    public void sendMouseClick(int x, int y, int awtButtonType) {
+-        synchronized (devToolsLock) {
+-            if (isDevToolsOpen && devToolsBrowser != null) {
+-                devToolsBrowser.sendMouseClick(x, y, awtButtonType);
+-                return;
+-            }
+-        }
+-        clickExecutor.submit(() -> {
+-            MouseEvent move = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, x, y, 0, false);
+-            sendMouseEvent(move);
+-            try {
+-                MouseEvent click = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, x, y, 1, false, awtButtonType);
+-                sendMouseEvent(click);
+-                Thread.sleep(1);
+-                MouseEvent press = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, x, y, 1, false, awtButtonType);
+-                sendMouseEvent(press);
+-                Thread.sleep(1);
+-                MouseEvent release = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, x, y, 1, false, awtButtonType);
+-                sendMouseEvent(release);
+-            } catch (InterruptedException e) {
+-                Thread.currentThread().interrupt();
+-            }
+-        });
+-    }
+-
+-    /**
+-     * Sends a virtual event to the browser at a specific position.
+-     * This can be a mouse movement, button press/release, or a touch event.
+-     * Delegates to DevTools if open.
+-     *
+-     * @param eventType The type of event to send.
+-     * @param x The x-coordinate for the event.
+-     * @param y The y-coordinate for the event.
+-     */
+-    public void sendVirtualEvent(InputEventType eventType, int x, int y) {
+-        synchronized (devToolsLock) {
+-            if (isDevToolsOpen && devToolsBrowser != null) {
+-                devToolsBrowser.sendVirtualEvent(eventType, x, y);
+-                return;
+-            }
+-        }
+-
+-        switch (eventType) {
+-            case MOUSE_MOVE:
+-                executeMouseEventJS("mousemove", x, y, -1); // For mouse move, button is not relevant, use -1
+-                break;
+-            case MOUSE_LEFT_CLICK:
+-                // A click is a sequence of mousedown and mouseup
+-                executeMouseEventJS("mousedown", x, y, 0); // 0 for left button
+-                executeMouseEventJS("mouseup", x, y, 0);
+-                executeMouseEventJS("click", x, y, 0);
+-                break;
+-            case MOUSE_MIDDLE_CLICK:
+-                executeMouseEventJS("mousedown", x, y, 1); // 1 for middle button
+-                executeMouseEventJS("mouseup", x, y, 1);
+-                executeMouseEventJS("click", x, y, 1);
+-                break;
+-            case MOUSE_RIGHT_CLICK:
+-                executeMouseEventJS("mousedown", x, y, 2); // 2 for right button
+-                executeMouseEventJS("mouseup", x, y, 2);
+-                executeMouseEventJS("contextmenu", x, y, 2); // Right click often triggers contextmenu
+-                break;
+-
+-            case TOUCH_CLICK:
+-                executeTouchEventJS("touchstart", x, y);
+-                executeTouchEventJS("touchend", x, y);
+-                break;
+-            case TOUCH_PRESS:
+-                executeTouchEventJS("touchstart", x, y);
+-                break;
+-            case TOUCH_MOVE:
+-                executeTouchEventJS("touchmove", x, y);
+-                break;
+-            case TOUCH_RELEASE:
+-                executeTouchEventJS("touchend", x, y);
+-                break;
+-        }
+-    }
+-
+-    private void executeMouseEventJS(String eventType, int x, int y, int button) {
+-        // (function() {
+-        //     var el = document.elementFromPoint(%d, %d);
+-        //     if (!el) return;
+-        //     var mouseEventType = '%s';
+-        //     var buttonType = %d;
+-        //
+-        //     var eventOptions = {
+-        //         bubbles: true,
+-        //         cancelable: true,
+-        //         composed: true,
+-        //         clientX: %d,
+-        //         clientY: %d,
+-        //         button: buttonType,
+-        //         buttons: buttonType === 0 ? 1 : (buttonType === 1 ? 4 : 2) // Primary, Auxiliary, Secondary
+-        //     };
+-        //
+-        //     el.dispatchEvent(new MouseEvent(mouseEventType, eventOptions));
+-        //
+-        //     var pointerType = 'mouse';
+-        //     var primaryPointerType;
+-        //     if (mouseEventType === 'mousedown') {
+-        //         primaryPointerType = 'pointerdown';
+-        //     } else if (mouseEventType === 'mouseup') {
+-        //         primaryPointerType = 'pointerup';
+-        //     } else {
+-        //         primaryPointerType = 'pointermove';
+-        //     }
+-        //
+-        //     var pointerEventOptions = {
+-        //         bubbles: true,
+-        //         cancelable: true,
+-        //         composed: true,
+-        //         clientX: %d,
+-        //         clientY: %d,
+-        //         pointerType: pointerType,
+-        //         isPrimary: true,
+-        //         button: buttonType
+-        //     };
+-        //
+-        //     el.dispatchEvent(new PointerEvent(primaryPointerType, pointerEventOptions));
+-        // })();
+-        String jsCode = String.format(
+-                "!function(){var e=document.elementFromPoint(%d,%d);if(e){var t='%s',n=%d,o={bubbles:!0,cancelable:!0,composed:!0,clientX:%d,clientY:%d,button:n,buttons:0===n?1:1===n?4:2};e.dispatchEvent(new MouseEvent(t,o));var u='mousedown'===t?'pointerdown':'mouseup'===t?'pointerup':'pointermove',c={bubbles:!0,cancelable:!0,composed:!0,clientX:%d,clientY:%d,pointerType:'mouse',isPrimary:!0,button:n};e.dispatchEvent(new PointerEvent(u,c))}}();",
+-                x, y, eventType, button, x, y, x, y
+-        );
+-        executeJavaScript(jsCode, "chrome://inline/event", 0);
+-    }
+-
+-    private void executeTouchEventJS(String eventType, int x, int y) {
+-        //(function() {
+-        //    var el = document.elementFromPoint(%d, %d);
+-        //    if (!el) return;
+-        //    var touchEventType = '%s';
+-        //    var touchPoint = new Touch({
+-        //        identifier: Date.now(),
+-        //        target: el,
+-        //        clientX: %d,
+-        //        clientY: %d,
+-        //        pageX: %d,
+-        //        pageY: %d,
+-        //        screenX: %d,
+-        //        screenY: %d,
+-        //        radiusX: 2.5,
+-        //        radiusY: 2.5,
+-        //        rotationAngle: 0,
+-        //        force: 0.5
+-        //    });
+-        //    var touchEvent = new TouchEvent(touchEventType, {
+-        //        bubbles: true,
+-        //        cancelable: true,
+-        //        composed: true,
+-        //        touches: [touchPoint],
+-        //        targetTouches: [touchPoint],
+-        //        changedTouches: [touchPoint]
+-        //    });
+-        //    el.dispatchEvent(touchEvent);
+-        //    var primaryPointerType = touchEventType === 'touchstart' ? 'pointerdown' : (touchEventType === 'touchend' ? 'pointerup' : 'pointermove');
+-        //    var pointerEventOptions = {
+-        //        bubbles: true,
+-        //        cancelable: true,
+-        //        composed: true,
+-        //        clientX: %d,
+-        //        clientY: %d,
+-        //        pointerType: 'touch',
+-        //        isPrimary: true
+-        //    };
+-        //    el.dispatchEvent(new PointerEvent(primaryPointerType, pointerEventOptions));
+-        //    if (primaryPointerType !== 'pointermove') {
+-        //        el.dispatchEvent(new PointerEvent('pointermove', pointerEventOptions));
+-        //    }
+-        //})();
+-        String jsCode = String.format(
+-                "!function(){var e=document.elementFromPoint(%d,%d);if(e){var t='%s',n={identifier:Date.now(),target:e,clientX:%d,clientY:%d,pageX:%d,pageY:%d,screenX:%d,screenY:%d,radiusX:2.5,radiusY:2.5,rotationAngle:0,force:.5},o=new Touch(n),u=new TouchEvent(t,{bubbles:!0,cancelable:!0,composed:!0,touches:[o],targetTouches:[o],changedTouches:[o]});e.dispatchEvent(u);var c='touchstart'===t?'pointerdown':'touchend'===t?'pointerup':'pointermove',i={bubbles:!0,cancelable:!0,composed:!0,clientX:%d,clientY:%d,pointerType:'touch',isPrimary:!0};e.dispatchEvent(new PointerEvent(c,i)),'pointermove'!==c&&e.dispatchEvent(new PointerEvent('pointermove',i))}}();",
+-                x, y, eventType, x, y, x, y, x, y, x, y
+-        );
+-        executeJavaScript(jsCode, "chrome://inline/event", 0);
+-    }
+-
+-
+-    @Override
+-    public void close(boolean force) {
+-        synchronized (devToolsLock) {
+-            if(isDevToolsOpen && devToolsBrowser != null) {
+-                devToolsBrowser.close(force);
+-            }
+-        }
+-        clickExecutor.shutdown();
+-        super.close(force);
+-    }
++package org.cef.browser;
++
++import org.cef.CefBrowserSettings;
++import org.cef.CefClient;
++import javax.swing.*;
++import java.awt.*;
++import java.awt.event.KeyEvent;
++import java.awt.event.MouseEvent;
++import java.lang.reflect.Field;
++import java.nio.ByteBuffer;
++import java.util.concurrent.ExecutorService;
++import java.util.concurrent.Executors;
++import java.util.concurrent.locks.ReentrantLock;
++
++/**
++ * A specialized off-screen CEF browser instance tailored for rendering onto Minecraft maps.
++ * It captures browser frames as pixel data and forwards input events from the game.
++ * It also manages a nested browser instance for showing developer tools.
++ */
++public class MapBrowserInstance extends CefBrowserOsr {
++    // Lock to ensure thread-safe access to the pixel buffer.
++    private final ReentrantLock bufferLock = new ReentrantLock();
++    // Raw pixel data from CEF in BGRA format.
++    private byte[] rawPixelData;
++    private int pixelWidth;
++    private int pixelHeight;
++    // Flag to indicate if a new frame has been painted since the last update.
++    private boolean hasNewFrame = false;
++
++    // --- DevTools Fields ---
++    // Lock for thread-safe operations on the DevTools instance.
++    private final Object devToolsLock = new Object();
++    // The nested browser instance for the developer tools.
++    private MapBrowserInstance devToolsBrowser = null;
++    // Flag indicating if the developer tools are currently open and should be rendered.
++    private boolean isDevToolsOpen = false;
++    private final ExecutorService clickExecutor = Executors.newSingleThreadExecutor();
++
++    /**
++     * Defines the types of virtual events that can be sent to the browser.
++     */
++    public enum InputEventType {
++        MOUSE_MOVE,
++        MOUSE_LEFT_CLICK,
++        MOUSE_MIDDLE_CLICK,
++        MOUSE_RIGHT_CLICK,
++        TOUCH_CLICK,
++        TOUCH_MOVE,
++        TOUCH_PRESS,
++        TOUCH_RELEASE
++    }
++
++
++    /**
++     * Public constructor for a main browser instance.
++     * @param client The CefClient instance.
++     * @param url The initial URL to load.
++     */
++    public MapBrowserInstance(CefClient client, String url) {
++        super(client, url, false, null, new CefBrowserSettings()); // `isTransparent` is false.
++    }
++
++    /**
++     * Private constructor used exclusively for creating a DevTools browser instance.
++     * It uses reflection to set internal fields required for linking to a parent browser.
++     */
++    private MapBrowserInstance(CefClient client, String url, boolean transparent, CefRequestContext context, CefBrowser_N parent, Point inspectAt) {
++        super(client, url, transparent, context, new CefBrowserSettings());
++        // Use reflection to set private fields in the parent CefBrowser_N class.
++        try {
++            Field parentField = CefBrowser_N.class.getDeclaredField("parent_");
++            parentField.setAccessible(true);
++            parentField.set(this, parent);
++
++            Field inspectAtField = CefBrowser_N.class.getDeclaredField("inspectAt_");
++            inspectAtField.setAccessible(true);
++            inspectAtField.set(this, inspectAt);
++        } catch (Exception e) {
++            // This should not happen in a normal environment.
++            throw new RuntimeException("Failed to initialize DevTools via reflection", e);
++        }
++    }
++
++    /**
++     * Overridden to return our custom browser type for DevTools.
++     */
++    @Override
++    protected MapBrowserInstance createDevToolsBrowser(CefClient client, String url, CefRequestContext context, CefBrowser_N parent, Point inspectAt) {
++        return new MapBrowserInstance(client, url, false, context, parent, inspectAt);
++    }
++
++    /**
++     * Called by JCEF when a new frame is ready to be painted.
++     * This method copies the raw pixel data from the CEF buffer into a local byte array.
++     */
++    @Override
++    public void onPaint(CefBrowser browser, boolean popup, Rectangle[] dirtyRects, ByteBuffer buffer, int width, int height) {
++        bufferLock.lock();
++        try {
++            // Re-initialize buffer if the browser size has changed.
++            if (width != this.pixelWidth || height != this.pixelHeight) {
++                this.pixelWidth = width;
++                this.pixelHeight = height;
++                this.rawPixelData = new byte[width * height * 4];
++            }
++            // Copy pixel data from the direct ByteBuffer to our heap byte array.
++            buffer.get(this.rawPixelData);
++            this.hasNewFrame = true;
++        } finally {
++            bufferLock.unlock();
++        }
++    }
++    /**
++     * Retrieves the latest frame as an ARGB pixel array, if available.
++     * This method converts the raw BGRA data to the ARGB format used by Minecraft maps.
++     * If DevTools is open, it returns the pixel data from the DevTools browser instead.
++     * @return An integer array of ARGB pixels, or null if there is no new frame.
++     */
++    public int[] getAndUpdatePixelData() {
++        // If DevTools is active, delegate the call to it.
++        synchronized (devToolsLock) {
++            if (isDevToolsOpen && devToolsBrowser != null) {
++                return devToolsBrowser.getAndUpdatePixelData();
++            }
++        }
++
++        // Return null if no new frame has been painted.
++        if (!hasNewFrame) {
++            return null;
++        }
++
++        int[] argbPixels;
++        bufferLock.lock();
++        try {
++            // Double-check the flag after acquiring the lock.
++            if (!hasNewFrame) return null;
++
++            // Convert raw BGRA data to ARGB integers.
++            argbPixels = new int[pixelWidth * pixelHeight];
++            for (int i = 0; i < argbPixels.length; i++) {
++                int bufferIndex = i * 4;
++                int b = rawPixelData[bufferIndex] & 0xFF;
++                int g = rawPixelData[bufferIndex + 1] & 0xFF;
++                int r = rawPixelData[bufferIndex + 2] & 0xFF;
++                int a = rawPixelData[bufferIndex + 3] & 0xFF;
++                argbPixels[i] = (a << 24) | (r << 16) | (g << 8) | b;
++            }
++            this.hasNewFrame = false; // Mark the frame as consumed.
++        } finally {
++            bufferLock.unlock();
++        }
++        return argbPixels;
++    }
++
++    /**
++     * Resizes the off-screen browser.
++     * Uses reflection to access and modify the private size field in the superclass.
++     * @param width The new width in pixels.
++     * @param height The new height in pixels.
++     */
++    public void resize(int width, int height) {
++        try {
++            // Reflection is needed as the size field is private in CefBrowserOsr.
++            Field field = this.getClass().getSuperclass().getDeclaredField("browser_rect_");
++            field.setAccessible(true);
++            Rectangle rect = (Rectangle) field.get(this);
++            rect.setBounds(0, 0, width, height);
++            // Notify the native browser that it was resized.
++            wasResized(width, height);
++        } catch (Exception e) {
++            throw new RuntimeException("Failed to resize browser via reflection", e);
++        }
++    }
++
++    public int getPixelWidth() {
++        return pixelWidth;
++    }
++
++    public int getPixelHeight() {
++        return pixelHeight;
++    }
++
++    /**
++     * Opens or closes the developer tools for this browser instance.
++     * @param open True to open DevTools, false to close them.
++     */
++    public void setDevTools(boolean open) {
++        synchronized (devToolsLock) {
++            if (open == isDevToolsOpen) return; // No change needed.
++
++            this.isDevToolsOpen = open;
++            if (open) {
++                // Create and initialize the DevTools browser if it doesn't exist.
++                if (devToolsBrowser == null) {
++                    devToolsBrowser = createDevToolsBrowser(this.getClient(), this.getUrl(), this.getRequestContext(), this, (Point)null);
++                    // Initialization must happen on the AWT event dispatch thread.
++                    SwingUtilities.invokeLater(() -> {
++                        devToolsBrowser.createImmediately();
++                        devToolsBrowser.resize(this.pixelWidth, this.pixelHeight);
++                    });
++                }
++            } else {
++                // Close and dispose of the DevTools browser.
++                if (devToolsBrowser != null) {
++                    devToolsBrowser.close(true);
++                    devToolsBrowser = null;
++                }
++            }
++        }
++    }
++
++    public boolean isDevToolsOpen() {
++        return isDevToolsOpen;
++    }
++
++    /**
++     * Sends a complete string of text to the browser by simulating key type events.
++     * Delegates to DevTools if open.
++     * @param text The text to input.
++     */
++    public void inputText(String text) {
++        synchronized (devToolsLock) {
++            if (isDevToolsOpen && devToolsBrowser != null) {
++                devToolsBrowser.inputText(text);
++                return;
++            }
++        }
++
++        // Simulate a KEY_TYPED event for each character.
++        for (char c : text.toCharArray()) {
++            KeyEvent keyEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, KeyEvent.VK_UNDEFINED, c);
++            sendKeyEvent(keyEvent);
++        }
++    }
++
++    /**
++     * Sends a specific key action (press, release, or click) to the browser.
++     * Delegates to DevTools if open.
++     * @param keyCode The java.awt.event.KeyEvent constant for the key.
++     * @param action The action to perform: "pressDown", "pressUp", or "click".
++     */
++    public void handleKeyAction(int keyCode, String action) {
++        synchronized (devToolsLock) {
++            if (isDevToolsOpen && devToolsBrowser != null) {
++                devToolsBrowser.handleKeyAction(keyCode, action);
++                return;
++            }
++        }
++
++        switch (action.toLowerCase()) {
++            case "pressdown" -> {
++                KeyEvent pressEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
++                sendKeyEvent(pressEvent);
++            }
++            case "pressup" -> {
++                KeyEvent releaseEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
++                sendKeyEvent(releaseEvent);
++            }
++            case "click" -> {
++                // Simulate a quick press and release.
++                KeyEvent pressEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, keyCode, KeyEvent.CHAR_UNDEFINED);
++                sendKeyEvent(pressEvent);
++                KeyEvent releaseEvent = new KeyEvent(getUIComponent(), KeyEvent.KEY_RELEASED, System.currentTimeMillis() + 20, 0, keyCode, KeyEvent.CHAR_UNDEFINED);
++                sendKeyEvent(releaseEvent);
++            }
++        }
++    }
++
++    /**
++     * Sends a mouse click (press and release) event to the browser at specific coordinates.
++     * Delegates to DevTools if open.
++     * @param x The x-coordinate of the click.
++     * @param y The y-coordinate of the click.
++     * @param awtButtonType The MouseEvent button type (e.g., MouseEvent.BUTTON1).
++     */
++    public void sendMouseClick(int x, int y, int awtButtonType) {
++        synchronized (devToolsLock) {
++            if (isDevToolsOpen && devToolsBrowser != null) {
++                devToolsBrowser.sendMouseClick(x, y, awtButtonType);
++                return;
++            }
++        }
++        clickExecutor.submit(() -> {
++            MouseEvent move = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, x, y, 0, false);
++            sendMouseEvent(move);
++            try {
++                MouseEvent click = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, x, y, 1, false, awtButtonType);
++                sendMouseEvent(click);
++                Thread.sleep(1);
++                MouseEvent press = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, x, y, 1, false, awtButtonType);
++                sendMouseEvent(press);
++                Thread.sleep(1);
++                MouseEvent release = new MouseEvent(getUIComponent(), MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, x, y, 1, false, awtButtonType);
++                sendMouseEvent(release);
++            } catch (InterruptedException e) {
++                Thread.currentThread().interrupt();
++            }
++        });
++    }
++
++    /**
++     * Sends a virtual event to the browser at a specific position.
++     * This can be a mouse movement, button press/release, or a touch event.
++     * Delegates to DevTools if open.
++     *
++     * @param eventType The type of event to send.
++     * @param x The x-coordinate for the event.
++     * @param y The y-coordinate for the event.
++     */
++    public void sendVirtualEvent(InputEventType eventType, int x, int y) {
++        synchronized (devToolsLock) {
++            if (isDevToolsOpen && devToolsBrowser != null) {
++                devToolsBrowser.sendVirtualEvent(eventType, x, y);
++                return;
++            }
++        }
++
++        switch (eventType) {
++            case MOUSE_MOVE:
++                executeMouseEventJS("mousemove", x, y, -1); // For mouse move, button is not relevant, use -1
++                break;
++            case MOUSE_LEFT_CLICK:
++                // A click is a sequence of mousedown and mouseup
++                executeMouseEventJS("mousedown", x, y, 0); // 0 for left button
++                executeMouseEventJS("mouseup", x, y, 0);
++                executeMouseEventJS("click", x, y, 0);
++                break;
++            case MOUSE_MIDDLE_CLICK:
++                executeMouseEventJS("mousedown", x, y, 1); // 1 for middle button
++                executeMouseEventJS("mouseup", x, y, 1);
++                executeMouseEventJS("click", x, y, 1);
++                break;
++            case MOUSE_RIGHT_CLICK:
++                executeMouseEventJS("mousedown", x, y, 2); // 2 for right button
++                executeMouseEventJS("mouseup", x, y, 2);
++                executeMouseEventJS("contextmenu", x, y, 2); // Right click often triggers contextmenu
++                break;
++
++            case TOUCH_CLICK:
++                executeTouchEventJS("touchstart", x, y);
++                executeTouchEventJS("touchend", x, y);
++                break;
++            case TOUCH_PRESS:
++                executeTouchEventJS("touchstart", x, y);
++                break;
++            case TOUCH_MOVE:
++                executeTouchEventJS("touchmove", x, y);
++                break;
++            case TOUCH_RELEASE:
++                executeTouchEventJS("touchend", x, y);
++                break;
++        }
++    }
++
++    /**
++     * Scrolls the page at the given point. Finds the nearest scrollable ancestor of the element under
++     * the point (chat panels, side lists...) and falls back to the whole window.
++     * Done in JS because OSR wheel events are unreliable across CEF builds.
++     * @param deltaY pixels to scroll; positive goes down.
++     */
++    public void scrollAt(int x, int y, int deltaY) {
++        synchronized (devToolsLock) {
++            if (isDevToolsOpen && devToolsBrowser != null) {
++                devToolsBrowser.scrollAt(x, y, deltaY);
++                return;
++            }
++        }
++        String jsCode = String.format(
++                "!function(x,y,d){var e=document.elementFromPoint(x,y);while(e&&e!==document.body&&e!==document.documentElement){var s=getComputedStyle(e);if(/(auto|scroll|overlay)/.test(s.overflowY)&&e.scrollHeight>e.clientHeight+2){e.scrollBy({top:d,behavior:'smooth'});return}e=e.parentElement}window.scrollBy({top:d,behavior:'smooth'})}(%d,%d,%d);",
++                x, y, deltaY
++        );
++        executeJavaScript(jsCode, "chrome://inline/scroll", 0);
++    }
++
++    /**
++     * Presses a key (down + up) with an optional printable char, e.g. Enter / Backspace.
++     */
++    public void pressKey(int keyCode, char keyChar) {
++        synchronized (devToolsLock) {
++            if (isDevToolsOpen && devToolsBrowser != null) {
++                devToolsBrowser.pressKey(keyCode, keyChar);
++                return;
++            }
++        }
++        long now = System.currentTimeMillis();
++        sendKeyEvent(new KeyEvent(getUIComponent(), KeyEvent.KEY_PRESSED, now, 0, keyCode, keyChar));
++        if (keyChar != KeyEvent.CHAR_UNDEFINED) {
++            sendKeyEvent(new KeyEvent(getUIComponent(), KeyEvent.KEY_TYPED, now, 0, KeyEvent.VK_UNDEFINED, keyChar));
++        }
++        sendKeyEvent(new KeyEvent(getUIComponent(), KeyEvent.KEY_RELEASED, now + 20, 0, keyCode, keyChar));
++    }
++
++    private void executeMouseEventJS(String eventType, int x, int y, int button) {
++        // (function() {
++        //     var el = document.elementFromPoint(%d, %d);
++        //     if (!el) return;
++        //     var mouseEventType = '%s';
++        //     var buttonType = %d;
++        //
++        //     var eventOptions = {
++        //         bubbles: true,
++        //         cancelable: true,
++        //         composed: true,
++        //         clientX: %d,
++        //         clientY: %d,
++        //         button: buttonType,
++        //         buttons: buttonType === 0 ? 1 : (buttonType === 1 ? 4 : 2) // Primary, Auxiliary, Secondary
++        //     };
++        //
++        //     el.dispatchEvent(new MouseEvent(mouseEventType, eventOptions));
++        //
++        //     var pointerType = 'mouse';
++        //     var primaryPointerType;
++        //     if (mouseEventType === 'mousedown') {
++        //         primaryPointerType = 'pointerdown';
++        //     } else if (mouseEventType === 'mouseup') {
++        //         primaryPointerType = 'pointerup';
++        //     } else {
++        //         primaryPointerType = 'pointermove';
++        //     }
++        //
++        //     var pointerEventOptions = {
++        //         bubbles: true,
++        //         cancelable: true,
++        //         composed: true,
++        //         clientX: %d,
++        //         clientY: %d,
++        //         pointerType: pointerType,
++        //         isPrimary: true,
++        //         button: buttonType
++        //     };
++        //
++        //     el.dispatchEvent(new PointerEvent(primaryPointerType, pointerEventOptions));
++        // })();
++        String jsCode = String.format(
++                "!function(){var e=document.elementFromPoint(%d,%d);if(e){var t='%s',n=%d,o={bubbles:!0,cancelable:!0,composed:!0,clientX:%d,clientY:%d,button:n,buttons:0===n?1:1===n?4:2};e.dispatchEvent(new MouseEvent(t,o));var u='mousedown'===t?'pointerdown':'mouseup'===t?'pointerup':'pointermove',c={bubbles:!0,cancelable:!0,composed:!0,clientX:%d,clientY:%d,pointerType:'mouse',isPrimary:!0,button:n};e.dispatchEvent(new PointerEvent(u,c))}}();",
++                x, y, eventType, button, x, y, x, y
++        );
++        executeJavaScript(jsCode, "chrome://inline/event", 0);
++    }
++
++    private void executeTouchEventJS(String eventType, int x, int y) {
++        //(function() {
++        //    var el = document.elementFromPoint(%d, %d);
++        //    if (!el) return;
++        //    var touchEventType = '%s';
++        //    var touchPoint = new Touch({
++        //        identifier: Date.now(),
++        //        target: el,
++        //        clientX: %d,
++        //        clientY: %d,
++        //        pageX: %d,
++        //        pageY: %d,
++        //        screenX: %d,
++        //        screenY: %d,
++        //        radiusX: 2.5,
++        //        radiusY: 2.5,
++        //        rotationAngle: 0,
++        //        force: 0.5
++        //    });
++        //    var touchEvent = new TouchEvent(touchEventType, {
++        //        bubbles: true,
++        //        cancelable: true,
++        //        composed: true,
++        //        touches: [touchPoint],
++        //        targetTouches: [touchPoint],
++        //        changedTouches: [touchPoint]
++        //    });
++        //    el.dispatchEvent(touchEvent);
++        //    var primaryPointerType = touchEventType === 'touchstart' ? 'pointerdown' : (touchEventType === 'touchend' ? 'pointerup' : 'pointermove');
++        //    var pointerEventOptions = {
++        //        bubbles: true,
++        //        cancelable: true,
++        //        composed: true,
++        //        clientX: %d,
++        //        clientY: %d,
++        //        pointerType: 'touch',
++        //        isPrimary: true
++        //    };
++        //    el.dispatchEvent(new PointerEvent(primaryPointerType, pointerEventOptions));
++        //    if (primaryPointerType !== 'pointermove') {
++        //        el.dispatchEvent(new PointerEvent('pointermove', pointerEventOptions));
++        //    }
++        //})();
++        String jsCode = String.format(
++                "!function(){var e=document.elementFromPoint(%d,%d);if(e){var t='%s',n={identifier:Date.now(),target:e,clientX:%d,clientY:%d,pageX:%d,pageY:%d,screenX:%d,screenY:%d,radiusX:2.5,radiusY:2.5,rotationAngle:0,force:.5},o=new Touch(n),u=new TouchEvent(t,{bubbles:!0,cancelable:!0,composed:!0,touches:[o],targetTouches:[o],changedTouches:[o]});e.dispatchEvent(u);var c='touchstart'===t?'pointerdown':'touchend'===t?'pointerup':'pointermove',i={bubbles:!0,cancelable:!0,composed:!0,clientX:%d,clientY:%d,pointerType:'touch',isPrimary:!0};e.dispatchEvent(new PointerEvent(c,i)),'pointermove'!==c&&e.dispatchEvent(new PointerEvent('pointermove',i))}}();",
++                x, y, eventType, x, y, x, y, x, y, x, y
++        );
++        executeJavaScript(jsCode, "chrome://inline/event", 0);
++    }
++
++
++    @Override
++    public void close(boolean force) {
++        synchronized (devToolsLock) {
++            if(isDevToolsOpen && devToolsBrowser != null) {
++                devToolsBrowser.close(force);
++            }
++        }
++        clickExecutor.shutdown();
++        super.close(force);
++    }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/top/steve3184/mapbrowser/BrowserActions.java b/src/main/java/top/steve3184/mapbrowser/BrowserActions.java
+new file mode 100644
+index 0000000..f96fb0b
+--- /dev/null
++++ b/src/main/java/top/steve3184/mapbrowser/BrowserActions.java
+@@ -0,0 +1,111 @@
++package top.steve3184.mapbrowser;
++
++import org.bukkit.entity.Player;
++import org.cef.browser.MapBrowserInstance;
++
++import java.awt.event.KeyEvent;
++import java.net.URLEncoder;
++import java.nio.charset.StandardCharsets;
++import java.util.regex.Pattern;
++
++/**
++ * Small navigation helpers shared by commands, the menu, clicks and chat typing.
++ */
++public final class BrowserActions {
++
++    private static final Pattern HAS_SCHEME = Pattern.compile("^[a-zA-Z][a-zA-Z0-9+.-]*://.*");
++    private static final Pattern LOOKS_LIKE_HOST = Pattern.compile("^[^\\s/]+\\.[a-zA-Z]{2,}(:\\d+)?(/.*)?$|^localhost(:\\d+)?(/.*)?$");
++
++    private BrowserActions() {
++    }
++
++    /**
++     * Turns what a player typed into a URL: "youtube.com" → https://youtube.com,
++     * "recetas de pizza" → Google search. Returns null for blocked schemes.
++     */
++    public static String normalizeUrl(String input) {
++        String s = input.trim();
++        if (s.isEmpty()) return null;
++        if (HAS_SCHEME.matcher(s).matches()) {
++            String lower = s.toLowerCase();
++            if (lower.startsWith("http://") || lower.startsWith("https://")) return s;
++            return null; // file://, chrome://, javascript: ... not allowed
++        }
++        if (s.toLowerCase().startsWith("javascript:") || s.toLowerCase().startsWith("data:")) return null;
++        if (LOOKS_LIKE_HOST.matcher(s).matches()) return "https://" + s;
++        return "https://www.google.com/search?q=" + URLEncoder.encode(s, StandardCharsets.UTF_8);
++    }
++
++    private static MapBrowserInstance browser(Player p, MapBrowserDisplay d) {
++        MapBrowserInstance b = d.getBrowser();
++        if (b == null) Msg.err(p, "La pantalla #<arg0> todavía está cargando.", d.getId());
++        return b;
++    }
++
++    public static void go(Player p, MapBrowserDisplay d, String url) {
++        MapBrowserInstance b = browser(p, d);
++        if (b == null) return;
++        b.loadURL(url);
++        d.setUrl(url);
++        Msg.actionBar(p, "<aqua>↗</aqua> <white><arg0>", Msg.shortUrl(url));
++    }
++
++    public static void back(Player p, MapBrowserDisplay d) {
++        MapBrowserInstance b = browser(p, d);
++        if (b == null) return;
++        if (b.canGoBack()) {
++            b.goBack();
++            Msg.actionBar(p, "<aqua>◀</aqua> <gray>Atrás");
++        } else {
++            Msg.actionBar(p, "<gray>No hay página anterior");
++        }
++    }
++
++    public static void forward(Player p, MapBrowserDisplay d) {
++        MapBrowserInstance b = browser(p, d);
++        if (b == null) return;
++        if (b.canGoForward()) {
++            b.goForward();
++            Msg.actionBar(p, "<aqua>▶</aqua> <gray>Adelante");
++        } else {
++            Msg.actionBar(p, "<gray>No hay página siguiente");
++        }
++    }
++
++    public static void reload(Player p, MapBrowserDisplay d) {
++        MapBrowserInstance b = browser(p, d);
++        if (b == null) return;
++        b.reload();
++        Msg.actionBar(p, "<aqua>⟳</aqua> <gray>Recargando…");
++    }
++
++    public static void home(Player p, MapBrowserDisplay d) {
++        go(p, d, d.getHomeUrl());
++    }
++
++    /** Scroll at the center of the screen. */
++    public static void scroll(Player p, MapBrowserDisplay d, int deltaY) {
++        MapBrowserInstance b = browser(p, d);
++        if (b == null) return;
++        int cx = d.getWidth() * 128 * d.getScale() / 2;
++        int cy = d.getHeight() * 128 * d.getScale() / 2;
++        b.scrollAt(cx, cy, deltaY);
++    }
++
++    public static void type(MapBrowserDisplay d, String text, boolean pressEnter) {
++        MapBrowserInstance b = d.getBrowser();
++        if (b == null) return;
++        b.inputText(text);
++        if (pressEnter) b.pressKey(KeyEvent.VK_ENTER, '\r');
++    }
++
++    public static void enter(MapBrowserDisplay d) {
++        MapBrowserInstance b = d.getBrowser();
++        if (b != null) b.pressKey(KeyEvent.VK_ENTER, '\r');
++    }
++
++    public static void backspace(MapBrowserDisplay d) {
++        MapBrowserInstance b = d.getBrowser();
++        if (b != null) b.pressKey(KeyEvent.VK_BACK_SPACE, KeyEvent.CHAR_UNDEFINED);
++    }
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/BrowserMenu.java b/src/main/java/top/steve3184/mapbrowser/BrowserMenu.java
+new file mode 100644
+index 0000000..8c0c7f5
+--- /dev/null
++++ b/src/main/java/top/steve3184/mapbrowser/BrowserMenu.java
+@@ -0,0 +1,194 @@
++package top.steve3184.mapbrowser;
++
++import net.kyori.adventure.text.Component;
++import net.kyori.adventure.text.event.ClickEvent;
++import net.kyori.adventure.text.format.TextDecoration;
++import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
++import org.bukkit.Bukkit;
++import org.bukkit.Material;
++import org.bukkit.entity.Player;
++import org.bukkit.event.EventHandler;
++import org.bukkit.event.Listener;
++import org.bukkit.event.inventory.InventoryClickEvent;
++import org.bukkit.event.inventory.InventoryDragEvent;
++import org.bukkit.inventory.Inventory;
++import org.bukkit.inventory.InventoryHolder;
++import org.bukkit.inventory.ItemStack;
++import org.bukkit.inventory.meta.ItemMeta;
++import org.jetbrains.annotations.NotNull;
++
++import java.io.File;
++import java.io.IOException;
++import java.nio.file.Files;
++import java.util.ArrayList;
++import java.util.List;
++
++/**
++ * Remote-control menu for a screen (opened with Shift + left click on the screen or /mb menu).
++ *
++ * <pre>
++ *  ◀ Atrás  ▶ Adelante  ⟳ Recargar  ⌂ Inicio  · ▲ Subir  ▼ Bajar  · ✕
++ *  [ favoritos de config.yml ........................................ ]
++ *  ✎ Escribir  ⌨ Teclado  ⏎ Enter  ⌫ Borrar  · ℹ Página actual  · ⚙ Admin
++ * </pre>
++ */
++public class BrowserMenu implements Listener {
++
++    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
++
++    private final MapBrowser plugin;
++
++    public BrowserMenu(MapBrowser plugin) {
++        this.plugin = plugin;
++    }
++
++    private static final class Holder implements InventoryHolder {
++        final int displayId;
++        Inventory inv;
++
++        Holder(int displayId) {
++            this.displayId = displayId;
++        }
++
++        @Override
++        public @NotNull Inventory getInventory() {
++            return inv;
++        }
++    }
++
++    public void open(Player p, MapBrowserDisplay d) {
++        Holder h = new Holder(d.getId());
++        Inventory inv = Bukkit.createInventory(h, 27, Msg.c("<dark_aqua>Pantalla web #<arg0>", d.getId()));
++        h.inv = inv;
++
++        inv.setItem(0, item(Material.ARROW, "<aqua>◀ Atrás", "<gray>Página anterior"));
++        inv.setItem(1, item(Material.SPECTRAL_ARROW, "<aqua>▶ Adelante", "<gray>Página siguiente"));
++        inv.setItem(2, item(Material.SUNFLOWER, "<yellow>⟳ Recargar", "<gray>Vuelve a cargar la página"));
++        inv.setItem(3, item(Material.OAK_DOOR, "<green>⌂ Inicio", "<gray>" + escape(Msg.shortUrl(d.getHomeUrl()))));
++        inv.setItem(5, item(Material.FEATHER, "<aqua>▲ Subir", "<gray>También: <white>Shift + clic derecho</white> en la pantalla"));
++        inv.setItem(6, item(Material.ANVIL, "<aqua>▼ Bajar", "<gray>También: <white>clic derecho</white> en la pantalla"));
++        inv.setItem(8, item(Material.BARRIER, "<red>✕ Cerrar"));
++
++        List<Settings.Favorite> favs = plugin.getSettings().favorites();
++        for (int i = 0; i < favs.size(); i++) {
++            Settings.Favorite f = favs.get(i);
++            ItemStack it = new ItemStack(f.icon());
++            ItemMeta m = it.getItemMeta();
++            m.displayName(LEGACY.deserialize(f.name()).decoration(TextDecoration.ITALIC, false));
++            m.lore(List.of(Msg.c("<gray><arg0>", Msg.shortUrl(f.url())).decoration(TextDecoration.ITALIC, false),
++                    Msg.c("<dark_gray>Clic para abrir").decoration(TextDecoration.ITALIC, false)));
++            it.setItemMeta(m);
++            inv.setItem(9 + i, it);
++        }
++
++        inv.setItem(18, item(Material.WRITABLE_BOOK, "<aqua>✎ Escribir desde el chat",
++                "<gray>Haz clic en un campo de la web", "<gray>y luego escribe en el chat."));
++        inv.setItem(19, item(Material.KNOWLEDGE_BOOK, "<aqua>⌨ Teclado en pantalla",
++                "<gray>Muestra un teclado dentro de la web", "<gray>que se pulsa con clic izquierdo."));
++        inv.setItem(20, item(Material.LIME_DYE, "<green>⏎ Enter"));
++        inv.setItem(21, item(Material.RED_DYE, "<red>⌫ Borrar", "<gray>Borra una letra"));
++        inv.setItem(23, item(Material.PAPER, "<white>ℹ Página actual",
++                "<gray>" + escape(Msg.shortUrl(d.getCurrentUrl())), "<dark_gray>Clic: enviar el enlace al chat"));
++        if (p.hasPermission("mapbrowser.command.modify")) {
++            inv.setItem(26, item(Material.COMPARATOR, "<gold>⚙ Admin",
++                    "<gray>/mb ir \\<url> <dark_gray>— abrir cualquier web",
++                    "<gray>/mb inicio fijar <dark_gray>— esta página como inicio",
++                    "<gray>/mb tamaño \\<ancho> \\<alto>",
++                    "<gray>/mb mover <dark_gray>— a donde miras",
++                    "<gray>/mb quitar"));
++        }
++        p.openInventory(inv);
++    }
++
++    private static String escape(String s) {
++        return s.replace("<", "\\<");
++    }
++
++    private static ItemStack item(Material mat, String name, String... lore) {
++        ItemStack it = new ItemStack(mat);
++        ItemMeta m = it.getItemMeta();
++        m.displayName(Msg.c(name).decoration(TextDecoration.ITALIC, false));
++        List<Component> l = new ArrayList<>();
++        for (String s : lore) l.add(Msg.c(s).decoration(TextDecoration.ITALIC, false));
++        if (!l.isEmpty()) m.lore(l);
++        it.setItemMeta(m);
++        return it;
++    }
++
++    @EventHandler
++    public void onDrag(InventoryDragEvent e) {
++        if (e.getInventory().getHolder() instanceof Holder) e.setCancelled(true);
++    }
++
++    @EventHandler
++    public void onClick(InventoryClickEvent e) {
++        if (!(e.getInventory().getHolder() instanceof Holder h)) return;
++        e.setCancelled(true);
++        if (!(e.getWhoClicked() instanceof Player p)) return;
++        if (e.getClickedInventory() != e.getView().getTopInventory()) return;
++        int slot = e.getRawSlot();
++        MapBrowserDisplay d = plugin.getActiveDisplays().get(h.displayId);
++        if (d == null) {
++            p.closeInventory();
++            Msg.err(p, "Esa pantalla ya no existe.");
++            return;
++        }
++        int scroll = plugin.getSettings().scrollPixels();
++        switch (slot) {
++            case 0 -> BrowserActions.back(p, d);
++            case 1 -> BrowserActions.forward(p, d);
++            case 2 -> BrowserActions.reload(p, d);
++            case 3 -> {
++                BrowserActions.home(p, d);
++                p.closeInventory();
++            }
++            case 5 -> BrowserActions.scroll(p, d, -scroll);
++            case 6 -> BrowserActions.scroll(p, d, scroll);
++            case 8 -> p.closeInventory();
++            case 18 -> {
++                p.closeInventory();
++                plugin.getTypingMode().start(p, d);
++            }
++            case 19 -> {
++                p.closeInventory();
++                runSnippet(p, d, "vKeyboard.js");
++            }
++            case 20 -> {
++                BrowserActions.enter(d);
++                Msg.actionBar(p, "<aqua>⏎</aqua> <gray>Enter");
++            }
++            case 21 -> {
++                BrowserActions.backspace(d);
++                Msg.actionBar(p, "<aqua>⌫</aqua> <gray>Borrado");
++            }
++            case 23 -> {
++                p.closeInventory();
++                String url = d.getCurrentUrl();
++                p.sendMessage(Msg.c(Msg.PREFIX + "<gray>Página actual: <aqua><u><arg0></u></aqua> <dark_gray>(clic para abrir)", url)
++                        .clickEvent(ClickEvent.openUrl(url)));
++            }
++            default -> {
++                if (slot >= 9 && slot < 18) {
++                    List<Settings.Favorite> favs = plugin.getSettings().favorites();
++                    int i = slot - 9;
++                    if (i < favs.size()) {
++                        BrowserActions.go(p, d, favs.get(i).url());
++                        p.closeInventory();
++                    }
++                }
++            }
++        }
++        plugin.getDisplayService().setFocus(p, d);
++    }
++
++    private void runSnippet(Player p, MapBrowserDisplay d, String name) {
++        if (d.getBrowser() == null) return;
++        File f = new File(new File(plugin.getDataFolder(), "snippets"), name);
++        try {
++            d.getBrowser().executeJavaScript(Files.readString(f.toPath()), null, 0);
++            Msg.info(p, "Teclado en pantalla abierto. Púlsalo con <white>clic izquierdo</white>.");
++        } catch (IOException ex) {
++            Msg.err(p, "No encuentro el script <arg0>.", name);
++        }
++    }
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/CommandHandler.java b/src/main/java/top/steve3184/mapbrowser/CommandHandler.java
+index e4d36c9..0e1c527 100644
+--- a/src/main/java/top/steve3184/mapbrowser/CommandHandler.java
++++ b/src/main/java/top/steve3184/mapbrowser/CommandHandler.java
+@@ -1,512 +1,648 @@
+-package top.steve3184.mapbrowser;
+-
+-import net.kyori.adventure.text.Component;
+-import net.kyori.adventure.text.format.NamedTextColor;
+-import org.bukkit.Bukkit;
+-import org.bukkit.Location;
+-import org.bukkit.block.Block;
+-import org.bukkit.command.Command;
+-import org.bukkit.command.CommandExecutor;
+-import org.bukkit.command.CommandSender;
+-import org.bukkit.command.TabCompleter;
+-import org.bukkit.entity.Player;
+-import org.bukkit.util.StringUtil;
+-import org.cef.browser.MapBrowserInstance;
+-import org.jetbrains.annotations.NotNull;
+-
+-import java.io.File;
+-import java.io.IOException;
+-import java.nio.file.Files;
+-import java.util.*;
+-import java.util.stream.Collectors;
+-
+-/**
+- * Handles all command execution and tab completion for the MapBrowser plugin.
+- */
+-public class CommandHandler implements CommandExecutor, TabCompleter {
+-
+-    private final MapBrowser plugin;
+-    private final DisplayService displayService;
+-
+-    public CommandHandler(MapBrowser plugin, DisplayService displayService) {
+-        this.plugin = plugin;
+-        this.displayService = displayService;
+-    }
+-
+-    @Override
+-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+-        // Player check is now handled within each specific command that requires it.
+-
+-        if (args.length == 0) {
+-            sendHelpMessage(sender);
+-            return true;
+-        }
+-
+-        String subCommand = args[0].toLowerCase();
+-        // A check to ensure only players can use commands that require a player instance
+-        if (!(sender instanceof Player) && Arrays.asList("create", "list", "remove", "modify", "near", "executeJs").contains(subCommand)) {
+-            sender.sendMessage(Component.text("This command can only be used by a player.", NamedTextColor.RED));
+-            return true;
+-        }
+-
+-        switch (subCommand) {
+-            // Commands that require a player
+-            case "create" -> {
+-                assert sender instanceof Player;
+-                handleCreateCommand((Player) sender, args);
+-            }
+-            case "list" -> {
+-                assert sender instanceof Player;
+-                handleListCommand((Player) sender);
+-            }
+-            case "remove" -> {
+-                assert sender instanceof Player;
+-                handleRemoveCommand((Player) sender, args);
+-            }
+-            case "modify" -> {
+-                assert sender instanceof Player;
+-                handleModifyCommand((Player) sender, args);
+-            }
+-            case "near" -> {
+-                assert sender instanceof Player;
+-                handleNearCommand((Player) sender);
+-            }
+-            // Commands that can be run by console
+-            case "input" -> handleInputCommand(sender, args);
+-            case "keys" -> handleKeysCommand(sender, args);
+-            case "executejs" -> handleExecuteJsCommand(sender, args);
+-            default -> sendHelpMessage(sender);
+-        }
+-        return true;
+-    }
+-
+-    @Override
+-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
+-        if (!(sender instanceof Player player)) {
+-            return Collections.emptyList();
+-        }
+-
+-        final List<String> completions = new ArrayList<>();
+-        final List<String> subCommands = Arrays.asList("create", "list", "remove", "modify", "input", "keys", "near", "executeJs");
+-
+-        if (args.length == 1) {
+-            return StringUtil.copyPartialMatches(args[0], subCommands, completions);
+-        }
+-
+-        String subCommand = args[0].toLowerCase();
+-
+-        // Enhanced Tab-Completion for /mb create
+-        if (subCommand.equals("create")) {
+-            Block targetBlock = player.getTargetBlock(null, 10); // Look up to 10 blocks away
+-            if (args.length == 2) completions.add(String.valueOf(targetBlock.getX()));
+-            if (args.length == 3) completions.add(String.valueOf(targetBlock.getY()));
+-            if (args.length == 4) completions.add(String.valueOf(targetBlock.getZ()));
+-            if (args.length == 5) completions.add("<url>");
+-            if (args.length == 6) completions.add("[width]");
+-            if (args.length == 7) completions.add("[height]");
+-            return completions;
+-        }
+-
+-        final List<String> idRequiredCommands = Arrays.asList("remove", "modify", "input", "keys", "executejs");
+-        if (args.length == 2 && idRequiredCommands.contains(subCommand)) {
+-            List<String> ids = plugin.getActiveDisplays().keySet().stream().map(String::valueOf).collect(Collectors.toList());
+-            return StringUtil.copyPartialMatches(args[1], ids, completions);
+-        }
+-
+-        if (subCommand.equals("modify")) {
+-            if (args.length == 3) {
+-                return StringUtil.copyPartialMatches(args[2], Arrays.asList("url", "devtools", "pos", "size", "refresh", "scale"), completions);
+-            }
+-            if (args.length == 4 && args[2].equalsIgnoreCase("devtools")) {
+-                return StringUtil.copyPartialMatches(args[3], Arrays.asList("on", "off"), completions);
+-            }
+-            if (args[2].equalsIgnoreCase("size")) {
+-                if (args.length == 4) {
+-                    return StringUtil.copyPartialMatches(args[3], List.of("<width>"), completions);
+-                }
+-                if (args.length == 5) {
+-                    return StringUtil.copyPartialMatches(args[4], List.of("<height>"), completions);
+-                }
+-            }
+-            if (args[2].equalsIgnoreCase("pos")) {
+-                Block targetBlock = player.getTargetBlock(null, 10);
+-                if (args.length == 4) {
+-                    return StringUtil.copyPartialMatches(args[3], List.of(String.valueOf(targetBlock.getX())), completions);
+-                }
+-                if (args.length == 5) {
+-                    return StringUtil.copyPartialMatches(args[4], List.of(String.valueOf(targetBlock.getY())), completions);
+-                }
+-                if (args.length == 6) {
+-                    return StringUtil.copyPartialMatches(args[5], List.of(String.valueOf(targetBlock.getZ())), completions);
+-                }
+-            }
+-            if (args.length == 4 && args[2].equalsIgnoreCase("scale")) {
+-                return StringUtil.copyPartialMatches(args[3], List.of("newScale"), completions);
+-            }
+-        }
+-
+-        if (subCommand.equals("keys")) {
+-            if (args.length == 3) {
+-                return StringUtil.copyPartialMatches(args[2], KeyMap.getKeyNames(), completions);
+-            }
+-            if (args.length == 4) {
+-                return StringUtil.copyPartialMatches(args[3], Arrays.asList("pressDown", "pressUp", "click"), completions);
+-            }
+-        }
+-
+-        return Collections.emptyList();
+-    }
+-
+-    private void handleCreateCommand(Player player, String[] args) {
+-        if (!player.hasPermission("mapbrowser.command.create")) {
+-            player.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-        if (args.length < 5) {
+-            player.sendMessage(Component.text("Usage: /mb create <x> <y> <z> <url> [width] [height]", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        try {
+-            double x = Double.parseDouble(args[1]);
+-            double y = Double.parseDouble(args[2]);
+-            double z = Double.parseDouble(args[3]);
+-            String url = args[4];
+-            int width = args.length > 5 ? Integer.parseInt(args[5]) : 1;
+-            int height = args.length > 6 ? Integer.parseInt(args[6]) : 1;
+-            if (width <= 0 || height <= 0) {
+-                player.sendMessage(Component.text("Width and height must be positive.", NamedTextColor.RED));
+-                return;
+-            }
+-
+-            Location location = new Location(player.getWorld(), x, y, z);
+-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+-                player.sendMessage(Component.text("Creating map display...", NamedTextColor.YELLOW));
+-                MapBrowserDisplay newDisplay = displayService.createAndInitializeDisplay(player, url, location, width, height);
+-                if (newDisplay != null) {
+-                    player.sendMessage(Component.text("Successfully created map display #", NamedTextColor.GREEN)
+-                            .append(Component.text(newDisplay.getId(), NamedTextColor.WHITE)));
+-                } else {
+-                    player.sendMessage(Component.text("Failed to create map display.", NamedTextColor.RED));
+-                }
+-            });
+-        } catch (NumberFormatException e) {
+-            player.sendMessage(Component.text("Invalid number format for coordinates, width, or height.", NamedTextColor.RED));
+-        }
+-    }
+-
+-    private void handleListCommand(Player player) {
+-        if (!player.hasPermission("mapbrowser.command.list")) {
+-            player.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-        Map<Integer, MapBrowserDisplay> activeDisplays = plugin.getActiveDisplays();
+-        if (activeDisplays.isEmpty()) {
+-            player.sendMessage(Component.text("No active map displays found.", NamedTextColor.YELLOW));
+-            return;
+-        }
+-
+-        player.sendMessage(Component.text("--- Active Map Displays ---", NamedTextColor.GOLD));
+-        activeDisplays.forEach((id, display) -> {
+-            Location loc = display.getLocation();
+-            player.sendMessage(
+-                    Component.text("#" + id + ": ", NamedTextColor.YELLOW)
+-                            .append(Component.text(display.getUrl(), NamedTextColor.WHITE))
+-                            .append(Component.text("\n    at (", NamedTextColor.GRAY))
+-                            .append(Component.text(loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ(), NamedTextColor.GREEN))
+-                            .append(Component.text(") Size: ", NamedTextColor.GRAY))
+-                            .append(Component.text(display.getWidth() + "x" + display.getHeight(), NamedTextColor.AQUA))
+-                            .append(Component.text(" | Viewers: " + display.getViewerDisplays().size(), NamedTextColor.GRAY))
+-            );
+-        });
+-    }
+-
+-    private void handleRemoveCommand(Player player, String[] args) {
+-        if (!player.hasPermission("mapbrowser.command.remove")) {
+-            player.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-        if (args.length < 2) {
+-            player.sendMessage(Component.text("Usage: /mb remove <id>", NamedTextColor.RED));
+-            return;
+-        }
+-        try {
+-            int id = Integer.parseInt(args[1]);
+-            MapBrowserDisplay displayInfo = plugin.getActiveDisplays().remove(id);
+-
+-            if (displayInfo == null) {
+-                player.sendMessage(Component.text("Map display with ID #" + id + " not found.", NamedTextColor.RED));
+-                return;
+-            }
+-
+-            displayInfo.getViewerDisplays().keySet().forEach(uuid -> plugin.getDisplayLookup().remove(uuid));
+-            displayInfo.cleanup();
+-
+-            player.sendMessage(Component.text("Successfully removed map display #" + id + ".", NamedTextColor.GREEN));
+-
+-        } catch (NumberFormatException e) {
+-            player.sendMessage(Component.text("Invalid ID format. It must be a number.", NamedTextColor.RED));
+-        }
+-    }
+-
+-    private void handleModifyCommand(Player player, String[] args) {
+-        if (!player.hasPermission("mapbrowser.command.modify")) {
+-            player.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-        if (args.length < 3) {
+-            sendHelpMessage(player);
+-            return;
+-        }
+-
+-        MapBrowserDisplay display = getDisplayById(args[1], player);
+-        if (display == null) return;
+-
+-        final MapBrowserInstance browser = display.getBrowser();
+-        if (browser == null) {
+-            player.sendMessage(Component.text("Browser for display #" + display.getId() + " is not available.", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        String property = args[2].toLowerCase();
+-
+-        switch (property) {
+-            case "refresh" -> {
+-                browser.reload();
+-                player.sendMessage(Component.text("Refreshed display #" + display.getId(), NamedTextColor.GREEN));
+-            }
+-            case "url" -> {
+-                if (args.length != 4) {
+-                    player.sendMessage(Component.text("Usage: /mb modify " + display.getId() + " url <new_url>", NamedTextColor.RED));
+-                    return;
+-                }
+-                String newUrl = args[3];
+-                display.getBrowser().loadURL(newUrl);
+-                display.setUrl(newUrl);
+-                player.sendMessage(Component.text("Set URL for display #" + display.getId() + " to " + newUrl, NamedTextColor.GREEN));
+-            }
+-            case "devtools" -> {
+-                if (args.length != 4) {
+-                    player.sendMessage(Component.text("Usage: /mb modify " + display.getId() + " devtools <on|off>", NamedTextColor.RED));
+-                    return;
+-                }
+-                boolean open = args[3].equalsIgnoreCase("on");
+-//                display.getBrowser().setDevTools(open);
+-//                player.sendMessage(Component.text("Set DevTools for display #" + display.getId() + " to " + (open ? "ON" : "OFF"), NamedTextColor.GREEN));
+-                player.sendMessage(Component.text("Devtools is not usable now, you can try to using remote debugging.", NamedTextColor.RED));
+-            }
+-            case "pos" -> {
+-                if (args.length != 6) {
+-                    player.sendMessage(Component.text("Usage: /mb modify " + display.getId() + " pos <x> <y> <z>", NamedTextColor.RED));
+-                    return;
+-                }
+-                try {
+-                    double x = Double.parseDouble(args[3]);
+-                    double y = Double.parseDouble(args[4]);
+-                    double z = Double.parseDouble(args[5]);
+-                    player.sendMessage(Component.text("Moving display #" + display.getId() + "...", NamedTextColor.YELLOW));
+-                    displayService.moveDisplay(player, display, new Location(player.getWorld(), x, y, z));
+-                    player.sendMessage(Component.text("Display #" + display.getId() + " moved successfully.", NamedTextColor.GREEN));
+-                } catch (NumberFormatException e) {
+-                    player.sendMessage(Component.text("Invalid coordinates provided.", NamedTextColor.RED));
+-                }
+-            }
+-            case "size" -> {
+-                if (args.length != 5) {
+-                    player.sendMessage(Component.text("Usage: /mb modify " + display.getId() + " size <width> <height>", NamedTextColor.RED));
+-                    return;
+-                }
+-                try {
+-                    int newWidth = Integer.parseInt(args[3]);
+-                    int newHeight = Integer.parseInt(args[4]);
+-                    if (newWidth <= 0 || newHeight <= 0) {
+-                        player.sendMessage(Component.text("Width and height must be positive.", NamedTextColor.RED));
+-                        return;
+-                    }
+-                    player.sendMessage(Component.text("Resizing display #" + display.getId() + "...", NamedTextColor.YELLOW));
+-                    displayService.resizeDisplay(player, display, newWidth, newHeight);
+-                    player.sendMessage(Component.text("Display #" + display.getId() + " resized successfully.", NamedTextColor.GREEN));
+-                } catch (NumberFormatException e) {
+-                    player.sendMessage(Component.text("Invalid width or height.", NamedTextColor.RED));
+-                }
+-            }
+-            case "scale" -> {
+-                if (args.length != 4) {
+-                    player.sendMessage(Component.text("Usage: /mb modify " + display.getId() + " scale <newScale>", NamedTextColor.RED));
+-                    return;
+-                }
+-                try {
+-                    int newScale = Integer.parseInt(args[3]);
+-                    if (newScale < 1) {
+-                        player.sendMessage(Component.text("Scale must >=1.", NamedTextColor.RED));
+-                        return;
+-                    }
+-                    player.sendMessage(Component.text("Setting scale of display #" + display.getId() + "...", NamedTextColor.YELLOW));
+-                    displayService.scaleDisplay(player, display, newScale);
+-                    player.sendMessage(Component.text("Display #" + display.getId() + " scaled successfully.", NamedTextColor.GREEN));
+-                } catch (NumberFormatException e) {
+-                    player.sendMessage(Component.text("Invalid scale.", NamedTextColor.RED));
+-                }
+-            }
+-            default -> player.sendMessage(Component.text("Unknown property. Use: url, devtools, pos, size.", NamedTextColor.RED));
+-        }
+-    }
+-
+-    private void handleNearCommand(Player player) {
+-        if (!player.hasPermission("mapbrowser.command.near")) {
+-            player.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-        final Location playerLoc = player.getLocation();
+-
+-        Optional<MapBrowserDisplay> nearestDisplay = plugin.getActiveDisplays().values().stream()
+-                .filter(display -> display.getLocation().getWorld().equals(playerLoc.getWorld()))
+-                .min(Comparator.comparingDouble(display -> display.getLocation().distanceSquared(playerLoc)));
+-
+-        if (nearestDisplay.isPresent()) {
+-            MapBrowserDisplay display = nearestDisplay.get();
+-            player.sendMessage(Component.text("Nearest display is #", NamedTextColor.GREEN)
+-                    .append(Component.text(display.getId(), NamedTextColor.WHITE))
+-                    .append(Component.text(String.format(" (%.1f blocks away)", Math.sqrt(display.getLocation().distanceSquared(playerLoc))), NamedTextColor.GRAY))
+-            );
+-        } else {
+-            player.sendMessage(Component.text("No displays found in your world.", NamedTextColor.YELLOW));
+-        }
+-    }
+-
+-
+-    private void handleInputCommand(CommandSender sender, String[] args) {
+-        if (!sender.hasPermission("mapbrowser.command.input")) {
+-            sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        if (args.length < 3) {
+-            sender.sendMessage(Component.text("Usage: /mb input <id> <text...>", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        MapBrowserDisplay display = getDisplayById(args[1], sender);
+-        if (display == null) return;
+-
+-        if (display.getBrowser() == null) {
+-            sender.sendMessage(Component.text("The browser for display #" + display.getId() + " is not available.", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        String textToInput = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+-        display.getBrowser().inputText(textToInput);
+-        sender.sendMessage(Component.text("Sent input to display #" + display.getId(), NamedTextColor.GREEN));
+-    }
+-
+-    private void handleKeysCommand(CommandSender sender, String[] args) {
+-        if (!sender.hasPermission("mapbrowser.command.keys")) {
+-            sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-        if (args.length != 4) {
+-            sender.sendMessage(Component.text("Usage: /mb keys <id> <keyName> <pressDown|pressUp|click>", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        MapBrowserDisplay display = getDisplayById(args[1], sender);
+-        if (display == null || display.getBrowser() == null) return;
+-
+-        String keyName = args[2];
+-        Integer keyCode = KeyMap.getKeyCode(keyName);
+-        if (keyCode == null) {
+-            sender.sendMessage(Component.text("Unknown key: " + keyName, NamedTextColor.RED));
+-            sender.sendMessage(Component.text("Use Tab-complete to see available keys.", NamedTextColor.YELLOW));
+-            return;
+-        }
+-
+-        String action = args[3].toLowerCase();
+-        if (!Arrays.asList("pressdown", "pressup", "click").contains(action)) {
+-            sender.sendMessage(Component.text("Invalid action. Use: pressDown, pressUp, or click.", NamedTextColor.RED));
+-            return;
+-        }
+-        display.getBrowser().handleKeyAction(keyCode, action);
+-        sender.sendMessage(Component.text("Sent key '" + keyName.toUpperCase() + "' (" + action + ") to display #" + display.getId(), NamedTextColor.GREEN));
+-    }
+-
+-    /**
+-     * Handles the 'executeJs' subcommand to run JavaScript on a display.
+-     */
+-    private void handleExecuteJsCommand(CommandSender sender, String[] args) {
+-        if (!sender.hasPermission("mapbrowser.command.executejs")) {
+-            sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+-            return;
+-        }
+-        if (args.length < 3) {
+-            sender.sendMessage(Component.text("Usage: /mb executeJs <id> <code|path.js>", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        MapBrowserDisplay display = getDisplayById(args[1], sender);
+-        if (display == null) return;
+-
+-        MapBrowserInstance browser = display.getBrowser();
+-        if (browser == null) {
+-            sender.sendMessage(Component.text("The browser for display #" + display.getId() + " is not available.", NamedTextColor.RED));
+-            return;
+-        }
+-
+-        String potentialPath = args[2];
+-        String scriptToExecute;
+-
+-        // Check if the input is a script path
+-        if (potentialPath.endsWith(".js") && !potentialPath.startsWith(".")) {
+-            // Rejoin arguments in case the file path has spaces (though it's bad practice, this handles it)
+-            String fullPath = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+-            File scriptFile = new File(new File(plugin.getDataFolder(), "snippets"), fullPath);
+-
+-            if (!scriptFile.exists()) {
+-                sender.sendMessage(Component.text("Error: Script file not found: " + fullPath, NamedTextColor.RED));
+-                return;
+-            }
+-
+-            try {
+-                scriptToExecute = Files.readString(scriptFile.toPath());
+-                sender.sendMessage(Component.text("Executing script from file: " + fullPath, NamedTextColor.YELLOW));
+-            } catch (IOException e) {
+-                sender.sendMessage(Component.text("Error reading script file: " + e.getMessage(), NamedTextColor.RED));
+-                plugin.getLogger().severe("Could not read JS snippet: " + fullPath);
+-                e.printStackTrace();
+-                return;
+-            }
+-        } else {
+-            // Treat as raw JavaScript code
+-            scriptToExecute = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+-        }
+-
+-        browser.executeJavaScript(scriptToExecute, null, 0);
+-        sender.sendMessage(Component.text("Executed JavaScript on display #" + display.getId(), NamedTextColor.GREEN));
+-    }
+-
+-    private void sendHelpMessage(CommandSender player) {
+-        player.sendMessage(Component.text("--- MapBrowser Help ---", NamedTextColor.GOLD));
+-        player.sendMessage(Component.text("/mb create <x> <y> <z> <url> [w] [h]", NamedTextColor.AQUA).append(Component.text(" - Create a browser display.", NamedTextColor.WHITE)));
+-        player.sendMessage(Component.text("/mb list", NamedTextColor.AQUA).append(Component.text(" - List all active displays.", NamedTextColor.WHITE)));
+-        player.sendMessage(Component.text("/mb remove <id>", NamedTextColor.AQUA).append(Component.text(" - Remove a display by its ID.", NamedTextColor.WHITE)));
+-        player.sendMessage(Component.text("/mb modify <id> <prop> [val]", NamedTextColor.AQUA).append(Component.text(" - Modify a display (url, devtools...).", NamedTextColor.WHITE)));
+-        player.sendMessage(Component.text("/mb input <id> <text>", NamedTextColor.AQUA).append(Component.text(" - Send text input to a display.", NamedTextColor.WHITE)));
+-        player.sendMessage(Component.text("/mb keys <id> <key> <action>", NamedTextColor.AQUA).append(Component.text(" - Send a key event to a display.", NamedTextColor.WHITE)));
+-        player.sendMessage(Component.text("/mb near", NamedTextColor.AQUA).append(Component.text(" - Find the nearest display.", NamedTextColor.WHITE)));
+-        player.sendMessage(Component.text("/mb executeJs <id> <code|path.js>", NamedTextColor.AQUA).append(Component.text(" - Execute JavaScript on a display.", NamedTextColor.WHITE)));
+-    }
+-
+-    private MapBrowserDisplay getDisplayById(String idString, CommandSender player) {
+-        try {
+-            int id = Integer.parseInt(idString);
+-            MapBrowserDisplay display = plugin.getActiveDisplays().get(id);
+-            if (display == null) {
+-                player.sendMessage(Component.text("Map display with ID #" + id + " not found.", NamedTextColor.RED));
+-                return null;
+-            }
+-            return display;
+-        } catch (NumberFormatException e) {
+-            player.sendMessage(Component.text("Invalid ID format. It must be a number.", NamedTextColor.RED));
+-            return null;
+-        }
+-    }
+-}
+\ No newline at end of file
++package top.steve3184.mapbrowser;
++
++import org.bukkit.Bukkit;
++import org.bukkit.Location;
++import org.bukkit.block.Block;
++import org.bukkit.block.BlockFace;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandExecutor;
++import org.bukkit.command.CommandSender;
++import org.bukkit.command.TabCompleter;
++import org.bukkit.entity.Player;
++import org.bukkit.util.BlockVector;
++import org.bukkit.util.StringUtil;
++import org.cef.browser.MapBrowserInstance;
++import org.jetbrains.annotations.NotNull;
++
++import java.io.File;
++import java.io.IOException;
++import java.nio.file.Files;
++import java.util.*;
++import java.util.stream.Collectors;
++
++/**
++ * /mb (alias /web, /mapbrowser). Spanish subcommands; the original English ones still work.
++ * Commands that act on "a screen" use the one you are looking at, else the last one you clicked,
++ * else the nearest. Add {@code #id} to pick one explicitly.
++ */
++public class CommandHandler implements CommandExecutor, TabCompleter {
++
++    private final MapBrowser plugin;
++    private final DisplayService displayService;
++
++    private static final Map<String, String> ALIASES = new HashMap<>();
++
++    static {
++        String[][] pairs = {
++                {"create", "crear"}, {"remove", "quitar"}, {"borrar", "quitar"}, {"list", "lista"}, {"near", "cerca"},
++                {"go", "ir"}, {"url", "ir"}, {"back", "atras"}, {"atrás", "atras"}, {"forward", "adelante"},
++                {"refresh", "recargar"}, {"home", "inicio"}, {"up", "subir"}, {"down", "bajar"},
++                {"type", "escribir"}, {"keyboard", "teclado"}, {"size", "tamaño"}, {"tamano", "tamaño"},
++                {"move", "mover"}, {"scale", "escala"}, {"help", "ayuda"}, {"reload", "config"},
++        };
++        for (String[] p : pairs) ALIASES.put(p[0], p[1]);
++    }
++
++    private static final List<String> USER_SUBS = List.of("menu", "atras", "adelante", "recargar", "inicio", "subir", "bajar", "escribir", "teclado", "ayuda");
++    private static final List<String> ADMIN_SUBS = List.of("crear", "quitar", "lista", "cerca", "ir", "tamaño", "mover", "escala", "config",
++            "modify", "input", "keys", "executeJs");
++
++    public CommandHandler(MapBrowser plugin, DisplayService displayService) {
++        this.plugin = plugin;
++        this.displayService = displayService;
++    }
++
++    // ------------------------------------------------------------------
++
++    @Override
++    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
++        if (args.length == 0) {
++            if (sender instanceof Player p && p.hasPermission("mapbrowser.use")) {
++                MapBrowserDisplay d = displayService.resolveTarget(p);
++                if (d != null) {
++                    plugin.getBrowserMenu().open(p, d);
++                    return true;
++                }
++            }
++            sendHelp(sender);
++            return true;
++        }
++
++        String sub = args[0].toLowerCase(Locale.ROOT);
++        sub = ALIASES.getOrDefault(sub, sub);
++
++        // Console-capable (take an explicit id).
++        switch (sub) {
++            case "input" -> { handleInput(sender, args); return true; }
++            case "keys" -> { handleKeys(sender, args); return true; }
++            case "executejs" -> { handleExecuteJs(sender, args); return true; }
++            case "config" -> {
++                if (!need(sender, "mapbrowser.admin")) return true;
++                plugin.reloadSettings();
++                Msg.ok(sender, "Configuración recargada (favoritos, controles, tamaños).");
++                return true;
++            }
++            case "ayuda" -> { sendHelp(sender); return true; }
++            default -> { }
++        }
++
++        if (!(sender instanceof Player player)) {
++            Msg.err(sender, "Ese comando solo lo puede usar un jugador.");
++            return true;
++        }
++
++        switch (sub) {
++            // --- everyone (mapbrowser.use) ---
++            case "menu" -> withTarget(player, args, 1, "mapbrowser.use", d -> plugin.getBrowserMenu().open(player, d));
++            case "atras" -> withTarget(player, args, 1, "mapbrowser.use", d -> BrowserActions.back(player, d));
++            case "adelante" -> withTarget(player, args, 1, "mapbrowser.use", d -> BrowserActions.forward(player, d));
++            case "recargar" -> withTarget(player, args, 1, "mapbrowser.use", d -> BrowserActions.reload(player, d));
++            case "subir" -> withTarget(player, args, 1, "mapbrowser.use", d -> BrowserActions.scroll(player, d, -plugin.getSettings().scrollPixels()));
++            case "bajar" -> withTarget(player, args, 1, "mapbrowser.use", d -> BrowserActions.scroll(player, d, plugin.getSettings().scrollPixels()));
++            case "inicio" -> handleHome(player, args);
++            case "escribir" -> {
++                if (!need(player, "mapbrowser.use")) return true;
++                if (plugin.getTypingMode().isTyping(player)) {
++                    plugin.getTypingMode().stop(player, true);
++                } else {
++                    withTarget(player, args, 1, "mapbrowser.use", d -> plugin.getTypingMode().start(player, d));
++                }
++            }
++            case "teclado" -> withTarget(player, args, 1, "mapbrowser.use", d -> runSnippet(player, d, "vKeyboard.js"));
++
++            // --- admin ---
++            case "crear" -> handleCreate(player, args);
++            case "quitar" -> handleRemove(player, args);
++            case "lista" -> handleList(player);
++            case "cerca" -> handleNear(player);
++            case "ir" -> handleGo(player, args);
++            case "tamaño" -> handleSize(player, args);
++            case "mover" -> handleMove(player, args);
++            case "escala" -> handleScale(player, args);
++            case "modify" -> handleLegacyModify(player, args);
++            default -> sendHelp(player);
++        }
++        return true;
++    }
++
++    // ------------------------------------------------------------------
++    // Helpers
++    // ------------------------------------------------------------------
++
++    private boolean need(CommandSender s, String perm) {
++        if (s.hasPermission(perm)) return true;
++        Msg.err(s, "No tienes permiso para eso.");
++        return false;
++    }
++
++    private static boolean isHashId(String s) {
++        return s.matches("#\\d+");
++    }
++
++    /** Finds "#id" anywhere from index on; otherwise the target screen. Returns null (and tells the player) if none. */
++    private MapBrowserDisplay pick(Player p, String[] args, int from) {
++        for (int i = from; i < args.length; i++) {
++            if (isHashId(args[i])) {
++                int id = Integer.parseInt(args[i].substring(1));
++                MapBrowserDisplay d = plugin.getActiveDisplays().get(id);
++                if (d == null) Msg.err(p, "No existe la pantalla #<arg0>.", id);
++                return d;
++            }
++        }
++        MapBrowserDisplay d = displayService.resolveTarget(p);
++        if (d == null) Msg.err(p, "No hay ninguna pantalla cerca. Acércate o mírala.");
++        return d;
++    }
++
++    private static String[] withoutHashIds(String[] args, int from) {
++        List<String> out = new ArrayList<>();
++        for (int i = from; i < args.length; i++) if (!isHashId(args[i])) out.add(args[i]);
++        return out.toArray(new String[0]);
++    }
++
++    private void withTarget(Player p, String[] args, int from, String perm, java.util.function.Consumer<MapBrowserDisplay> action) {
++        if (!need(p, perm)) return;
++        MapBrowserDisplay d = pick(p, args, from);
++        if (d == null) return;
++        displayService.setFocus(p, d);
++        action.accept(d);
++    }
++
++    private void runSnippet(Player p, MapBrowserDisplay d, String name) {
++        MapBrowserInstance b = d.getBrowser();
++        if (b == null) {
++            Msg.err(p, "La pantalla todavía está cargando.");
++            return;
++        }
++        File f = new File(new File(plugin.getDataFolder(), "snippets"), name);
++        try {
++            b.executeJavaScript(Files.readString(f.toPath()), null, 0);
++            Msg.info(p, "Teclado en pantalla abierto. Púlsalo con <white>clic izquierdo</white>.");
++        } catch (IOException e) {
++            Msg.err(p, "No encuentro el script <arg0>.", name);
++        }
++    }
++
++    /** Where a new/moved screen goes: the wall block you look at, centered on it. */
++    private record Placement(Location topLeft, BlockFace facing) {
++    }
++
++    private Placement placementFromLook(Player p, int width, int height) {
++        Block target = p.getTargetBlockExact(24);
++        BlockFace face = p.getTargetBlockFace(24);
++        if (target == null || face == null) {
++            Msg.err(p, "Mira a una pared (a menos de 24 bloques) para poner la pantalla.");
++            return null;
++        }
++        if (face == BlockFace.UP || face == BlockFace.DOWN) {
++            Msg.err(p, "Las pantallas van en paredes, no en el suelo ni el techo. Mira a una pared.");
++            return null;
++        }
++        BlockVector right = DisplayService.rightOf(face);
++        Location topLeft = target.getLocation()
++                .subtract(right.getX() * ((width - 1) / 2), 0, right.getZ() * ((width - 1) / 2))
++                .add(0, height / 2, 0);
++        return new Placement(topLeft, face);
++    }
++
++    private int[] clampSize(Player p, int w, int h) {
++        Settings s = plugin.getSettings();
++        if (!p.hasPermission("mapbrowser.admin") && (w > s.maxWidth() || h > s.maxHeight())) {
++            Msg.info(p, "Tamaño máximo: <arg0>×<arg1>. Lo ajusto.", s.maxWidth(), s.maxHeight());
++            w = Math.min(w, s.maxWidth());
++            h = Math.min(h, s.maxHeight());
++        }
++        if (w * h > 16) {
++            Msg.info(p, "<yellow>Aviso:</yellow> <arg0>×<arg1> mapas es pesado para el servidor; 3×2 o 4×3 van mucho mejor.", w, h);
++        }
++        return new int[]{w, h};
++    }
++
++    // ------------------------------------------------------------------
++    // Admin commands
++    // ------------------------------------------------------------------
++
++    /**
++     * /mb crear [url] [ancho] [alto]           — on the wall you look at
++     * /mb crear &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;url&gt; [w] [h]  — old style, still works
++     */
++    private void handleCreate(Player p, String[] args) {
++        if (!need(p, "mapbrowser.command.create")) return;
++        Settings s = plugin.getSettings();
++
++        Location topLeft;
++        BlockFace facing;
++        String url;
++        int w, h;
++        try {
++            boolean legacy = args.length >= 5 && isNumber(args[1]) && isNumber(args[2]) && isNumber(args[3]);
++            if (legacy) {
++                topLeft = new Location(p.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
++                facing = p.getFacing().getOppositeFace();
++                url = args[4];
++                w = args.length > 5 ? Integer.parseInt(args[5]) : s.defaultWidth();
++                h = args.length > 6 ? Integer.parseInt(args[6]) : s.defaultHeight();
++            } else {
++                // Accept "/mb crear 4 3" (size only), "/mb crear youtube.com", "/mb crear youtube.com 4 3".
++                int i = 1;
++                url = s.defaultUrl();
++                if (args.length > 1 && !isNumber(args[1])) {
++                    url = args[1];
++                    i = 2;
++                }
++                w = args.length > i ? Integer.parseInt(args[i]) : s.defaultWidth();
++                h = args.length > i + 1 ? Integer.parseInt(args[i + 1]) : s.defaultHeight();
++                topLeft = null;
++                facing = null;
++            }
++        } catch (NumberFormatException e) {
++            Msg.err(p, "Uso: <white>/mb crear [web] [ancho] [alto]</white>  (mirando a una pared)");
++            return;
++        }
++        if (w <= 0 || h <= 0) {
++            Msg.err(p, "El ancho y el alto tienen que ser mayores que 0.");
++            return;
++        }
++        int[] size = clampSize(p, w, h);
++        w = size[0];
++        h = size[1];
++        if (topLeft == null) {
++            Placement pl = placementFromLook(p, w, h);
++            if (pl == null) return;
++            topLeft = pl.topLeft();
++            facing = pl.facing();
++        }
++        String normalized = BrowserActions.normalizeUrl(url);
++        if (normalized == null) {
++            Msg.err(p, "Esa dirección no está permitida (solo http/https).");
++            return;
++        }
++
++        final Location fTopLeft = topLeft;
++        final BlockFace fFacing = facing;
++        final int fw = w, fh = h;
++        Msg.info(p, "Creando pantalla <white><arg0>×<arg1></white> con <aqua><arg2></aqua>…", w, h, Msg.shortUrl(normalized));
++        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
++            MapBrowserDisplay d = displayService.createAndInitializeDisplay(-1, p, normalized, fTopLeft, fFacing, fw, fh, 1);
++            if (d != null) {
++                plugin.getStore().saveAsync();
++                Msg.ok(p, "Pantalla <white>#<arg0></white> creada. Se guarda sola y vuelve tras los reinicios.", d.getId());
++                Msg.actionBar(p, Msg.HINT_CONTROLS);
++            } else {
++                Msg.err(p, "No se pudo crear la pantalla (mira la consola).");
++            }
++        });
++    }
++
++    private static boolean isNumber(String s) {
++        return s.matches("-?\\d+(\\.\\d+)?");
++    }
++
++    private void handleRemove(Player p, String[] args) {
++        if (!need(p, "mapbrowser.command.remove")) return;
++        MapBrowserDisplay d;
++        if (args.length > 1 && args[1].matches("#?\\d+")) {
++            int id = Integer.parseInt(args[1].replace("#", ""));
++            d = plugin.getActiveDisplays().get(id);
++            if (d == null) {
++                Msg.err(p, "No existe la pantalla #<arg0>.", id);
++                return;
++            }
++        } else {
++            d = pick(p, args, 1);
++            if (d == null) return;
++        }
++        displayService.removeDisplay(d.getId());
++        plugin.getStore().saveAsync();
++        Msg.ok(p, "Pantalla #<arg0> quitada.", d.getId());
++    }
++
++    private void handleList(Player p) {
++        if (!need(p, "mapbrowser.command.list")) return;
++        Map<Integer, MapBrowserDisplay> all = plugin.getActiveDisplays();
++        if (all.isEmpty()) {
++            Msg.info(p, "No hay pantallas. Crea una mirando a una pared: <white>/mb crear</white>");
++            return;
++        }
++        Msg.send(p, "<gold>Pantallas web (<arg0>):", all.size());
++        all.values().stream().sorted(Comparator.comparingInt(MapBrowserDisplay::getId)).forEach(d -> {
++            Location l = d.getLocation();
++            p.sendMessage(Msg.c(" <yellow>#<arg0></yellow> <white><arg1></white> <gray>· <arg2> <arg3>,<arg4>,<arg5> · <aqua><arg6>×<arg7></aqua> · <arg8> mirando",
++                    d.getId(), Msg.shortUrl(d.getCurrentUrl()), l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(),
++                    d.getWidth(), d.getHeight(), d.getViewerDisplays().size()));
++        });
++    }
++
++    private void handleNear(Player p) {
++        if (!need(p, "mapbrowser.command.near")) return;
++        MapBrowserDisplay d = plugin.getActiveDisplays().values().stream()
++                .filter(x -> x.getLocation().getWorld().equals(p.getWorld()))
++                .min(Comparator.comparingDouble(x -> x.getCenter().distanceSquared(p.getLocation())))
++                .orElse(null);
++        if (d == null) {
++            Msg.info(p, "No hay pantallas en este mundo.");
++            return;
++        }
++        Msg.send(p, "<green>La más cercana es la <white>#<arg0></white> <gray>(<arg1> bloques) · <arg2>",
++                d.getId(), String.format("%.1f", Math.sqrt(d.getCenter().distanceSquared(p.getLocation()))), Msg.shortUrl(d.getCurrentUrl()));
++    }
++
++    /** /mb ir <web o búsqueda> [#id] */
++    private void handleGo(Player p, String[] args) {
++        if (!need(p, "mapbrowser.navigate")) return;
++        String[] rest = withoutHashIds(args, 1);
++        if (rest.length == 0) {
++            Msg.err(p, "Uso: <white>/mb ir \\<web o búsqueda></white>  ej. <white>/mb ir youtube.com</white>");
++            return;
++        }
++        String url = BrowserActions.normalizeUrl(String.join(" ", rest));
++        if (url == null) {
++            Msg.err(p, "Esa dirección no está permitida (solo http/https).");
++            return;
++        }
++        MapBrowserDisplay d = pick(p, args, 1);
++        if (d == null) return;
++        displayService.setFocus(p, d);
++        BrowserActions.go(p, d, url);
++        plugin.getStore().saveAsync();
++    }
++
++    /** /mb inicio → go home; /mb inicio fijar → current page becomes home (admin). */
++    private void handleHome(Player p, String[] args) {
++        if (args.length > 1 && (args[1].equalsIgnoreCase("fijar") || args[1].equalsIgnoreCase("set"))) {
++            if (!need(p, "mapbrowser.command.modify")) return;
++            MapBrowserDisplay d = pick(p, args, 2);
++            if (d == null) return;
++            d.setHomeUrl(d.getCurrentUrl());
++            plugin.getStore().saveAsync();
++            Msg.ok(p, "Inicio de la pantalla #<arg0>: <white><arg1>", d.getId(), Msg.shortUrl(d.getHomeUrl()));
++            return;
++        }
++        withTarget(p, args, 1, "mapbrowser.use", d -> BrowserActions.home(p, d));
++    }
++
++    private void handleSize(Player p, String[] args) {
++        if (!need(p, "mapbrowser.command.modify")) return;
++        String[] rest = withoutHashIds(args, 1);
++        if (rest.length < 2 || !isNumber(rest[0]) || !isNumber(rest[1])) {
++            Msg.err(p, "Uso: <white>/mb tamaño \\<ancho> \\<alto></white>");
++            return;
++        }
++        MapBrowserDisplay d = pick(p, args, 1);
++        if (d == null) return;
++        int[] size = clampSize(p, Integer.parseInt(rest[0]), Integer.parseInt(rest[1]));
++        if (size[0] <= 0 || size[1] <= 0) {
++            Msg.err(p, "El ancho y el alto tienen que ser mayores que 0.");
++            return;
++        }
++        displayService.resizeDisplay(p, d, size[0], size[1]);
++        plugin.getStore().saveAsync();
++        Msg.ok(p, "Pantalla #<arg0> ahora mide <white><arg1>×<arg2></white>.", d.getId(), size[0], size[1]);
++    }
++
++    /** /mb mover [#id] → to the wall you look at. */
++    private void handleMove(Player p, String[] args) {
++        if (!need(p, "mapbrowser.command.modify")) return;
++        MapBrowserDisplay d;
++        // Use explicit id or the last focused one — not "the one you look at", since you are looking at the new spot.
++        String[] ids = Arrays.stream(args).skip(1).filter(CommandHandler::isHashId).toArray(String[]::new);
++        if (ids.length > 0) {
++            d = plugin.getActiveDisplays().get(Integer.parseInt(ids[0].substring(1)));
++        } else {
++            d = plugin.getActiveDisplays().values().stream()
++                    .filter(x -> x.getLocation().getWorld().equals(p.getWorld()))
++                    .min(Comparator.comparingDouble(x -> x.getCenter().distanceSquared(p.getLocation())))
++                    .orElse(null);
++        }
++        if (d == null) {
++            Msg.err(p, "No encuentro la pantalla. Usa <white>/mb mover #id</white>.");
++            return;
++        }
++        Placement pl = placementFromLook(p, d.getWidth(), d.getHeight());
++        if (pl == null) return;
++        displayService.moveDisplay(p, d, pl.topLeft(), pl.facing());
++        plugin.getStore().saveAsync();
++        Msg.ok(p, "Pantalla #<arg0> movida.", d.getId());
++    }
++
++    private void handleScale(Player p, String[] args) {
++        if (!need(p, "mapbrowser.command.modify")) return;
++        String[] rest = withoutHashIds(args, 1);
++        if (rest.length < 1 || !rest[0].matches("\\d+") || Integer.parseInt(rest[0]) < 1 || Integer.parseInt(rest[0]) > 4) {
++            Msg.err(p, "Uso: <white>/mb escala \\<1-4></white> <gray>(más = la web se ve más pequeña, cabe más contenido)");
++            return;
++        }
++        MapBrowserDisplay d = pick(p, args, 1);
++        if (d == null) return;
++        displayService.scaleDisplay(d, Integer.parseInt(rest[0]));
++        plugin.getStore().saveAsync();
++        Msg.ok(p, "Escala de la pantalla #<arg0>: <white><arg1>", d.getId(), rest[0]);
++    }
++
++    /** Original syntax: /mb modify <id> url|refresh|pos|size|scale ... */
++    private void handleLegacyModify(Player p, String[] args) {
++        if (!need(p, "mapbrowser.command.modify")) return;
++        if (args.length < 3) {
++            Msg.err(p, "Uso: /mb modify \\<id> \\<url|refresh|pos|size|scale> [valores]");
++            return;
++        }
++        MapBrowserDisplay d = getById(args[1], p);
++        if (d == null) return;
++        String prop = args[2].toLowerCase(Locale.ROOT);
++        String id = "#" + d.getId();
++        switch (prop) {
++            case "refresh" -> BrowserActions.reload(p, d);
++            case "url" -> {
++                if (args.length < 4) { Msg.err(p, "Uso: /mb modify \\<id> url \\<url>"); return; }
++                handleGo(p, new String[]{"ir", id, args[3]});
++            }
++            case "size" -> {
++                if (args.length < 5) { Msg.err(p, "Uso: /mb modify \\<id> size \\<ancho> \\<alto>"); return; }
++                handleSize(p, new String[]{"tamaño", id, args[3], args[4]});
++            }
++            case "scale" -> {
++                if (args.length < 4) { Msg.err(p, "Uso: /mb modify \\<id> scale \\<n>"); return; }
++                handleScale(p, new String[]{"escala", id, args[3]});
++            }
++            case "pos" -> {
++                if (args.length < 6) { Msg.err(p, "Uso: /mb modify \\<id> pos \\<x> \\<y> \\<z>"); return; }
++                try {
++                    Location loc = new Location(p.getWorld(), Double.parseDouble(args[3]), Double.parseDouble(args[4]), Double.parseDouble(args[5]));
++                    displayService.moveDisplay(p, d, loc, p.getFacing().getOppositeFace());
++                    plugin.getStore().saveAsync();
++                    Msg.ok(p, "Pantalla <arg0> movida.", id);
++                } catch (NumberFormatException e) {
++                    Msg.err(p, "Coordenadas no válidas.");
++                }
++            }
++            case "devtools" -> Msg.err(p, "DevTools no funciona aquí; usa browser.remote-debugging en config.yml.");
++            default -> Msg.err(p, "Propiedad desconocida. Usa: url, refresh, pos, size, scale.");
++        }
++    }
++
++    // ------------------------------------------------------------------
++    // Console-capable (original) commands
++    // ------------------------------------------------------------------
++
++    private MapBrowserDisplay getById(String idString, CommandSender s) {
++        try {
++            int id = Integer.parseInt(idString.replace("#", ""));
++            MapBrowserDisplay d = plugin.getActiveDisplays().get(id);
++            if (d == null) Msg.err(s, "No existe la pantalla #<arg0>.", id);
++            return d;
++        } catch (NumberFormatException e) {
++            Msg.err(s, "El id tiene que ser un número.");
++            return null;
++        }
++    }
++
++    private void handleInput(CommandSender s, String[] args) {
++        if (!need(s, "mapbrowser.command.input")) return;
++        if (args.length < 3) {
++            Msg.err(s, "Uso: /mb input \\<id> \\<texto…>  <gray>(más cómodo: /mb escribir)");
++            return;
++        }
++        MapBrowserDisplay d = getById(args[1], s);
++        if (d == null || d.getBrowser() == null) return;
++        d.getBrowser().inputText(String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
++        Msg.ok(s, "Texto enviado a la pantalla #<arg0>.", d.getId());
++    }
++
++    private void handleKeys(CommandSender s, String[] args) {
++        if (!need(s, "mapbrowser.command.keys")) return;
++        if (args.length != 4) {
++            Msg.err(s, "Uso: /mb keys \\<id> \\<tecla> \\<pressDown|pressUp|click>");
++            return;
++        }
++        MapBrowserDisplay d = getById(args[1], s);
++        if (d == null || d.getBrowser() == null) return;
++        Integer keyCode = KeyMap.getKeyCode(args[2]);
++        if (keyCode == null) {
++            Msg.err(s, "Tecla desconocida: <arg0> (usa el tabulador para ver la lista).", args[2]);
++            return;
++        }
++        String action = args[3].toLowerCase(Locale.ROOT);
++        if (!List.of("pressdown", "pressup", "click").contains(action)) {
++            Msg.err(s, "Acción no válida. Usa: pressDown, pressUp o click.");
++            return;
++        }
++        d.getBrowser().handleKeyAction(keyCode, action);
++        Msg.ok(s, "Tecla <arg0> enviada a la pantalla #<arg1>.", args[2].toUpperCase(Locale.ROOT), d.getId());
++    }
++
++    private void handleExecuteJs(CommandSender s, String[] args) {
++        if (!need(s, "mapbrowser.command.executejs")) return;
++        if (args.length < 3) {
++            Msg.err(s, "Uso: /mb executeJs \\<id> \\<código|archivo.js>");
++            return;
++        }
++        MapBrowserDisplay d = getById(args[1], s);
++        if (d == null) return;
++        MapBrowserInstance b = d.getBrowser();
++        if (b == null) {
++            Msg.err(s, "La pantalla #<arg0> todavía está cargando.", d.getId());
++            return;
++        }
++        String joined = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
++        String script;
++        if (joined.endsWith(".js") && !joined.contains("..") && !joined.startsWith("/") && !joined.startsWith("\\")) {
++            File f = new File(new File(plugin.getDataFolder(), "snippets"), joined);
++            if (!f.exists()) {
++                Msg.err(s, "No existe snippets/<arg0>.", joined);
++                return;
++            }
++            try {
++                script = Files.readString(f.toPath());
++            } catch (IOException e) {
++                Msg.err(s, "No se pudo leer <arg0>: <arg1>", joined, e.getMessage());
++                return;
++            }
++        } else {
++            script = joined;
++        }
++        b.executeJavaScript(script, null, 0);
++        Msg.ok(s, "JavaScript ejecutado en la pantalla #<arg0>.", d.getId());
++    }
++
++    // ------------------------------------------------------------------
++    // Help / tab completion
++    // ------------------------------------------------------------------
++
++    private void sendHelp(CommandSender s) {
++        Msg.send(s, "<gold>Pantallas web — cómo se usan");
++        s.sendMessage(Msg.c(" <white>En la pantalla:</white> <gray>clic izq. = pulsar · clic der. = bajar · Shift+der. = subir · Shift+izq. = menú"));
++        s.sendMessage(Msg.c(" <aqua>/mb</aqua> <gray>o</gray> <aqua>/mb menu</aqua> <gray>— mando de la pantalla más cercana"));
++        s.sendMessage(Msg.c(" <aqua>/mb escribir</aqua> <gray>— lo que escribas en el chat va a la web (otra vez para salir)"));
++        s.sendMessage(Msg.c(" <aqua>/mb atras · adelante · recargar · inicio · subir · bajar · teclado"));
++        if (s.hasPermission("mapbrowser.command.create")) {
++            s.sendMessage(Msg.c(" <gold>Admin:</gold>"));
++            s.sendMessage(Msg.c(" <aqua>/mb crear [web] [ancho] [alto]</aqua> <gray>— en la pared que miras (por defecto <arg0>×<arg1>)",
++                    plugin.getSettings().defaultWidth(), plugin.getSettings().defaultHeight()));
++            s.sendMessage(Msg.c(" <aqua>/mb ir \\<web o búsqueda></aqua> <gray>— ej. youtube.com o \"recetas de pizza\""));
++            s.sendMessage(Msg.c(" <aqua>/mb tamaño \\<ancho> \\<alto> · mover · escala \\<1-4> · quitar · lista · cerca"));
++            s.sendMessage(Msg.c(" <aqua>/mb inicio fijar</aqua> <gray>— la página actual pasa a ser la de inicio"));
++            s.sendMessage(Msg.c(" <gray>Añade <white>#id</white> para elegir otra pantalla (ej. <white>/mb ir #2 google.com</white>). Se guardan solas."));
++        }
++    }
++
++    @Override
++    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
++        List<String> out = new ArrayList<>();
++        if (args.length == 1) {
++            List<String> subs = new ArrayList<>();
++            if (sender.hasPermission("mapbrowser.use")) subs.addAll(USER_SUBS);
++            if (sender.hasPermission("mapbrowser.command.create")) subs.addAll(ADMIN_SUBS);
++            return StringUtil.copyPartialMatches(args[0], subs, out);
++        }
++        String sub = ALIASES.getOrDefault(args[0].toLowerCase(Locale.ROOT), args[0].toLowerCase(Locale.ROOT));
++        String last = args[args.length - 1];
++        List<String> hashIds = plugin.getActiveDisplays().keySet().stream().sorted().map(i -> "#" + i).collect(Collectors.toList());
++        List<String> plainIds = plugin.getActiveDisplays().keySet().stream().sorted().map(String::valueOf).collect(Collectors.toList());
++
++        switch (sub) {
++            case "crear" -> {
++                if (args.length == 2) {
++                    List<String> opts = new ArrayList<>(List.of("google.com", "youtube.com", "wikipedia.org"));
++                    plugin.getSettings().favorites().forEach(f -> opts.add(f.url().replaceFirst("^https?://(www\\.)?", "").replaceAll("/$", "")));
++                    return StringUtil.copyPartialMatches(last, opts.stream().distinct().toList(), out);
++                }
++                if (args.length == 3) return StringUtil.copyPartialMatches(last, List.of("2", "3", "4"), out);
++                if (args.length == 4) return StringUtil.copyPartialMatches(last, List.of("2", "3"), out);
++            }
++            case "ir" -> {
++                if (args.length == 2) {
++                    List<String> opts = new ArrayList<>(hashIds);
++                    plugin.getSettings().favorites().forEach(f -> opts.add(f.url().replaceFirst("^https?://(www\\.)?", "").replaceAll("/$", "")));
++                    return StringUtil.copyPartialMatches(last, opts, out);
++                }
++            }
++            case "quitar", "input", "keys", "executejs", "modify" -> {
++                if (args.length == 2) return StringUtil.copyPartialMatches(last, sub.equals("quitar") ? hashIds : plainIds, out);
++                if (sub.equals("keys") && args.length == 3) return StringUtil.copyPartialMatches(last, KeyMap.getKeyNames(), out);
++                if (sub.equals("keys") && args.length == 4) return StringUtil.copyPartialMatches(last, List.of("click", "pressDown", "pressUp"), out);
++                if (sub.equals("modify") && args.length == 3) return StringUtil.copyPartialMatches(last, List.of("url", "refresh", "pos", "size", "scale"), out);
++                if (sub.equals("executejs") && args.length == 3) return StringUtil.copyPartialMatches(last, List.of("vKeyboard.js"), out);
++            }
++            case "tamaño" -> {
++                if (args.length == 2) return StringUtil.copyPartialMatches(last, List.of("2", "3", "4"), out);
++                if (args.length == 3) return StringUtil.copyPartialMatches(last, List.of("2", "3"), out);
++                if (args.length == 4) return StringUtil.copyPartialMatches(last, hashIds, out);
++            }
++            case "escala" -> {
++                if (args.length == 2) return StringUtil.copyPartialMatches(last, List.of("1", "2", "3"), out);
++                if (args.length == 3) return StringUtil.copyPartialMatches(last, hashIds, out);
++            }
++            case "inicio" -> {
++                if (args.length == 2) {
++                    List<String> opts = new ArrayList<>(hashIds);
++                    if (sender.hasPermission("mapbrowser.command.modify")) opts.add("fijar");
++                    return StringUtil.copyPartialMatches(last, opts, out);
++                }
++            }
++            default -> {
++                if (args.length == 2) return StringUtil.copyPartialMatches(last, hashIds, out);
++            }
++        }
++        return Collections.emptyList();
++    }
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/DisplayService.java b/src/main/java/top/steve3184/mapbrowser/DisplayService.java
+index 7cb9c37..9df70eb 100644
+--- a/src/main/java/top/steve3184/mapbrowser/DisplayService.java
++++ b/src/main/java/top/steve3184/mapbrowser/DisplayService.java
+@@ -6,25 +6,26 @@ import de.pianoman911.mapengine.api.drawing.IDrawingSpace;
+ import de.pianoman911.mapengine.api.util.Converter;
+ import org.bukkit.Bukkit;
+ import org.bukkit.Location;
+-import org.bukkit.World;
+ import org.bukkit.block.BlockFace;
+ import org.bukkit.entity.Player;
+ import org.bukkit.scheduler.BukkitRunnable;
+ import org.bukkit.scheduler.BukkitTask;
+ import org.bukkit.util.BlockVector;
++import org.bukkit.util.BoundingBox;
++import org.bukkit.util.RayTraceResult;
+ import org.bukkit.util.Vector;
+ import org.cef.browser.MapBrowserInstance;
++import org.jetbrains.annotations.Nullable;
+ 
+ import javax.swing.*;
+-import java.util.List;
++import java.util.Comparator;
+ import java.util.Map;
+ import java.util.UUID;
++import java.util.concurrent.ConcurrentHashMap;
+ import java.util.logging.Logger;
+-import java.util.stream.Collectors;
+ 
+ /**
+  * Service class for managing the lifecycle and interactions of MapBrowser displays.
+- * Contains optimized and thread-safe logic for display management.
+  */
+ public class DisplayService {
+ 
+@@ -33,6 +34,11 @@ public class DisplayService {
+     private final JCEFManager jcefManager;
+     private final Logger logger;
+ 
++    /** Last screen each player clicked, so commands/menu/chat know which one you mean. */
++    private final Map<UUID, Integer> focusedDisplay = new ConcurrentHashMap<>();
++    /** When each player last saw the controls hint for a display (key = uuid + ":" + id). */
++    private final Map<String, Long> hintShown = new ConcurrentHashMap<>();
++
+     public DisplayService(MapBrowser plugin, MapEngineApi mapEngine, JCEFManager jcefManager) {
+         this.plugin = plugin;
+         this.mapEngine = mapEngine;
+@@ -40,21 +46,34 @@ public class DisplayService {
+         this.logger = plugin.getLogger();
+     }
+ 
++    // ------------------------------------------------------------------
++    // Creation / removal
++    // ------------------------------------------------------------------
++
+     /**
+      * Creates, initializes, and stores a new browser display.
+-     * @return The newly created MapBrowserDisplay object.
++     *
++     * @param fixedId  id to reuse (restoring from disk), or -1 for a new one.
++     * @param location top-left wall block of the screen.
++     * @param facing   horizontal direction the screen faces (towards the viewer).
++     * @param creator  optional player that sees it immediately; others get it via the proximity checker.
+      */
+-    public MapBrowserDisplay createAndInitializeDisplay(Player creator, String url, Location location, int width, int height) {
+-        int id = plugin.getNextId().getAndIncrement();
+-        MapBrowserDisplay displayInfo = new MapBrowserDisplay(id, url, location, width, height);
+-
+-        calculateAndStoreGeometry(creator, displayInfo);
++    public MapBrowserDisplay createAndInitializeDisplay(int fixedId, @Nullable Player creator, String url,
++                                                        Location location, BlockFace facing, int width, int height, int scale) {
++        int id;
++        if (fixedId > 0) {
++            id = fixedId;
++            plugin.getNextId().accumulateAndGet(fixedId + 1, Math::max);
++        } else {
++            id = plugin.getNextId().getAndIncrement();
++        }
++        MapBrowserDisplay displayInfo = new MapBrowserDisplay(id, url, location, facing, width, height);
++        displayInfo.setScale(Math.max(1, scale));
++        calculateAndStoreGeometry(displayInfo);
+ 
+         if (jcefManager != null) {
+-            IMapDisplay tempDisplay = mapEngine.displayProvider().createBasic(displayInfo.getCornerA(), displayInfo.getCornerB(), displayInfo.getFacing());
+-            final int browserWidth = tempDisplay.pixelWidth();
+-            final int browserHeight = tempDisplay.pixelHeight();
+-            tempDisplay.destroy();
++            final int browserWidth = width * 128 * displayInfo.getScale();
++            final int browserHeight = height * 128 * displayInfo.getScale();
+ 
+             MapBrowserInstance browser = jcefManager.createBrowser(displayInfo.getUrl());
+             if (browser == null) {
+@@ -75,11 +94,11 @@ public class DisplayService {
+             });
+         }
+ 
+-        // The viewer map is synchronized to prevent race conditions with the proximity checker
+-        synchronized (displayInfo.getViewerDisplays()) {
+-            PlayerDisplay creatorDisplay = createDisplayForPlayer(creator, displayInfo);
+-            displayInfo.getViewerDisplays().put(creator.getUniqueId(), creatorDisplay);
+-            plugin.getDisplayLookup().put(creatorDisplay.mapDisplay(), displayInfo);
++        if (creator != null && creator.isOnline()) {
++            synchronized (displayInfo.getViewerDisplays()) {
++                addViewer(creator, displayInfo);
++            }
++            focusedDisplay.put(creator.getUniqueId(), id);
+         }
+ 
+         plugin.getActiveDisplays().put(id, displayInfo);
+@@ -88,7 +107,6 @@ public class DisplayService {
+ 
+     /**
+      * Removes a display and cleans up all its associated resources.
+-     * This is the centralized method for removing displays.
+      * @return true if a display was found and removed, false otherwise.
+      */
+     public boolean removeDisplay(int id) {
+@@ -96,130 +114,193 @@ public class DisplayService {
+         if (displayInfo == null) {
+             return false;
+         }
+-
+-        // Synchronize to safely iterate and modify the lookup map
+         synchronized (displayInfo.getViewerDisplays()) {
+             displayInfo.getViewerDisplays().values().forEach(playerDisplay ->
+                     plugin.getDisplayLookup().remove(playerDisplay.mapDisplay())
+             );
+         }
+-        displayInfo.cleanup(); // Cleans up browser, task, and viewers
++        displayInfo.cleanup();
++        focusedDisplay.values().removeIf(v -> v == id);
+         return true;
+     }
+ 
++    // ------------------------------------------------------------------
++    // Viewers
++    // ------------------------------------------------------------------
++
++    private void addViewer(Player player, MapBrowserDisplay display) {
++        PlayerDisplay pd = createDisplayForPlayer(player, display);
++        display.getViewerDisplays().put(player.getUniqueId(), pd);
++        plugin.getDisplayLookup().put(pd.mapDisplay(), display);
++    }
++
++    private void removeViewer(UUID uuid, MapBrowserDisplay display) {
++        PlayerDisplay old = display.getViewerDisplays().remove(uuid);
++        if (old != null) {
++            plugin.getDisplayLookup().remove(old.mapDisplay());
++            old.destroy(Bukkit.getPlayer(uuid));
++        }
++    }
++
+     /**
+-     * Starts a repeating task to check player proximity to displays.
+-     * This version groups displays by world to avoid unnecessary calculations.
++     * Starts a repeating task that shows/hides screens as players come and go
++     * (also handles players changing worlds, which the original version leaked).
+      */
+     public BukkitTask startProximityChecker() {
+         return new BukkitRunnable() {
+             @Override
+             public void run() {
+                 if (plugin.getActiveDisplays().isEmpty()) return;
+-
+-                // Optimization: Group active displays by world to reduce iterations.
+-                Map<World, List<MapBrowserDisplay>> displaysByWorld = plugin.getActiveDisplays().values().stream()
+-                        .collect(Collectors.groupingBy(display -> display.getLocation().getWorld()));
+-
+-                for (Player player : Bukkit.getOnlinePlayers()) {
+-                    World playerWorld = player.getWorld();
+-                    List<MapBrowserDisplay> worldDisplays = displaysByWorld.get(playerWorld);
+-
+-                    if (worldDisplays == null || worldDisplays.isEmpty()) {
+-                        // If player is in a world with no displays, we might need to clean up if they were viewing before.
+-                        // This part is complex, for now we assume displays don't move between worlds.
+-                        // A simpler approach is to iterate displays and check player world, which is what we do next.
+-                        continue;
+-                    }
+-
+-                    for (MapBrowserDisplay display : worldDisplays) {
+-                        // Further checks are done inside a synchronized block to prevent race conditions.
+-                        synchronized (display.getViewerDisplays()) {
+-                            UUID playerUUID = player.getUniqueId();
+-                            boolean isViewing = display.getViewerDisplays().containsKey(playerUUID);
+-                            Location displayCenter = display.getLocation();
+-
+-                            // Check distance within the same world. 32*32 = 1024
+-                            if (player.getLocation().distanceSquared(displayCenter) <= 1024) {
+-                                if (!isViewing) {
+-                                    // Player entered range, create display for them.
+-                                    PlayerDisplay newPlayerDisplay = createDisplayForPlayer(player, display);
+-                                    display.getViewerDisplays().put(playerUUID, newPlayerDisplay);
+-                                    plugin.getDisplayLookup().put(newPlayerDisplay.mapDisplay(), display);
+-                                }
+-                            } else {
+-                                if (isViewing) {
+-                                    // Player left range, remove their display.
+-                                    PlayerDisplay oldPlayerDisplay = display.getViewerDisplays().remove(playerUUID);
+-                                    if (oldPlayerDisplay != null) {
+-                                        plugin.getDisplayLookup().remove(oldPlayerDisplay.mapDisplay());
+-                                        oldPlayerDisplay.destroy(player);
+-                                    }
+-                                }
++                double range = plugin.getSettings().viewDistance();
++                double rangeSq = range * range;
++
++                for (MapBrowserDisplay display : plugin.getActiveDisplays().values()) {
++                    Location center = display.getCenter();
++                    synchronized (display.getViewerDisplays()) {
++                        for (Player player : Bukkit.getOnlinePlayers()) {
++                            UUID uuid = player.getUniqueId();
++                            boolean viewing = display.getViewerDisplays().containsKey(uuid);
++                            boolean inRange = player.getWorld().equals(center.getWorld())
++                                    && player.getLocation().distanceSquared(center) <= rangeSq;
++                            if (inRange && !viewing) {
++                                addViewer(player, display);
++                                maybeShowHint(player, display);
++                            } else if (!inRange && viewing) {
++                                removeViewer(uuid, display);
+                             }
+                         }
++                        // Players that went offline without a quit event reaching us.
++                        display.getViewerDisplays().keySet().removeIf(uuid -> {
++                            if (Bukkit.getPlayer(uuid) != null) return false;
++                            PlayerDisplay pd = display.getViewerDisplays().get(uuid);
++                            if (pd != null) plugin.getDisplayLookup().remove(pd.mapDisplay());
++                            return true;
++                        });
+                     }
+                 }
+             }
+-        }.runTaskTimer(plugin, 40L, 20L); // Run every second, 2 seconds after start
++        }.runTaskTimer(plugin, 40L, 20L);
++    }
++
++    private void maybeShowHint(Player player, MapBrowserDisplay display) {
++        if (!plugin.getSettings().showHints() || !player.hasPermission("mapbrowser.use")) return;
++        String key = player.getUniqueId() + ":" + display.getId();
++        long now = System.currentTimeMillis();
++        Long last = hintShown.get(key);
++        if (last != null && now - last < 10 * 60 * 1000L) return;
++        hintShown.put(key, now);
++        Msg.actionBar(player, Msg.HINT_CONTROLS);
++    }
++
++    public void forgetPlayer(UUID uuid) {
++        focusedDisplay.remove(uuid);
++        hintShown.keySet().removeIf(k -> k.startsWith(uuid + ":"));
++    }
++
++    // ------------------------------------------------------------------
++    // Which screen does a player mean?
++    // ------------------------------------------------------------------
++
++    public void setFocus(Player player, MapBrowserDisplay display) {
++        focusedDisplay.put(player.getUniqueId(), display.getId());
+     }
+ 
+     /**
+-     * Moves a display to a new location. Thread-safe.
++     * The screen the player is looking at; otherwise the one they last clicked (if still close);
++     * otherwise the nearest one within view distance. Null if none.
+      */
+-    public void moveDisplay(Player player, MapBrowserDisplay display, Location newLocation) {
++    @Nullable
++    public MapBrowserDisplay resolveTarget(Player player) {
++        double range = plugin.getSettings().viewDistance();
++        Location eye = player.getEyeLocation();
++        Vector dir = eye.getDirection();
++
++        // 1) Looking at one.
++        MapBrowserDisplay looked = null;
++        double bestDist = Double.MAX_VALUE;
++        for (MapBrowserDisplay d : plugin.getActiveDisplays().values()) {
++            if (!d.getLocation().getWorld().equals(player.getWorld())) continue;
++            RayTraceResult hit = screenBox(d).rayTrace(eye.toVector(), dir, range);
++            if (hit != null) {
++                double dist = hit.getHitPosition().distanceSquared(eye.toVector());
++                if (dist < bestDist) {
++                    bestDist = dist;
++                    looked = d;
++                }
++            }
++        }
++        if (looked != null) return looked;
++
++        // 2) Last clicked.
++        Integer focused = focusedDisplay.get(player.getUniqueId());
++        if (focused != null) {
++            MapBrowserDisplay d = plugin.getActiveDisplays().get(focused);
++            if (d != null && d.getLocation().getWorld().equals(player.getWorld())
++                    && d.getCenter().distanceSquared(player.getLocation()) <= range * range) {
++                return d;
++            }
++        }
++
++        // 3) Nearest.
++        return plugin.getActiveDisplays().values().stream()
++                .filter(d -> d.getLocation().getWorld().equals(player.getWorld()))
++                .filter(d -> d.getCenter().distanceSquared(player.getLocation()) <= range * range)
++                .min(Comparator.comparingDouble(d -> d.getCenter().distanceSquared(player.getLocation())))
++                .orElse(null);
++    }
++
++    /** Box covering the wall blocks plus the frame layer in front of them. */
++    private BoundingBox screenBox(MapBrowserDisplay d) {
++        BlockVector a = d.getCornerA();
++        BlockVector b = d.getCornerB();
++        BoundingBox box = BoundingBox.of(
++                new Vector(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ())),
++                new Vector(Math.max(a.getX(), b.getX()) + 1, Math.max(a.getY(), b.getY()) + 1, Math.max(a.getZ(), b.getZ()) + 1));
++        Vector f = d.getFacing().getDirection();
++        return box.expand(f.getX(), f.getY(), f.getZ(), 0.1).expand(0.05);
++    }
++
++    // ------------------------------------------------------------------
++    // Move / resize / scale
++    // ------------------------------------------------------------------
++
++    public void moveDisplay(Player player, MapBrowserDisplay display, Location newLocation, BlockFace newFacing) {
+         synchronized (display.getViewerDisplays()) {
+-            // 1. Clean up visuals and render task
+             cleanupPlayerVisuals(display);
+             if (display.getRenderTask() != null) display.getRenderTask().cancel();
+ 
+-            // 2. Update properties and geometry
+             display.setLocation(newLocation);
+-            calculateAndStoreGeometry(player, display);
++            if (newFacing != null) display.setFacing(newFacing);
++            calculateAndStoreGeometry(display);
+ 
+-            // 3. Restart render loop
+             startRenderLoop(display);
+-
+-            // 4. Create the first new display for the command issuer
+-            PlayerDisplay newPlayerDisplay = createDisplayForPlayer(player, display);
+-            display.getViewerDisplays().put(player.getUniqueId(), newPlayerDisplay);
+-            plugin.getDisplayLookup().put(newPlayerDisplay.mapDisplay(), display);
++            addViewer(player, display);
+         }
+     }
+ 
+-    /**
+-     * Resizes a display. Thread-safe.
+-     */
+     public void resizeDisplay(Player player, MapBrowserDisplay display, int newWidth, int newHeight) {
+         synchronized (display.getViewerDisplays()) {
+             final MapBrowserInstance browser = display.getBrowser();
+             if (browser == null) return;
+ 
+-            // 1. Clean up visuals and render task
+             cleanupPlayerVisuals(display);
+             if (display.getRenderTask() != null) display.getRenderTask().cancel();
+ 
+-            // 2. Update properties and geometry
+             display.setWidth(newWidth);
+             display.setHeight(newHeight);
+-            calculateAndStoreGeometry(player, display);
++            display.setLastPixelData(null);
++            calculateAndStoreGeometry(display);
+ 
+-            // 3. Resize browser on AWT thread
+-            IMapDisplay tempDisplay = mapEngine.displayProvider().createBasic(display.getCornerA(), display.getCornerB(), display.getFacing());
+-            final int newPixelWidth = tempDisplay.pixelWidth() * display.getScale();
+-            final int newPixelHeight = tempDisplay.pixelHeight() * display.getScale();
+-            tempDisplay.destroy();
++            final int newPixelWidth = newWidth * 128 * display.getScale();
++            final int newPixelHeight = newHeight * 128 * display.getScale();
+             SwingUtilities.invokeLater(() -> browser.resize(newPixelWidth, newPixelHeight));
+ 
+-            // 4. Restart render loop and create first new display
+             startRenderLoop(display);
+-            PlayerDisplay newPlayerDisplay = createDisplayForPlayer(player, display);
+-            display.getViewerDisplays().put(player.getUniqueId(), newPlayerDisplay);
+-            plugin.getDisplayLookup().put(newPlayerDisplay.mapDisplay(), display);
++            addViewer(player, display);
+         }
+     }
+ 
+-    public void scaleDisplay(Player player, MapBrowserDisplay display, int newScale) {
++    public void scaleDisplay(MapBrowserDisplay display, int newScale) {
+         synchronized (display.getViewerDisplays()) {
+             final MapBrowserInstance browser = display.getBrowser();
+             if (browser == null) return;
+@@ -228,12 +309,11 @@ public class DisplayService {
+         }
+     }
+ 
+-    // Helper to clean player visuals safely
+     private void cleanupPlayerVisuals(MapBrowserDisplay display) {
+         display.getViewerDisplays().forEach((uuid, playerDisplay) -> {
+             plugin.getDisplayLookup().remove(playerDisplay.mapDisplay());
+             Player viewer = Bukkit.getPlayer(uuid);
+-            if(viewer != null) playerDisplay.destroy(viewer);
++            if (viewer != null) playerDisplay.destroy(viewer);
+         });
+         display.getViewerDisplays().clear();
+     }
+@@ -245,17 +325,12 @@ public class DisplayService {
+         plugin.getDisplayLookup().clear();
+     }
+ 
++    // ------------------------------------------------------------------
++    // Rendering
++    // ------------------------------------------------------------------
++
+     /**
+-     * Scales down pixel data by a given integer factor using the nearest-neighbor (top-left) method.
+-     *
+-     * @param originalPixelData The original pixel data array from the browser frame.
+-     * @param originalWidth     The width of the original frame.
+-     * @param originalHeight    The height of the original frame.
+-     * @param scale             The integer scaling factor. For example, a scale of 2 will reduce the
+-     *                          image dimensions by half (e.g., 256x256 becomes 128x128). Must be 1 or greater.
+-     * @return A new integer array containing the scaled-down pixel data.
+-     * @throws IllegalArgumentException if the scale factor is less than 1 or if the input data
+-     *                                  length doesn't match the specified dimensions.
++     * Scales down pixel data by a given integer factor using nearest-neighbor.
+      */
+     public static int[] scalePixelData(int[] originalPixelData, int originalWidth, int originalHeight, int scale) {
+         if (scale < 1) {
+@@ -265,7 +340,7 @@ public class DisplayService {
+             throw new IllegalArgumentException("Original pixel data array length does not match the provided dimensions.");
+         }
+         if (scale == 1) {
+-            return originalPixelData.clone();
++            return originalPixelData;
+         }
+         int newWidth = originalWidth / scale;
+         int newHeight = originalHeight / scale;
+@@ -273,11 +348,7 @@ public class DisplayService {
+         int[] scaledPixelData = new int[newWidth * newHeight];
+         for (int y = 0; y < newHeight; y++) {
+             for (int x = 0; x < newWidth; x++) {
+-                int originalX = x * scale;
+-                int originalY = y * scale;
+-                int originalIndex = originalY * originalWidth + originalX;
+-                int scaledIndex = y * newWidth + x;
+-                scaledPixelData[scaledIndex] = originalPixelData[originalIndex];
++                scaledPixelData[y * newWidth + x] = originalPixelData[(y * scale) * originalWidth + (x * scale)];
+             }
+         }
+         return scaledPixelData;
+@@ -293,19 +364,22 @@ public class DisplayService {
+             @Override
+             public void run() {
+                 if (displayInfo.getBrowser() == null) { this.cancel(); return; }
++                // Nobody looking: leave the pending frame unconsumed so the next viewer gets it, and save CPU.
++                if (displayInfo.getViewerDisplays().isEmpty()) return;
+                 int[] tmpPixelData = browser.getAndUpdatePixelData();
+-                if (tmpPixelData != null) {
+-                    int[] pixelData = scalePixelData(tmpPixelData, browser.getPixelWidth(), browser.getPixelHeight(), displayInfo.getScale());
+-                    displayInfo.setLastPixelData(pixelData);
+-                    // Synchronize when accessing the viewer list to avoid concurrent modification
+-                    synchronized (displayInfo.getViewerDisplays()) {
+-                        for (PlayerDisplay playerDisplay : displayInfo.getViewerDisplays().values()) {
+-                            IDrawingSpace drawingSpace = playerDisplay.drawingSpace();
+-                            if (drawingSpace != null) {
+-                                try {
+-                                    drawingSpace.pixels(pixelData, 0, 0, displayInfo.getWidth() * 128, displayInfo.getHeight() * 128);
+-                                    drawingSpace.flush();
+-                                } catch (ArrayIndexOutOfBoundsException ignored) {}
++                if (tmpPixelData == null) return;
++                int expected = displayInfo.getWidth() * 128 * displayInfo.getScale() * displayInfo.getHeight() * 128 * displayInfo.getScale();
++                if (tmpPixelData.length != expected) return; // mid-resize frame
++                int[] pixelData = scalePixelData(tmpPixelData, browser.getPixelWidth(), browser.getPixelHeight(), displayInfo.getScale());
++                displayInfo.setLastPixelData(pixelData);
++                synchronized (displayInfo.getViewerDisplays()) {
++                    for (PlayerDisplay playerDisplay : displayInfo.getViewerDisplays().values()) {
++                        IDrawingSpace drawingSpace = playerDisplay.drawingSpace();
++                        if (drawingSpace != null) {
++                            try {
++                                drawingSpace.pixels(pixelData, 0, 0, displayInfo.getWidth() * 128, displayInfo.getHeight() * 128);
++                                drawingSpace.flush();
++                            } catch (ArrayIndexOutOfBoundsException ignored) {
+                             }
+                         }
+                     }
+@@ -315,32 +389,31 @@ public class DisplayService {
+         displayInfo.setRenderTask(renderLoop.runTaskTimerAsynchronously(plugin, 0L, 2L));
+     }
+ 
+-    public void calculateAndStoreGeometry(Player viewer, MapBrowserDisplay displayInfo) {
+-        Vector direction = viewer.getLocation().getDirection().setY(0).normalize();
+-        Vector rightVec = direction.getCrossProduct(new Vector(0, 1, 0)).normalize();
+-        Vector downVec = new Vector(0, -1, 0);
+-        BlockVector rightStep = new BlockVector(
+-                Math.round(rightVec.getX()),
+-                Math.round(rightVec.getY()),
+-                Math.round(rightVec.getZ())
+-        );
++    // ------------------------------------------------------------------
++    // Geometry
++    // ------------------------------------------------------------------
++
++    /** "Right" as seen by someone standing in front of a screen that faces {@code facing}. */
++    public static BlockVector rightOf(BlockFace facing) {
++        Vector viewerDir = facing.getOppositeFace().getDirection();
++        Vector right = viewerDir.getCrossProduct(new Vector(0, 1, 0));
++        return new BlockVector(Math.round(right.getX()), Math.round(right.getY()), Math.round(right.getZ()));
++    }
++
++    /** Works out the two corners from the top-left anchor, size and facing. No player needed. */
++    public void calculateAndStoreGeometry(MapBrowserDisplay displayInfo) {
++        BlockVector rightStep = rightOf(displayInfo.getFacing());
+         BlockVector downStep = new BlockVector(0, -1, 0);
+         BlockVector cornerA = displayInfo.getLocation().toVector().toBlockVector();
+         BlockVector totalOffset = rightStep.clone().multiply(displayInfo.getWidth() - 1)
+                 .add(downStep.clone().multiply(displayInfo.getHeight() - 1)).toBlockVector();
+         BlockVector cornerB = cornerA.clone().add(totalOffset).toBlockVector();
+-        BlockFace facing = viewer.getFacing().getOppositeFace();
+         displayInfo.setCornerA(cornerA);
+         displayInfo.setCornerB(cornerB);
+-        displayInfo.setFacing(facing);
+     }
+ 
+     public PlayerDisplay createDisplayForPlayer(Player player, MapBrowserDisplay sourceDisplay) {
+-        BlockVector cornerA = sourceDisplay.getCornerA();
+-        BlockVector cornerB = sourceDisplay.getCornerB();
+-        BlockFace facing = sourceDisplay.getFacing();
+-
+-        IMapDisplay display = mapEngine.displayProvider().createBasic(cornerA, cornerB, facing);
++        IMapDisplay display = mapEngine.displayProvider().createBasic(sourceDisplay.getCornerA(), sourceDisplay.getCornerB(), sourceDisplay.getFacing());
+         IDrawingSpace drawingSpace = mapEngine.pipeline().createDrawingSpace(display);
+         drawingSpace.ctx().receivers().add(player);
+         drawingSpace.ctx().buffering(true);
+@@ -356,4 +429,4 @@ public class DisplayService {
+ 
+         return new PlayerDisplay(display, drawingSpace);
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/MapBrowser.java b/src/main/java/top/steve3184/mapbrowser/MapBrowser.java
+index c6e7feb..6cb2498 100644
+--- a/src/main/java/top/steve3184/mapbrowser/MapBrowser.java
++++ b/src/main/java/top/steve3184/mapbrowser/MapBrowser.java
+@@ -4,10 +4,13 @@ import de.pianoman911.mapengine.api.MapEngineApi;
+ import de.pianoman911.mapengine.api.clientside.IMapDisplay;
+ import me.friwi.jcefmaven.UnsupportedPlatformException;
+ import org.bukkit.Bukkit;
++import org.bukkit.Location;
++import org.bukkit.World;
+ import org.bukkit.plugin.java.JavaPlugin;
+ import org.bukkit.scheduler.BukkitTask;
+ 
+ import java.io.File;
++import java.util.List;
+ import java.util.Map;
+ import java.util.Objects;
+ import java.util.concurrent.ConcurrentHashMap;
+@@ -22,17 +25,20 @@ public final class MapBrowser extends JavaPlugin {
+     private JCEFManager jcefManager;
+     private DisplayService displayService;
+     private BukkitTask proximityCheckTask;
++    private BukkitTask autosaveTask;
++    private Settings settings;
++    private ScreenStore store;
++    private BrowserMenu browserMenu;
++    private TypingMode typingMode;
++    private MapInteractionListener interactionListener;
+ 
+     // Core data structures, managed by DisplayService but owned by the main plugin class.
+     private final Map<Integer, MapBrowserDisplay> activeDisplays = new ConcurrentHashMap<>();
+     private final AtomicInteger nextId = new AtomicInteger(1);
+     private final Map<IMapDisplay, MapBrowserDisplay> displayLookup = new ConcurrentHashMap<>();
+ 
+-    // Plugin Lifecycle
+     @Override
+     public void onEnable() {
+-        // Load MapEngine API from Bukkit services.
+-        // Fields
+         MapEngineApi mapEngine = Bukkit.getServicesManager().load(MapEngineApi.class);
+         if (mapEngine == null) {
+             getLogger().severe("MapEngine API not found! Disabling plugin.");
+@@ -40,9 +46,11 @@ public final class MapBrowser extends JavaPlugin {
+             return;
+         }
+ 
+-        // Load configuration and initialize JCEF.
+         saveDefaultConfig();
++        getConfig().options().copyDefaults(true); // add new keys (favorites, controls...) to old configs
++        saveConfig();
+         PluginConfig pluginConfig = new PluginConfig(this.getConfig());
++        this.settings = Settings.load(getConfig());
+         getLogger().info("Configuration loaded.");
+         saveDefaultScripts();
+         this.jcefManager = new JCEFManager();
+@@ -62,36 +70,83 @@ public final class MapBrowser extends JavaPlugin {
+             return;
+         }
+ 
+-        // Initialize services and handlers.
++        this.store = new ScreenStore(this);
+         this.displayService = new DisplayService(this, mapEngine, jcefManager);
++        this.browserMenu = new BrowserMenu(this);
++        this.typingMode = new TypingMode(this);
++        this.interactionListener = new MapInteractionListener(this);
+         CommandHandler commandHandler = new CommandHandler(this, displayService);
+-        PlayerConnectionListener connectionListener = new PlayerConnectionListener(this, displayService);
+-        // Register commands and event listeners.
++
+         Objects.requireNonNull(getCommand("mapbrowser")).setExecutor(commandHandler);
+         Objects.requireNonNull(getCommand("mapbrowser")).setTabCompleter(commandHandler);
+-        getServer().getPluginManager().registerEvents(new MapInteractionListener(this), this);
+-        getServer().getPluginManager().registerEvents(connectionListener, this);
++        var pm = getServer().getPluginManager();
++        pm.registerEvents(interactionListener, this);
++        pm.registerEvents(new PlayerConnectionListener(this, displayService), this);
++        pm.registerEvents(browserMenu, this);
++        pm.registerEvents(typingMode, this);
+ 
+-        // Start tasks.
+         this.proximityCheckTask = displayService.startProximityChecker();
++        // Keeps the "last page" of every screen on disk (people click around).
++        this.autosaveTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
++            if (!activeDisplays.isEmpty()) store.save();
++        }, 20L * 300, 20L * 300);
++
++        // Bring saved screens back once worlds are loaded (Multiverse loads them after us).
++        Bukkit.getScheduler().runTaskLater(this, this::restoreScreens, 20L * 10);
+ 
+         getLogger().info("MapBrowser has been enabled!");
+     }
+ 
++    private void restoreScreens() {
++        List<ScreenStore.Saved> saved = store.load();
++        if (saved.isEmpty()) return;
++        getLogger().info("Restaurando " + saved.size() + " pantalla(s) web…");
++        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
++            int ok = 0;
++            for (ScreenStore.Saved s : saved) {
++                World w = Bukkit.getWorld(s.world());
++                if (w == null) {
++                    getLogger().warning("Pantalla #" + s.id() + ": el mundo '" + s.world() + "' no está cargado, se omite (sigue guardada).");
++                    continue;
++                }
++                MapBrowserDisplay d = displayService.createAndInitializeDisplay(s.id(), null, s.url(),
++                        new Location(w, s.x(), s.y(), s.z()), s.facing(), s.width(), s.height(), s.scale());
++                if (d != null) {
++                    d.setHomeUrl(s.home());
++                    ok++;
++                }
++                try {
++                    Thread.sleep(1500); // don't spin up every Chromium tab at once
++                } catch (InterruptedException e) {
++                    Thread.currentThread().interrupt();
++                    return;
++                }
++            }
++            getLogger().info("Pantallas web restauradas: " + ok + "/" + saved.size());
++        });
++    }
++
++    public void reloadSettings() {
++        reloadConfig();
++        this.settings = Settings.load(getConfig());
++    }
++
+     @Override
+     public void onDisable() {
+         getLogger().info("Disabling MapBrowser... Cleaning up displays...");
+-        // Cancel scheduled tasks.
+         if (this.proximityCheckTask != null && !this.proximityCheckTask.isCancelled()) {
+             this.proximityCheckTask.cancel();
+         }
+-
+-        // Clean up all active displays via the service.
++        if (this.autosaveTask != null && !this.autosaveTask.isCancelled()) {
++            this.autosaveTask.cancel();
++        }
++        // Save before tearing browsers down (we record the page each one is on).
++        if (store != null && !activeDisplays.isEmpty()) {
++            store.save();
++        }
+         if (displayService != null) {
+             displayService.cleanupAllDisplays();
+         }
+-
+-        // Shutdown the browser manager.
+         if (jcefManager != null) {
+             jcefManager.shutdown();
+         }
+@@ -100,51 +155,36 @@ public final class MapBrowser extends JavaPlugin {
+ 
+     /**
+      * Copies default JavaScript snippets from the JAR to the plugin's data folder.
+-     * This method should be called in the onEnable() method of your plugin.
+      */
+     public void saveDefaultScripts() {
+         File snippetsDir = new File(getDataFolder(), "snippets");
+-        if (!snippetsDir.exists()) {
+-            if (snippetsDir.mkdirs()) {
+-                getLogger().info("Created snippets directory.");
+-            } else {
+-                getLogger().severe("Could not create snippets directory.");
+-                return;
+-            }
++        if (!snippetsDir.exists() && !snippetsDir.mkdirs()) {
++            getLogger().severe("Could not create snippets directory.");
++            return;
+         }
+-
+-        // List of your default scripts in the resources/snippets folder
+         String[] defaultScripts = {"vKeyboard.js"};
+-
+         for (String scriptName : defaultScripts) {
+-            // The path must match the location inside your JAR file
+             String resourcePath = "snippets/" + scriptName;
+             File scriptFile = new File(snippetsDir, scriptName);
+-
+-            // The 'false' argument prevents overwriting if the file already exists.
+-            // Users can customize their scripts without them being overwritten on restart.
+             if (!scriptFile.exists()) {
+                 try {
+                     saveResource(resourcePath, false);
+                     getLogger().info("Saved default script: " + scriptName);
+                 } catch (IllegalArgumentException e) {
+-                    // This happens if the resource doesn't exist in the JAR
+                     getLogger().warning("Could not save default script '" + scriptName + "'. It was not found in the JAR at path: " + resourcePath);
+                 }
+             }
+         }
+     }
+ 
+-    // Getters for Services and Data
+-    public Map<Integer, MapBrowserDisplay> getActiveDisplays() {
+-        return activeDisplays;
+-    }
+-
+-    public AtomicInteger getNextId() {
+-        return nextId;
+-    }
+-
+-    public Map<IMapDisplay, MapBrowserDisplay> getDisplayLookup() {
+-        return displayLookup;
+-    }
+-}
+\ No newline at end of file
++    // Getters
++    public Map<Integer, MapBrowserDisplay> getActiveDisplays() { return activeDisplays; }
++    public AtomicInteger getNextId() { return nextId; }
++    public Map<IMapDisplay, MapBrowserDisplay> getDisplayLookup() { return displayLookup; }
++    public Settings getSettings() { return settings; }
++    public ScreenStore getStore() { return store; }
++    public DisplayService getDisplayService() { return displayService; }
++    public BrowserMenu getBrowserMenu() { return browserMenu; }
++    public TypingMode getTypingMode() { return typingMode; }
++    public MapInteractionListener getInteractionListener() { return interactionListener; }
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/MapBrowserDisplay.java b/src/main/java/top/steve3184/mapbrowser/MapBrowserDisplay.java
+index 00e00a2..a56c2e3 100644
+--- a/src/main/java/top/steve3184/mapbrowser/MapBrowserDisplay.java
++++ b/src/main/java/top/steve3184/mapbrowser/MapBrowserDisplay.java
+@@ -1,11 +1,8 @@
+ package top.steve3184.mapbrowser;
+ 
+-import de.pianoman911.mapengine.api.clientside.IMapDisplay;
+-import de.pianoman911.mapengine.api.drawing.IDrawingSpace;
+ import org.bukkit.Bukkit;
+ import org.bukkit.Location;
+ import org.bukkit.block.BlockFace;
+-import org.bukkit.entity.Player;
+ import org.bukkit.scheduler.BukkitTask;
+ import org.bukkit.util.BlockVector;
+ import org.cef.browser.MapBrowserInstance;
+@@ -22,13 +19,14 @@ public class MapBrowserDisplay {
+ 
+     // --- Core Properties ---
+     private final int id; // The unique identifier for this display.
+-    private String url; // The current URL the browser is displaying.
+-    private Location location; // The top-left-front anchor location in the world.
++    private String url; // The URL last set by a command/menu (the browser may have navigated since).
++    private String homeUrl; // The "home" page the Inicio button goes back to.
++    private Location location; // The top-left anchor block (the wall block the frames sit on).
+     private int width; // The width of the display in blocks/maps.
+     private int height; // The height of the display in blocks/maps.
+ 
+     // --- Browser & Rendering Components ---
+-    private MapBrowserInstance browser; // The underlying CEF browser instance.
++    private volatile MapBrowserInstance browser; // The underlying CEF browser instance.
+     private BukkitTask renderTask; // The scheduled task that copies pixels from the browser to the map.
+ 
+     // --- Player-Specific Visuals ---
+@@ -38,23 +36,17 @@ public class MapBrowserDisplay {
+     // --- Geometric Properties ---
+     private BlockVector cornerA; // The first corner block of the display area.
+     private BlockVector cornerB; // The second corner block of the display area.
+-    private BlockFace facing; // The direction the item frames are facing.
++    private BlockFace facing; // The direction the item frames are facing (towards the viewer).
+ 
+     private volatile int[] lastPixelData = null; // The last pixel frame data
+     private int scale;
+-    /**
+-     * Constructs a new MapBrowserDisplay with its initial properties.
+-     *
+-     * @param id The unique ID for this display.
+-     * @param url The initial URL to load.
+-     * @param location The initial location in the world.
+-     * @param width The width in blocks.
+-     * @param height The height in blocks.
+-     */
+-    public MapBrowserDisplay(int id, String url, Location location, int width, int height) {
++
++    public MapBrowserDisplay(int id, String url, Location location, BlockFace facing, int width, int height) {
+         this.id = id;
+         this.url = url;
++        this.homeUrl = url;
+         this.location = location;
++        this.facing = facing;
+         this.width = width;
+         this.height = height;
+         this.scale = 1;
+@@ -62,6 +54,7 @@ public class MapBrowserDisplay {
+ 
+     public int getId() { return id; }
+     public String getUrl() { return url; }
++    public String getHomeUrl() { return homeUrl; }
+     public Location getLocation() { return location; }
+     public int getWidth() { return width; }
+     public int getHeight() { return height; }
+@@ -75,7 +68,30 @@ public class MapBrowserDisplay {
+     public BlockFace getFacing() { return facing; }
+     public int[] getLastPixelData() { return lastPixelData; }
+ 
++    /** The page the browser is really showing (it changes when people click links). */
++    public String getCurrentUrl() {
++        MapBrowserInstance b = browser;
++        if (b != null) {
++            try {
++                String current = b.getURL();
++                if (current != null && !current.isBlank() && !current.startsWith("about:")) return current;
++            } catch (Throwable ignored) {
++            }
++        }
++        return url;
++    }
++
++    /** Center of the screen surface, used for distance checks. */
++    public Location getCenter() {
++        if (cornerA == null || cornerB == null) return location;
++        return new Location(location.getWorld(),
++                (cornerA.getX() + cornerB.getX()) / 2.0 + 0.5,
++                (cornerA.getY() + cornerB.getY()) / 2.0 + 0.5,
++                (cornerA.getZ() + cornerB.getZ()) / 2.0 + 0.5);
++    }
++
+     public void setUrl(String url) { this.url = url; }
++    public void setHomeUrl(String homeUrl) { this.homeUrl = homeUrl; }
+     public void setLocation(Location location) { this.location = location; }
+     public void setWidth(int width) { this.width = width; }
+     public void setHeight(int height) { this.height = height; }
+@@ -97,17 +113,16 @@ public class MapBrowserDisplay {
+         if (renderTask != null && !renderTask.isCancelled()) {
+             renderTask.cancel();
+         }
+-        viewerDisplays.forEach((uuid, playerDisplay) -> {
+-            playerDisplay.destroy(Bukkit.getPlayer(uuid));
+-        });
++        viewerDisplays.forEach((uuid, playerDisplay) -> playerDisplay.destroy(Bukkit.getPlayer(uuid)));
+         viewerDisplays.clear();
+ 
+         // Then, close the underlying browser instance.
+-        if (browser != null) {
+-            browser.loadURL("about:blank");
+-            browser.close(true);
+-            browser = null;
++        MapBrowserInstance b = browser;
++        browser = null;
++        if (b != null) {
++            b.loadURL("about:blank");
++            b.close(true);
+         }
+         lastPixelData = null;
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/MapInteractionListener.java b/src/main/java/top/steve3184/mapbrowser/MapInteractionListener.java
+index 9b4ad30..96a57e9 100644
+--- a/src/main/java/top/steve3184/mapbrowser/MapInteractionListener.java
++++ b/src/main/java/top/steve3184/mapbrowser/MapInteractionListener.java
+@@ -1,50 +1,69 @@
+ package top.steve3184.mapbrowser;
+ 
+-import de.pianoman911.mapengine.api.clientside.IMapDisplay;
+ import de.pianoman911.mapengine.api.event.MapClickEvent;
+ import de.pianoman911.mapengine.api.util.MapClickType;
++import org.bukkit.Bukkit;
++import org.bukkit.entity.Player;
+ import org.bukkit.event.EventHandler;
+ import org.bukkit.event.Listener;
+ import org.cef.browser.MapBrowserInstance;
+ 
+ import java.awt.event.MouseEvent;
+-
++import java.util.Map;
++import java.util.UUID;
++import java.util.concurrent.ConcurrentHashMap;
+ 
+ /**
+- * Listens for player interactions (clicks) with MapEngine displays
+- * and forwards them to the corresponding browser instance.
+- *
+- * @param plugin The main MapBrowser plugin instance.
++ * Clicks on a screen:
++ * <ul>
++ *   <li>Left click → mouse click at that point.</li>
++ *   <li>Right click → scroll down (at that point, so side panels scroll too).</li>
++ *   <li>Shift + right click → scroll up.</li>
++ *   <li>Shift + left click → remote-control menu.</li>
++ * </ul>
++ * The original plugin sent right click as a right mouse button, which does nothing (context menus are disabled).
+  */
+-public record MapInteractionListener(MapBrowser plugin) implements Listener {
++public record MapInteractionListener(MapBrowser plugin, Map<UUID, Long> lastClick) implements Listener {
++
++    public MapInteractionListener(MapBrowser plugin) {
++        this(plugin, new ConcurrentHashMap<>());
++    }
+ 
+-    /**
+-     * Handles clicks on a map display.
+-     * @param event The event fired when a player clicks a map.
+-     */
+     @EventHandler
+     public void onMapClick(MapClickEvent event) {
+-        // Get the specific map display that was clicked.
+-        IMapDisplay clickedDisplay = event.display();
+-
+-        // Look up our custom browser display object using the clicked map.
+-        MapBrowserDisplay browserDisplay = plugin.getDisplayLookup().get(clickedDisplay);
+-
+-        // Exit if the clicked map is not a browser display or its browser is not active.
+-        if (browserDisplay == null || browserDisplay.getBrowser() == null) {
++        MapBrowserDisplay browserDisplay = plugin.getDisplayLookup().get(event.display());
++        if (browserDisplay == null) return;
++        Player player = event.player();
++        if (player == null || !player.hasPermission("mapbrowser.use")) return;
++        MapBrowserInstance browser = browserDisplay.getBrowser();
++        if (browser == null) {
++            Msg.actionBar(player, "<gray>La pantalla todavía está cargando…");
+             return;
+         }
+ 
+-        MapBrowserInstance browser = browserDisplay.getBrowser();
++        // Some clients send the same click twice in one tick (main hand + off hand).
++        long now = System.currentTimeMillis();
++        Long prev = lastClick.put(player.getUniqueId(), now);
++        if (prev != null && now - prev < 60) return;
+ 
+-        // Translate the in-game click type to a standard AWT MouseEvent button.
+-        int awtButtonType = switch (event.clickType()) {
+-            case MapClickType.RIGHT_CLICK -> MouseEvent.BUTTON3; // Right-click
+-            default -> MouseEvent.BUTTON1;          // Left-click (or any other type)
+-        };
++        plugin.getDisplayService().setFocus(player, browserDisplay);
+         int x = event.x() * browserDisplay.getScale();
+         int y = event.y() * browserDisplay.getScale();
+-        // Send the translated click event to the CEF browser instance.
+-        browser.sendMouseClick(x, y, awtButtonType);
++        boolean sneaking = player.isSneaking();
++        int scroll = plugin.getSettings().scrollPixels();
++
++        if (event.clickType() == MapClickType.RIGHT_CLICK) {
++            browser.scrollAt(x, y, sneaking ? -scroll : scroll);
++        } else if (sneaking) {
++            Runnable open = () -> plugin.getBrowserMenu().open(player, browserDisplay);
++            if (Bukkit.isPrimaryThread()) open.run();
++            else Bukkit.getScheduler().runTask(plugin, open);
++        } else {
++            browser.sendMouseClick(x, y, MouseEvent.BUTTON1);
++        }
++    }
++
++    public void forget(UUID uuid) {
++        lastClick.remove(uuid);
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/Msg.java b/src/main/java/top/steve3184/mapbrowser/Msg.java
+new file mode 100644
+index 0000000..b81e2ac
+--- /dev/null
++++ b/src/main/java/top/steve3184/mapbrowser/Msg.java
+@@ -0,0 +1,67 @@
++package top.steve3184.mapbrowser;
++
++import net.kyori.adventure.text.Component;
++import net.kyori.adventure.text.minimessage.MiniMessage;
++import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
++import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
++import org.bukkit.command.CommandSender;
++import org.bukkit.entity.Player;
++
++/**
++ * Chat/action bar messages (Spanish), MiniMessage format.
++ * Use {@code <arg0>}, {@code <arg1>}... as unparsed placeholders so URLs/user text are never parsed as tags.
++ */
++public final class Msg {
++
++    private static final MiniMessage MM = MiniMessage.miniMessage();
++    public static final String PREFIX = "<dark_gray>[<aqua>Web</aqua>]</dark_gray> ";
++
++    public static final String HINT_CONTROLS =
++            "<aqua>Pantalla web</aqua> <dark_gray>·</dark_gray> <white>Clic izq.</white><gray> pulsar</gray> <dark_gray>·</dark_gray> "
++                    + "<white>Clic der.</white><gray> bajar</gray> <dark_gray>·</dark_gray> <white>Shift+der.</white><gray> subir</gray> "
++                    + "<dark_gray>·</dark_gray> <white>Shift+izq.</white><gray> menú</gray>";
++
++    private Msg() {
++    }
++
++    private static Component parse(String mini, Object... args) {
++        TagResolver.Builder b = TagResolver.builder();
++        for (int i = 0; i < args.length; i++) {
++            Object a = args[i];
++            if (a instanceof Component comp) b.resolver(Placeholder.component("arg" + i, comp));
++            else b.resolver(Placeholder.unparsed("arg" + i, String.valueOf(a)));
++        }
++        return MM.deserialize(mini, b.build());
++    }
++
++    public static Component c(String mini, Object... args) {
++        return parse(mini, args);
++    }
++
++    public static void send(CommandSender to, String mini, Object... args) {
++        to.sendMessage(parse(PREFIX + mini, args));
++    }
++
++    public static void ok(CommandSender to, String mini, Object... args) {
++        send(to, "<green>" + mini, args);
++    }
++
++    public static void info(CommandSender to, String mini, Object... args) {
++        send(to, "<gray>" + mini, args);
++    }
++
++    public static void err(CommandSender to, String mini, Object... args) {
++        send(to, "<red>" + mini, args);
++    }
++
++    public static void actionBar(Player p, String mini, Object... args) {
++        p.sendActionBar(parse(mini, args));
++    }
++
++    /** Shortens long URLs for chat/lore. */
++    public static String shortUrl(String url) {
++        if (url == null) return "";
++        String u = url.replaceFirst("^https?://(www\\.)?", "");
++        return u.length() > 40 ? u.substring(0, 39) + "…" : u;
++    }
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/PlayerConnectionListener.java b/src/main/java/top/steve3184/mapbrowser/PlayerConnectionListener.java
+index 67f2703..f5c9e08 100644
+--- a/src/main/java/top/steve3184/mapbrowser/PlayerConnectionListener.java
++++ b/src/main/java/top/steve3184/mapbrowser/PlayerConnectionListener.java
+@@ -1,18 +1,15 @@
+ package top.steve3184.mapbrowser;
+ 
+-import org.bukkit.Bukkit;
+ import org.bukkit.entity.Player;
+ import org.bukkit.event.EventHandler;
+ import org.bukkit.event.Listener;
+-import org.bukkit.event.player.PlayerJoinEvent;
+ import org.bukkit.event.player.PlayerQuitEvent;
+ 
+ import java.util.UUID;
+ 
+ /**
+- * Handles player connection events to correctly manage display visibility.
+- * - Creates displays for players who join if they are in range.
+- * - Cleans up displays for players who leave the server.
++ * Cleans up per-player state when someone leaves. Showing screens to players that join or come close
++ * is done by the proximity checker in {@link DisplayService} (runs every second).
+  */
+ public class PlayerConnectionListener implements Listener {
+ 
+@@ -24,63 +21,21 @@ public class PlayerConnectionListener implements Listener {
+         this.displayService = displayService;
+     }
+ 
+-    /**
+-     * Fired when a player leaves the server.
+-     * This method iterates through all active displays and removes the player's
+-     * personal display instance to prevent memory leaks.
+-     */
+     @EventHandler
+     public void onPlayerQuit(PlayerQuitEvent event) {
+         Player player = event.getPlayer();
+         UUID playerUUID = player.getUniqueId();
+ 
+-        // Iterate over all displays to clean up the disconnected player's data
+         for (MapBrowserDisplay display : plugin.getActiveDisplays().values()) {
+-            // Use synchronized block to prevent race conditions with proximity checker or commands
+             synchronized (display.getViewerDisplays()) {
+-                if (display.getViewerDisplays().containsKey(playerUUID)) {
+-                    PlayerDisplay playerDisplay = display.getViewerDisplays().remove(playerUUID);
+-                    if (playerDisplay != null) {
+-                        // We don't need to call playerDisplay.destroy() because the client-side
+-                        // entities are automatically removed when the player disconnects.
+-                        // We just need to remove it from our server-side tracking maps.
+-                        plugin.getDisplayLookup().remove(playerDisplay.mapDisplay());
+-                    }
++                PlayerDisplay playerDisplay = display.getViewerDisplays().remove(playerUUID);
++                if (playerDisplay != null) {
++                    // Client-side entities vanish with the connection; only drop our tracking.
++                    plugin.getDisplayLookup().remove(playerDisplay.mapDisplay());
+                 }
+             }
+         }
++        displayService.forgetPlayer(playerUUID);
++        plugin.getInteractionListener().forget(playerUUID);
+     }
+-
+-    /**
+-     * Fired when a player joins the server.
+-     * We run a check after a 1-tick delay to ensure the player is fully loaded.
+-     * This check determines if the player spawned within range of any displays
+-     * and creates them if necessary.
+-     */
+-    @EventHandler
+-    public void onPlayerJoin(PlayerJoinEvent event) {
+-        Player player = event.getPlayer();
+-
+-        // Run this with a 1-tick delay to ensure the player is fully initialized in the world.
+-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+-            if (!player.isOnline()) return; // Player might have left immediately
+-
+-            for (MapBrowserDisplay display : plugin.getActiveDisplays().values()) {
+-                // Check if the player is in the same world and in range
+-                if (display.getLocation().getWorld().equals(player.getWorld()) &&
+-                        display.getLocation().distanceSquared(player.getLocation()) <= 1024) { // 32*32 range
+-
+-                    // Synchronize to safely add the new viewer
+-                    synchronized (display.getViewerDisplays()) {
+-                        // Double-check they aren't already a viewer (shouldn't happen on join, but safe)
+-                        if (!display.getViewerDisplays().containsKey(player.getUniqueId())) {
+-                            PlayerDisplay newPlayerDisplay = displayService.createDisplayForPlayer(player, display);
+-                            display.getViewerDisplays().put(player.getUniqueId(), newPlayerDisplay);
+-                            plugin.getDisplayLookup().put(newPlayerDisplay.mapDisplay(), display);
+-                        }
+-                    }
+-                }
+-            }
+-        }, 1L); // 1-tick delay
+-    }
+-}
+\ No newline at end of file
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/ScreenStore.java b/src/main/java/top/steve3184/mapbrowser/ScreenStore.java
+new file mode 100644
+index 0000000..0d9f4c2
+--- /dev/null
++++ b/src/main/java/top/steve3184/mapbrowser/ScreenStore.java
+@@ -0,0 +1,100 @@
++package top.steve3184.mapbrowser;
++
++import org.bukkit.Bukkit;
++import org.bukkit.Location;
++import org.bukkit.World;
++import org.bukkit.block.BlockFace;
++import org.bukkit.configuration.ConfigurationSection;
++import org.bukkit.configuration.file.YamlConfiguration;
++
++import java.io.File;
++import java.io.IOException;
++import java.util.ArrayList;
++import java.util.Comparator;
++import java.util.List;
++import java.util.logging.Level;
++
++/**
++ * Saves screens to plugins/MapBrowser/screens.yml so they survive restarts.
++ * The original plugin kept them only in RAM.
++ */
++public class ScreenStore {
++
++    public record Saved(int id, String world, int x, int y, int z, BlockFace facing,
++                        int width, int height, int scale, String url, String home) {
++    }
++
++    private final MapBrowser plugin;
++    private final File file;
++
++    public ScreenStore(MapBrowser plugin) {
++        this.plugin = plugin;
++        this.file = new File(plugin.getDataFolder(), "screens.yml");
++    }
++
++    public List<Saved> load() {
++        List<Saved> out = new ArrayList<>();
++        if (!file.exists()) return out;
++        YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
++        ConfigurationSection screens = yml.getConfigurationSection("screens");
++        if (screens == null) return out; // old format (list) from the skript era is ignored
++        for (String key : screens.getKeys(false)) {
++            ConfigurationSection s = screens.getConfigurationSection(key);
++            if (s == null) continue;
++            try {
++                int id = Integer.parseInt(key);
++                BlockFace facing = BlockFace.valueOf(s.getString("facing", "NORTH").toUpperCase());
++                String url = s.getString("url", plugin.getSettings().defaultUrl());
++                out.add(new Saved(id, s.getString("world"), s.getInt("x"), s.getInt("y"), s.getInt("z"), facing,
++                        Math.max(1, s.getInt("width", 1)), Math.max(1, s.getInt("height", 1)), Math.max(1, s.getInt("scale", 1)),
++                        url, s.getString("home", url)));
++            } catch (Exception e) {
++                plugin.getLogger().warning("screens.yml: entrada '" + key + "' inválida, se ignora (" + e.getMessage() + ")");
++            }
++        }
++        out.sort(Comparator.comparingInt(Saved::id));
++        return out;
++    }
++
++    /** Writes every active display. Safe to call from any thread (writes are serialized). */
++    public synchronized void save() {
++        YamlConfiguration yml = new YamlConfiguration();
++        yml.options().setHeader(List.of(
++                "Pantallas web de MapBrowser. Las guarda el plugin solo (al crear, borrar o cambiar una pantalla",
++                "y cada pocos minutos). Puedes editarlo con el servidor apagado."));
++        for (MapBrowserDisplay d : plugin.getActiveDisplays().values()) {
++            Location l = d.getLocation();
++            World w = l.getWorld();
++            if (w == null) continue;
++            String p = "screens." + d.getId() + ".";
++            yml.set(p + "world", w.getName());
++            yml.set(p + "x", l.getBlockX());
++            yml.set(p + "y", l.getBlockY());
++            yml.set(p + "z", l.getBlockZ());
++            yml.set(p + "facing", d.getFacing().name());
++            yml.set(p + "width", d.getWidth());
++            yml.set(p + "height", d.getHeight());
++            yml.set(p + "scale", d.getScale());
++            yml.set(p + "url", d.getCurrentUrl());
++            yml.set(p + "home", d.getHomeUrl());
++        }
++        try {
++            File tmp = new File(file.getParentFile(), "screens.yml.tmp");
++            yml.save(tmp);
++            if (!tmp.renameTo(file)) {
++                yml.save(file);
++                tmp.delete();
++            }
++        } catch (IOException e) {
++            plugin.getLogger().log(Level.WARNING, "No se pudo guardar screens.yml", e);
++        }
++    }
++
++    public void saveAsync() {
++        if (!plugin.isEnabled()) {
++            save();
++            return;
++        }
++        Bukkit.getScheduler().runTaskAsynchronously(plugin, this::save);
++    }
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/Settings.java b/src/main/java/top/steve3184/mapbrowser/Settings.java
+new file mode 100644
+index 0000000..af0842d
+--- /dev/null
++++ b/src/main/java/top/steve3184/mapbrowser/Settings.java
+@@ -0,0 +1,56 @@
++package top.steve3184.mapbrowser;
++
++import org.bukkit.Material;
++import org.bukkit.configuration.ConfigurationSection;
++import org.bukkit.configuration.file.FileConfiguration;
++
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * Gameplay settings (everything outside the jcef/browser sections). Reloadable with /mb reload.
++ */
++public record Settings(
++        double viewDistance,
++        boolean showHints,
++        String defaultUrl,
++        int defaultWidth,
++        int defaultHeight,
++        int maxWidth,
++        int maxHeight,
++        int scrollPixels,
++        boolean chatPressesEnter,
++        int typingTimeoutSeconds,
++        List<Favorite> favorites
++) {
++
++    public record Favorite(String name, Material icon, String url) {
++    }
++
++    public static Settings load(FileConfiguration c) {
++        List<Favorite> favs = new ArrayList<>();
++        for (Map<?, ?> m : c.getMapList("favorites")) {
++            Object name = m.get("name");
++            Object url = m.get("url");
++            if (name == null || url == null) continue;
++            Material icon = Material.matchMaterial(String.valueOf(m.containsKey("icon") ? m.get("icon") : "PAPER"));
++            favs.add(new Favorite(String.valueOf(name), icon == null ? Material.PAPER : icon, String.valueOf(url)));
++            if (favs.size() >= 9) break; // one menu row
++        }
++        ConfigurationSection d = c.getConfigurationSection("defaults");
++        return new Settings(
++                Math.max(8, c.getDouble("view-distance", 32)),
++                c.getBoolean("show-hints", true),
++                d != null ? d.getString("url", "https://www.google.com") : "https://www.google.com",
++                d != null ? Math.max(1, d.getInt("width", 3)) : 3,
++                d != null ? Math.max(1, d.getInt("height", 2)) : 2,
++                d != null ? Math.max(1, d.getInt("max-width", 6)) : 6,
++                d != null ? Math.max(1, d.getInt("max-height", 4)) : 4,
++                Math.max(40, c.getInt("controls.scroll-pixels", 300)),
++                c.getBoolean("controls.chat-presses-enter", true),
++                Math.max(10, c.getInt("controls.typing-timeout-seconds", 120)),
++                favs
++        );
++    }
++}
+diff --git a/src/main/java/top/steve3184/mapbrowser/TypingMode.java b/src/main/java/top/steve3184/mapbrowser/TypingMode.java
+new file mode 100644
+index 0000000..b0ff92c
+--- /dev/null
++++ b/src/main/java/top/steve3184/mapbrowser/TypingMode.java
+@@ -0,0 +1,137 @@
++package top.steve3184.mapbrowser;
++
++import io.papermc.paper.event.player.AsyncChatEvent;
++import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
++import org.bukkit.Bukkit;
++import org.bukkit.entity.Player;
++import org.bukkit.event.EventHandler;
++import org.bukkit.event.EventPriority;
++import org.bukkit.event.Listener;
++import org.bukkit.event.player.PlayerQuitEvent;
++import org.bukkit.scheduler.BukkitTask;
++
++import java.util.Map;
++import java.util.UUID;
++import java.util.concurrent.ConcurrentHashMap;
++
++/**
++ * "Escribir" mode: while on, what the player types in chat goes to the screen instead of public chat.
++ * <ul>
++ *   <li>Normal message → typed + Enter (search boxes just work).</li>
++ *   <li>Message starting with {@code +} → typed without Enter.</li>
++ *   <li>{@code <} → Backspace, {@code <<<} → three Backspaces, {@code !enter} → Enter only.</li>
++ *   <li>{@code !salir} / {@code /mb escribir} → leave.</li>
++ * </ul>
++ * Turns itself off after a while without typing or if the player walks away.
++ */
++public class TypingMode implements Listener {
++
++    private record Session(int displayId, long lastUse) {
++    }
++
++    private final MapBrowser plugin;
++    private final Map<UUID, Session> sessions = new ConcurrentHashMap<>();
++    private BukkitTask ticker;
++
++    public TypingMode(MapBrowser plugin) {
++        this.plugin = plugin;
++    }
++
++    public boolean isTyping(Player p) {
++        return sessions.containsKey(p.getUniqueId());
++    }
++
++    public void start(Player p, MapBrowserDisplay d) {
++        sessions.put(p.getUniqueId(), new Session(d.getId(), System.currentTimeMillis()));
++        Msg.send(p, "<aqua>✎ Modo escribir</aqua> <gray>en la pantalla <white>#<arg0></white>. Haz clic primero en el campo de texto.", d.getId());
++        Msg.info(p, "Lo que escribas en el chat irá a la pantalla<arg0>. <white>+texto</white> = sin Enter · <white>\\<</white> = borrar · <white>!salir</white> = terminar.",
++                plugin.getSettings().chatPressesEnter() ? " y pulsará Enter" : "");
++        startTicker();
++    }
++
++    public void stop(Player p, boolean notify) {
++        if (sessions.remove(p.getUniqueId()) != null && notify) {
++            Msg.info(p, "Modo escribir desactivado. El chat vuelve a ser normal.");
++        }
++    }
++
++    private void startTicker() {
++        if (ticker != null && !ticker.isCancelled()) return;
++        ticker = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
++            if (sessions.isEmpty()) {
++                ticker.cancel();
++                ticker = null;
++                return;
++            }
++            long now = System.currentTimeMillis();
++            long timeout = plugin.getSettings().typingTimeoutSeconds() * 1000L;
++            double range = plugin.getSettings().viewDistance();
++            sessions.forEach((uuid, s) -> {
++                Player p = Bukkit.getPlayer(uuid);
++                MapBrowserDisplay d = plugin.getActiveDisplays().get(s.displayId());
++                if (p == null) {
++                    sessions.remove(uuid);
++                    return;
++                }
++                if (d == null || !p.getWorld().equals(d.getLocation().getWorld())
++                        || p.getLocation().distanceSquared(d.getCenter()) > range * range) {
++                    sessions.remove(uuid);
++                    Msg.info(p, "Te alejaste de la pantalla: modo escribir desactivado.");
++                    return;
++                }
++                if (now - s.lastUse() > timeout) {
++                    sessions.remove(uuid);
++                    Msg.info(p, "Modo escribir desactivado por inactividad.");
++                    return;
++                }
++                Msg.actionBar(p, "<aqua>✎</aqua> <white>Escribiendo en la pantalla #<arg0></white> <dark_gray>·</dark_gray> <gray>escribe en el chat · <white>!salir</white> para terminar", d.getId());
++            });
++        }, 20L, 30L);
++    }
++
++    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
++    public void onChat(AsyncChatEvent event) {
++        Player p = event.getPlayer();
++        Session s = sessions.get(p.getUniqueId());
++        if (s == null) return;
++        event.setCancelled(true);
++        String raw = PlainTextComponentSerializer.plainText().serialize(event.message());
++
++        Bukkit.getScheduler().runTask(plugin, () -> {
++            MapBrowserDisplay d = plugin.getActiveDisplays().get(s.displayId());
++            if (d == null || d.getBrowser() == null) {
++                stop(p, true);
++                return;
++            }
++            sessions.put(p.getUniqueId(), new Session(s.displayId(), System.currentTimeMillis()));
++            String msg = raw;
++            String lower = msg.trim().toLowerCase();
++            if (lower.equals("!salir") || lower.equals("!exit")) {
++                stop(p, true);
++                return;
++            }
++            if (lower.equals("!enter")) {
++                BrowserActions.enter(d);
++                Msg.actionBar(p, "<aqua>⏎</aqua> <gray>Enter");
++                return;
++            }
++            if (!msg.isEmpty() && msg.chars().allMatch(ch -> ch == '<')) {
++                for (int i = 0; i < msg.length(); i++) BrowserActions.backspace(d);
++                Msg.actionBar(p, "<aqua>⌫</aqua> <gray>Borrado ×<arg0>", msg.length());
++                return;
++            }
++            boolean enter = plugin.getSettings().chatPressesEnter();
++            if (msg.startsWith("+")) {
++                msg = msg.substring(1);
++                enter = false;
++            }
++            BrowserActions.type(d, msg, enter);
++            Msg.actionBar(p, "<aqua>✎</aqua> <white><arg0></white><gray><arg1>", msg, enter ? "  ⏎" : "");
++        });
++    }
++
++    @EventHandler
++    public void onQuit(PlayerQuitEvent event) {
++        sessions.remove(event.getPlayer().getUniqueId());
++    }
++}
+diff --git a/src/main/resources/config.yml b/src/main/resources/config.yml
+index 4df2b43..c5e85ba 100644
+--- a/src/main/resources/config.yml
++++ b/src/main/resources/config.yml
+@@ -1,35 +1,79 @@
++# --------------------------------------------------- #
++#             MapBrowser Configuration                #
++# --------------------------------------------------- #
++
++jcef:
++  # Your custom JCEF binaries path (leave blank to disable)
++  # Default: (plguins)/MapBrowser/jcef-bundle
++  custom-install-path: ""
++  # Custom jcef-maven download mirror (for custom-builds)
++  mirror: "https://github.com/Steve3184/mb_jcefbuild/releases/download/v1/"
++  # Should jcef-maven check the JCEF binaries at startup?
++  skip-download: false
++
++browser:
++  # Should we enable the sound (default is false)
++  enable-sound: false
++  # CEF's user data directory
++  # Default: (plugins)/MapBrowser/userdata
++  user-data-dir: "userdata"
++  # CEF's remote debugging
++  remote-debugging:
++    enabled: false
++    # Should we enable it? (default is false)
++    port: 9222
++    # Remote Debugging Port (default is 9222)
++  # CEF's User-Agent
++  user-agent: ""
++  # Where should CEF output the log
++  # 'file' -> write to (plugins)/MapBrowser/cef.log
++  # 'console' -> write to console
++  chrome-log-output: "file"
++  # Extra CEF startup args
++  custom-chrome-args:
++    - "--disable-gpu-compositing"
++    - "--disable-gpu-vsync"
+ # --------------------------------------------------- #
+-#             MapBrowser Configuration                #
++#        Comodidad (fork del servidor, en español)    #
+ # --------------------------------------------------- #
+ 
+-jcef:
+-  # Your custom JCEF binaries path (leave blank to disable)
+-  # Default: (plguins)/MapBrowser/jcef-bundle
+-  custom-install-path: ""
+-  # Custom jcef-maven download mirror (for custom-builds)
+-  mirror: "https://github.com/Steve3184/mb_jcefbuild/releases/download/v1/"
+-  # Should jcef-maven check the JCEF binaries at startup?
+-  skip-download: false
++# Distancia (bloques) a la que los jugadores ven las pantallas y pueden usarlas con /mb.
++view-distance: 32
++# Muestra los controles en la barra de acción al acercarse a una pantalla (una vez cada 10 min).
++show-hints: true
+ 
+-browser:
+-  # Should we enable the sound (default is false)
+-  enable-sound: false
+-  # CEF's user data directory
+-  # Default: (plugins)/MapBrowser/userdata
+-  user-data-dir: "userdata"
+-  # CEF's remote debugging
+-  remote-debugging:
+-    enabled: false
+-    # Should we enable it? (default is false)
+-    port: 9222
+-    # Remote Debugging Port (default is 9222)
+-  # CEF's User-Agent
+-  user-agent: ""
+-  # Where should CEF output the log
+-  # 'file' -> write to (plugins)/MapBrowser/cef.log
+-  # 'console' -> write to console
+-  chrome-log-output: "file"
+-  # Extra CEF startup args
+-  custom-chrome-args:
+-    - "--disable-gpu-compositing"
+-    - "--disable-gpu-vsync"
+\ No newline at end of file
++# Valores de /mb crear (mirando a una pared).
++defaults:
++  url: "https://www.google.com"
++  width: 3
++  height: 2
++  # Tamaño máximo para quien no tenga mapbrowser.admin. Con renderizado por software, más de 4x3 va lento.
++  max-width: 6
++  max-height: 4
++
++controls:
++  # Píxeles que baja/sube cada clic derecho / Shift+clic derecho.
++  scroll-pixels: 300
++  # En /mb escribir, cada mensaje del chat pulsa Enter al final (empieza el mensaje con + para no pulsarlo).
++  chat-presses-enter: true
++  # Segundos sin escribir hasta salir solo del modo escribir.
++  typing-timeout-seconds: 120
++
++# Fila de favoritos del menú (Shift + clic izquierdo en la pantalla). Máximo 9.
++# icon = material de Minecraft. name admite colores con &.
++favorites:
++  - name: "&cYouTube"
++    icon: RED_WOOL
++    url: "https://www.youtube.com"
++  - name: "&fGoogle"
++    icon: COMPASS
++    url: "https://www.google.com"
++  - name: "&fWikipedia"
++    icon: BOOK
++    url: "https://es.wikipedia.org"
++  - name: "&bMapa del servidor"
++    icon: FILLED_MAP
++    url: "http://localhost:8100"
++  - name: "&eTiempo"
++    icon: SUNFLOWER
++    url: "https://wttr.in/?lang=es"
+diff --git a/src/main/resources/plugin.yml b/src/main/resources/plugin.yml
+index 99b2aa8..8c41243 100644
+--- a/src/main/resources/plugin.yml
++++ b/src/main/resources/plugin.yml
+@@ -1,23 +1,26 @@
+ name: MapBrowser
+-version: '1.0-beta3'
++version: '1.0-beta3-es1'
+ main: top.steve3184.mapbrowser.MapBrowser
+ api-version: '1.20'
+ prefix: MapBrowser
+-authors: [ Steve3184 ]
+-description: Chromium Browser on maps
++authors: [ Steve3184, Ferxas ]
++description: Chromium Browser on maps (fork del servidor con controles cómodos y pantallas persistentes)
+ depend: [ MapEngine ]
+ commands:
+   mapbrowser:
+-    description: Main command for the MapBrowser plugin.
+-    aliases: [mb]
+-    permission: mapbrowser.command.base 
+-    permission-message: You do not have permission to use MapBrowser commands.
++    description: Pantallas web en mapas.
++    aliases: [mb, web]
++    permission: mapbrowser.command.base
++    permission-message: No tienes permiso para usar las pantallas web.
+ permissions:
+   mapbrowser.command.*:
+-    description: Grants access to all MapBrowser commands.
++    description: Todo lo de administrador.
+     default: op
+     children:
+       mapbrowser.command.base: true
++      mapbrowser.use: true
++      mapbrowser.navigate: true
++      mapbrowser.admin: true
+       mapbrowser.command.create: true
+       mapbrowser.command.list: true
+       mapbrowser.command.remove: true
+@@ -28,37 +31,38 @@ permissions:
+       mapbrowser.command.near: true
+ 
+   mapbrowser.command.base:
+-    description: Allows using the base /mapbrowser command (e.g., for help).
++    description: Usar /mb (ayuda).
+     default: true
+-
++  mapbrowser.use:
++    description: Usar las pantallas (clic, scroll, menú, favoritos, atrás/adelante, escribir).
++    default: true
++  mapbrowser.navigate:
++    description: Abrir cualquier web con /mb ir.
++    default: op
++  mapbrowser.admin:
++    description: Sin límite de tamaño y /mb config.
++    default: op
+   mapbrowser.command.create:
+-    description: Allows creating new browser displays.
++    description: Crear pantallas.
+     default: op
+-
+   mapbrowser.command.list:
+-    description: Allows listing all browser displays.
++    description: Listar pantallas.
+     default: op
+-
+   mapbrowser.command.remove:
+-    description: Allows removing browser displays.
++    description: Quitar pantallas.
+     default: op
+-
+   mapbrowser.command.modify:
+-    description: Allows modifying browser displays.
++    description: Cambiar tamaño, mover, escala, fijar inicio.
+     default: op
+-  
+   mapbrowser.command.input:
+-    description: Allows sending text input to browser displays.
++    description: /mb input.
+     default: op
+-
+   mapbrowser.command.keys:
+-    description: Allows sending key events to browser displays.
++    description: /mb keys.
+     default: op
+-
+   mapbrowser.command.executejs:
+-    description: Allows execute custom JavaScript in browser displays.
++    description: Ejecutar JavaScript en una pantalla.
+     default: op
+-
+   mapbrowser.command.near:
+-    description: Allows listing nearest browser displays.
+-    default: op
+\ No newline at end of file
++    description: Ver la pantalla más cercana.
++    default: op

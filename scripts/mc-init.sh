@@ -74,7 +74,8 @@ if [ -d "$BOOT/plugins" ]; then
   for jar in "$BOOT/plugins"/*.jar; do
     [ -f "$jar" ] || continue
     base=$(basename "$jar")
-    if [ "$base" = "WelcomeAds-2.1.jar" ] || [ "$base" = "WelcomeAdsBridge.jar" ]; then
+    # Our own builds: always keep them in sync (a reinstall from the release would otherwise keep the old jar).
+    if [ "$base" = "WelcomeAds-2.1.jar" ] || [ "$base" = "WelcomeAdsBridge.jar" ] || [ "$base" = "MapBrowser-1.0-beta3-all.jar" ]; then
       sync_file "$jar" "$DATA/plugins/$base"
     elif [ ! -f "$DATA/plugins/$base" ]; then
       cp "$jar" "$DATA/plugins/$base"
@@ -104,9 +105,12 @@ if [ -d "$BOOT/skript" ]; then
   done
 fi
 
-# MapBrowser screen coords (reference for mapbrowser-boot.sk / mapbrowser-restore.sh)
-if [ -f "$BOOT/plugin-configs/MapBrowser/screens.yml" ]; then
-  sync_file "$BOOT/plugin-configs/MapBrowser/screens.yml" "$DATA/plugins/MapBrowser/screens.yml"
+# MapBrowser screens.yml is written by the plugin itself (fork in plugins-src/MapBrowser) — never sync it.
+# The old mapbrowser-boot.sk (still inside older server-data releases) recreated screens after every restart;
+# the fork saves them itself, so keeping it would create duplicates. Disable it (Skript ignores "-" files).
+if [ -f "$DATA/plugins/Skript/scripts/mapbrowser-boot.sk" ]; then
+  mv "$DATA/plugins/Skript/scripts/mapbrowser-boot.sk" "$DATA/plugins/Skript/scripts/-mapbrowser-boot.sk"
+  log "  - Skript/scripts/mapbrowser-boot.sk (disabled, replaced by MapBrowser fork)"
 fi
 
 # Plugin configs managed in repo (always sync on mc-init)

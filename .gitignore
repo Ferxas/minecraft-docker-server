@@ -47,3 +47,7 @@ plugins/*.jar
 !plugins/ClearBorder.jar
 !plugins/WelcomeAdsBridge.jar
 !plugins/LegacyWarmup.jar
+!plugins/MapBrowser-1.0-beta3-all.jar
+
+# Scripts del fork de MapBrowser (el patrón tools/ de arriba los taparía)
+!plugins-src/MapBrowser/tools/

@@ -27,12 +27,10 @@ cp -rv "$REPO/plugin-configs/Oraxen/pack/textures/required/" "$STACK/server-data
 cp -v "$REPO/skript/welcomeads-nav.sk" "$STACK/server-data/plugins/Skript/scripts/welcomeads-nav.sk"
 cp -v "$REPO/skript/lobby-minigames-item.sk" "$STACK/server-data/plugins/Skript/scripts/lobby-minigames-item.sk"
 cp -v "$REPO/skript/oraxen-pack-return.sk" "$STACK/server-data/plugins/Skript/scripts/oraxen-pack-return.sk"
-cp -v "$REPO/skript/mapbrowser-boot.sk" "$STACK/server-data/plugins/Skript/scripts/mapbrowser-boot.sk"
 python3 "$REPO/scripts/oraxen-restore-hub-items.py" || true
 docker exec mc rcon-cli 'sk reload welcomeads-nav.sk'
 docker exec mc rcon-cli 'sk reload lobby-minigames-item.sk'
 docker exec mc rcon-cli 'sk reload oraxen-pack-return.sk'
-docker exec mc rcon-cli 'sk reload mapbrowser-boot.sk'
 docker exec mc rcon-cli 'oraxen reload all'
 docker exec mc rcon-cli 'welcomeads reload'
 docker exec mc rcon-cli 'lp group default permission set welcomeads.font true'

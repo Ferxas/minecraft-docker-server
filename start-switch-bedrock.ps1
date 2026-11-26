@@ -1,13 +1,14 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-  Arranca Geyser Standalone en Windows (UDP 19132) hacia el Paper en WSL/Docker.
-  Dejá esta ventana abierta mientras jugás desde la Switch.
+  Arranca Geyser Standalone en Windows (UDP 19134) hacia el Paper en WSL/Docker.
+  Es el Geyser para móviles/Xbox/PC (Bedrock 26.40+). La Switch (26.30) usa start-switch-nx.ps1 en 19132.
+  Dejá esta ventana abierta mientras se juega.
 #>
 param(
   [string] $JavaHost = "127.0.0.1",
   [int] $JavaPort = 25565,
-  [int] $BedrockPort = 19132
+  [int] $BedrockPort = 19134
 )
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -30,9 +31,9 @@ if ($raw -notmatch '(?m)^\s*auth-type:\s*floodgate\s*$') {
 
 # Firewall UDP 19132 (ignore if no admin)
 try {
-  $rule = Get-NetFirewallRule -DisplayName "MC Geyser Bedrock 19132" -EA SilentlyContinue
+  $rule = Get-NetFirewallRule -DisplayName "MC Geyser Bedrock $BedrockPort" -EA SilentlyContinue
   if (-not $rule) {
-    New-NetFirewallRule -DisplayName "MC Geyser Bedrock 19132" -Direction Inbound -Protocol UDP -LocalPort $BedrockPort -Action Allow -Profile Any -EA Stop | Out-Null
+    New-NetFirewallRule -DisplayName "MC Geyser Bedrock $BedrockPort" -Direction Inbound -Protocol UDP -LocalPort $BedrockPort -Action Allow -Profile Any -EA Stop | Out-Null
     Write-Host "Firewall rule added for UDP $BedrockPort"
   }
 } catch {
